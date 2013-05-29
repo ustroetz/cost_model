@@ -14,13 +14,11 @@ def skidding(stand):
     targetSR.ImportFromEPSG(4326) # WGS84
     coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
     geom.Transform(coordTrans)
-
-    centroid_geom = geom.Centroid() #Create centroid of harvest area
-
+    
+    # Create centroid of harvest area
+    centroid_geom = geom.Centroid() 
     centroidLon = centroid_geom.GetX() #Get X coordinates
     centroidLat = centroid_geom.GetY() #Get Y cooridnates
-
-
 
     # get nearest point on road from centroid as json string
     headers = {'User-Agent': 'Forestry Scenario Planner'}
@@ -28,7 +26,6 @@ def skidding(stand):
     response = requests.get(url, headers=headers)
     binary = response.content
     data = json.loads(binary)
-
 
     # parse json string for landing coordinate 
     landing_coord = data['mapped_coordinate']
@@ -41,7 +38,14 @@ def skidding(stand):
 
     # get distance from centroid to landing
     dist = centroid_geom.Distance(landing_point) # shortest distance to road from centroid of stand
-    YardDist = round((dist)*3.28084, 2) # convert to feet 
+    YardDist = round((dist)*3.28084, 2) # convert to feet
 
-    return YardDist, landing_coord
+    # Set max YardDist
+    HaulDistExtension = 0
+    YardDistLimit = 3000.0
+    if YardDist > YardDistLimit:
+        HaulDistExtension = (YardDist-YardDistLimit)*0.000189394
+        YardDist = YardDistLimit
+
+    return YardDist, HaulDistExtension,landing_coord
 
