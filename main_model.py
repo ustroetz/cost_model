@@ -38,12 +38,12 @@ def cost_model():
     # Skidding Distance & Landing Coordinates   #
     #############################################
 
-    skid_results = skidding.skidding(stand) # returns YardDist in feet and Landing Coordinates
+    skid_results = skidding.skidding(stand) # returns YardDist in feet, HaulDistExtension in miles, and  Landing Coordinates
 
-    coord_landing_lat = skid_results[1][0]
-    coord_landing_lon = skid_results[1][1]
-    SkidDist = skid_results[0]
-
+    coord_landing_lat = skid_results[2][0]
+    coord_landing_lon = skid_results[2][1]
+    SkidDist = skid_results[0] # in feet
+    haulDistExtension = skid_results[1] # in miles
 
 
     #############################################
@@ -63,6 +63,7 @@ def cost_model():
 
     routing_result = routing.routing(coord_landing_lat, coord_landing_lon)  # returns one way haul distance in miles and time in minutes
     haulDist, haulTime = routing_result
+    haulDist = haulDist + haulDistExtension # in miles
     haulDist = round(haulDist, 2)
     haulTime = round(haulTime, 2)
 
@@ -92,6 +93,7 @@ def cost_model():
 
     results = {'total_area':(round(Area,2)),'slope':(round(Slope,2)),'elevation':(round(Elevation,2)),'total_volume':(round(totalVolume,2)),
            'skid_distance':SkidDist, 'harvest_system':(HarvestSystem),'harvest_cost_ft3':harvestCost,'total_harvest_cost':totalHarvestCost,
+           'landing_coordinates': str(coord_landing_lat)+','+str(coord_landing_lon), 'haul_distance_extension':haulDistExtension,
            'haul_distance_ow':haulDist, 'haul_time_ow':haulTime, 'total_haul_trips':trips,' haul_cost_min':haulCost,'total_haul_cost':totalHaulCost,
            'total_cost':totalCost}
     
