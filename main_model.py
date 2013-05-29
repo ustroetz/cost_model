@@ -8,10 +8,12 @@ def cost_model():
     PartialCut = 0
 
     ### GIS Data ###
-    stand = 'U:\\My Documents\Tool\\Data\\testarea1.shp'
-    Area = gis.gis(stand)
-    Elevation = 1000.0
-    Slope = 20.0
+    stand = 'U:\\My Documents\Tool\\Data\\testarea4.shp'
+    slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
+    elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
+    Area = gis.area(stand)
+    Elevation = gis.zonal_stats(elevation_raster, stand)
+    Slope = gis.zonal_stats(slope_raster,stand)
 
 
     ### Tree Data ###
@@ -88,27 +90,10 @@ def cost_model():
 
     totalCost = totalHaulCost+totalHarvestCost
 
-    results = {'total_area':(round(Area,2)),'total_volume':(round(totalVolume,2)),
+    results = {'total_area':(round(Area,2)),'slope':(round(Slope,2)),'elevation':(round(Elevation,2)),'total_volume':(round(totalVolume,2)),
            'skid_distance':SkidDist, 'harvest_system':(HarvestSystem),'harvest_cost_ft3':harvestCost,'total_harvest_cost':totalHarvestCost,
            'haul_distance_ow':haulDist, 'haul_time_ow':haulTime, 'total_haul_trips':trips,' haul_cost_min':haulCost,'total_haul_cost':totalHaulCost,
            'total_cost':totalCost}
     
     return results
 
-    print "######################################"
-    print "Stand Characteristics"
-    print "Total Area: " + str(round(Area,2)) + " ac\nTotal Volume: " + str(round(totalVolume,2)) + " ft3\n\n\n"
-
-
-    print "######################################"
-    print "Harvest"
-    print "Skid Distance: " + str(SkidDist) + " ft \nHarvest System: " + str(HarvestSystem) + \
-    "\nHarvest Cost: " + str(harvestCost) + " $/ft3\nTotal Harvest Cost: " + str(totalHarvestCost) + " $\n\n\n"
-
-    print "######################################"
-    print "Transportation"
-    print "One-way Haul Distance: " + str (haulDist) + " mi\nOne-way Haul Time: " + str(haulTime) + " min\nTotal haul trips: " + str(trips) + \
-    "\nHaul Cost per minute: " + str(haulCost) + " $ \nTotal Haul Cost: " + str(totalHaulCost) + " $\n\n\n"
-
-    print "######################################"
-    print "Total Cost to harvest stand: " + str(totalCost) + " $\n\n\n"
