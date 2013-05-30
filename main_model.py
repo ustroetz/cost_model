@@ -1,37 +1,13 @@
 import math, ogr, gis, skidding, routing, hauling, harvesting
 
-def cost_model():
+def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, PartialCut = 0, ):
     #############################################
-    # Input                                     #
+    # GIS                                       #
     #############################################
 
-    PartialCut = 0
-
-    ### GIS Data ###
-    stand = 'U:\\My Documents\Tool\\Data\\testarea4.shp'
-    slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
-    elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
     Area = gis.area(stand)
     Elevation = gis.zonal_stats(elevation_raster, stand)
     Slope = gis.zonal_stats(slope_raster,stand)
-
-
-    ### Tree Data ###
-    # Chip Trees
-    RemovalsCT = 0.0
-    TreeVolCT = 0.0
-
-    # Small Log Trees
-    RemovalsSLT = 100.0
-    TreeVolSLT = 50.0
-
-    # Large Log Trees
-    RemovalsLLT = 10.0
-    TreeVolLLT = 80.0
-
-    totalVolume = Area*(TreeVolSLT*RemovalsSLT+RemovalsLLT*TreeVolLLT+RemovalsCT*TreeVolCT)/100 # total removal volume in ft3
-
-
 
 
     #############################################
@@ -46,12 +22,15 @@ def cost_model():
     haulDistExtension = skid_results[1] # in miles
 
 
+
+
     #############################################
     # Harvest Costs                             #
     #############################################
     harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT)  # returns harvest cost per CCF and Harvesting System
     harvestCost, HarvestSystem = harvest_result
 
+    totalVolume = Area*(TreeVolSLT*RemovalsSLT+RemovalsLLT*TreeVolLLT+RemovalsCT*TreeVolCT)/100 # total removal volume in ft3
     totalHarvestCost = round(harvestCost*totalVolume) # total harvest costs for stand
 
 

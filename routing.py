@@ -30,8 +30,6 @@ def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0, millID = N
     coord_landing = '%f,%f' %(landing_lat,landing_lon)
 
     # query mill layer based on trees
-    min_dbh = 0.0
-    max_dbh = 999
     driver = ogr.GetDriverByName('ESRI Shapefile')
     millshp = driver.Open('U:\My Documents\Tool\Data\mills.shp', 0)
     milllyr = millshp.GetLayer()
