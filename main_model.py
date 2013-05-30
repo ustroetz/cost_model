@@ -62,7 +62,7 @@ def cost_model():
     #############################################
 
     routing_result = routing.routing(coord_landing_lat, coord_landing_lon)  # returns one way haul distance in miles and time in minutes
-    haulDist, haulTime = routing_result
+    haulDist, haulTime, coord_mill = routing_result
     haulDist = haulDist + haulDistExtension # in miles
     haulDist = round(haulDist, 2)
     haulTime = round(haulTime, 2)
@@ -95,6 +95,7 @@ def cost_model():
            'skid_distance':SkidDist, 'harvest_system':(HarvestSystem),'harvest_cost_ft3':harvestCost,'total_harvest_cost':totalHarvestCost,
            'landing_coordinates': str(coord_landing_lat)+','+str(coord_landing_lon), 'haul_distance_extension':haulDistExtension,
            'haul_distance_ow':haulDist, 'haul_time_ow':haulTime, 'total_haul_trips':trips,' haul_cost_min':haulCost,'total_haul_cost':totalHaulCost,
+           'mill_coordinates': str(coord_mill),
            'total_cost':totalCost}
     
     return results

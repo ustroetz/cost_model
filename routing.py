@@ -2,10 +2,32 @@
 
 import requests, json, ogr
 
-def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0):
-    
-    # create landing cpoint
-    landing_point = '%f,%f' %(landing_lat,landing_lon)
+def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0, millID = None, mill_Lat = None, mill_Lon = None):
+
+    def get_point():
+            # get mill coordinates
+            mill_geom = millfeat.GetGeometryRef()
+            mill_Lon = mill_geom.GetX()
+            mill_Lat = mill_geom.GetY()
+            coord_mill = '%f,%f' %(mill_Lat, mill_Lon)
+            return coord_mill
+            
+    def mill_routing(coord_landing, coord_mill):
+        # get routing json string from landing to mill
+        headers = {'User-Agent': 'Forestry Scenario Planner'}
+        url = 'http://router.project-osrm.org/viaroute?loc=' + coord_landing + '&loc=' + coord_mill
+        response = requests.get(url, headers=headers)
+        binary = response.content
+        data = json.loads(binary)
+
+        # parse json string for distance
+        total_summary = data['route_summary']
+        total_distance = total_summary['total_distance'] # in meters
+        total_time = total_summary['total_time']# in sec
+        return total_distance, total_time
+
+    # create landing coordinates
+    coord_landing = '%f,%f' %(landing_lat,landing_lon)
 
     # query mill layer based on trees
     min_dbh = 0.0
@@ -15,59 +37,60 @@ def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0):
     milllyr = millshp.GetLayer()
     milllyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
 
-    # set spatial filter around landing to include only close by mills
-    offset = 0.05
-    while True:
-        offset += 0.05
-
-        dfMinX = landing_lon - offset
-        dfMaxX = landing_lon + offset
-        dfMinY = landing_lat - offset
-        dfMaxY = landing_lat + offset
-
-        milllyr.SetSpatialFilterRect(dfMinX, dfMinY, dfMaxX, dfMaxY)
+    # check if user specfied mill
+    if millID is not None:
+        milllyr.SetAttributeFilter("ObjectID = %s" % (str(millID)))
         millfeat = milllyr.GetNextFeature()
-
-        if millfeat:
-            break
-
-    distDict = {}
-    timeDict = {}
-
-    while millfeat:
-        # get mill coordinates
-        mill_geom = millfeat.GetGeometryRef()
-        mill_Lon = mill_geom.GetX()
-        mill_Lat = mill_geom.GetY()
-        mill_point = '%f,%f' %(mill_Lat, mill_Lon)
-
-        # get routing json string from landing to mill
-        headers = {'User-Agent': 'Forestry Scenario Planner'}
-        url = 'http://router.project-osrm.org/viaroute?loc=' + landing_point + '&loc=' + mill_point
-        response = requests.get(url, headers=headers)
-        binary = response.content
-        data = json.loads(binary)
-
-        # parse json string for distance
-        total_summary = data['route_summary']
-        total_distance = total_summary['total_distance'] # in meters
-        total_time = total_summary['total_time']# in sec
-
-        distDict[mill_point] = total_distance
-        timeDict[mill_point] = total_time
+        coord_mill = get_point()
+        total_distance, total_time = mill_routing(coord_landing, coord_mill)
+        total_distance = total_distance*0.000621371 # convert to miles
+        total_time = total_time/60.0 # convert to min
         
-        millfeat.Destroy()
-        millfeat = milllyr.GetNextFeature()
+    elif mill_Lat is not None:
+        coord_mill = '%f,%f' %(mill_Lat, mill_Lon)
+        total_distance, total_time = mill_routing(coord_landing, coord_mill)
+        total_distance = total_distance*0.000621371 # convert to miles
+        total_time = total_time/60.0 # convert to min
+    else:
+        # set spatial filter around landing to include only close by mills
+        offset = 0.05
+        while True:
+            offset += 0.05
 
-    # Remove items from Dictionary where distance is 0, mill not on road    
-    distDict = {key: value for key, value in distDict.items()
-                if value > 0}
+            dfMinX = landing_lon - offset
+            dfMaxX = landing_lon + offset
+            dfMinY = landing_lat - offset
+            dfMaxY = landing_lat + offset
 
-    # get distance and time to closest mill
-    coord_mill = min(distDict, key=distDict.get)
-    total_distance = distDict[coord_mill]*0.000621371 # convert to miles
-    total_time = timeDict[coord_mill]/60.0 # convert to min
+            milllyr.SetSpatialFilterRect(dfMinX, dfMinY, dfMaxX, dfMaxY)
+            millfeat = milllyr.GetNextFeature()
 
-    return total_distance, total_time
+            if millfeat:
+                break
+
+        distDict = {}
+        timeDict = {}
+
+        while millfeat:
+            coord_mill = get_point()
+
+            total_distance, total_time = mill_routing(coord_landing, coord_mill)
+
+            distDict[coord_mill] = total_distance
+            timeDict[coord_mill] = total_time
+            
+            millfeat.Destroy()
+            millfeat = milllyr.GetNextFeature()
+
+        # Remove items from Dictionary where distance is 0, mill not on road    
+        distDict = {key: value for key, value in distDict.items()
+                    if value > 0}
+
+        # get distance and time to closest mill
+        coord_mill = min(distDict, key=distDict.get)
+        total_distance = distDict[coord_mill]*0.000621371 # convert to miles
+        total_time = timeDict[coord_mill]/60.0 # convert to min
+
+    return total_distance, total_time, coord_mill
 
 

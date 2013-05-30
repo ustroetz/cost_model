@@ -47,5 +47,5 @@ def skidding(stand):
         HaulDistExtension = (YardDist-YardDistLimit)*0.000189394
         YardDist = YardDistLimit
 
-    return YardDist, HaulDistExtension,landing_coord
+    return YardDist, HaulDistExtension, landing_coord
 
