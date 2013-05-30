@@ -4,6 +4,15 @@ import requests, json, ogr
 
 def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0, millID = None, mill_Lat = None, mill_Lon = None):
 
+    # create landing coordinates
+    coord_landing = '%f,%f' %(landing_lat,landing_lon)
+	
+	# query mill layer based on trees
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+    millshp = driver.Open('U:\My Documents\Tool\Data\mills.shp', 0)
+    milllyr = millshp.GetLayer()
+    milllyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
+	
     def get_point():
             # get mill coordinates
             mill_geom = millfeat.GetGeometryRef()
@@ -12,7 +21,7 @@ def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0, millID = N
             coord_mill = '%f,%f' %(mill_Lat, mill_Lon)
             return coord_mill
             
-    def mill_routing(coord_landing, coord_mill):
+    def routing(coord_landing, coord_mill):
         # get routing json string from landing to mill
         headers = {'User-Agent': 'Forestry Scenario Planner'}
         url = 'http://router.project-osrm.org/viaroute?loc=' + coord_landing + '&loc=' + coord_mill
@@ -26,27 +35,17 @@ def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0, millID = N
         total_time = total_summary['total_time']# in sec
         return total_distance, total_time
 
-    # create landing coordinates
-    coord_landing = '%f,%f' %(landing_lat,landing_lon)
-
-    # query mill layer based on trees
-    driver = ogr.GetDriverByName('ESRI Shapefile')
-    millshp = driver.Open('U:\My Documents\Tool\Data\mills.shp', 0)
-    milllyr = millshp.GetLayer()
-    milllyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
-
-    # check if user specfied mill
+    # determine mill and run routing 
     if millID is not None:
         milllyr.SetAttributeFilter("ObjectID = %s" % (str(millID)))
         millfeat = milllyr.GetNextFeature()
         coord_mill = get_point()
-        total_distance, total_time = mill_routing(coord_landing, coord_mill)
+        total_distance, total_time = routing(coord_landing, coord_mill)
         total_distance = total_distance*0.000621371 # convert to miles
-        total_time = total_time/60.0 # convert to min
-        
+        total_time = total_time/60.0 # convert to min 
     elif mill_Lat is not None:
         coord_mill = '%f,%f' %(mill_Lat, mill_Lon)
-        total_distance, total_time = mill_routing(coord_landing, coord_mill)
+        total_distance, total_time = routing(coord_landing, coord_mill)
         total_distance = total_distance*0.000621371 # convert to miles
         total_time = total_time/60.0 # convert to min
     else:
@@ -72,7 +71,7 @@ def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0, millID = N
         while millfeat:
             coord_mill = get_point()
 
-            total_distance, total_time = mill_routing(coord_landing, coord_mill)
+            total_distance, total_time = routing(coord_landing, coord_mill)
 
             distDict[coord_mill] = total_distance
             timeDict[coord_mill] = total_time
