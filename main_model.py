@@ -58,7 +58,7 @@ def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, Rem
     haulCost = hauling.haulcost(haulDist, haulTimeRT)  # returns haul cost per minute
 
     truckVol = 8.0 # CCF per truck load
-    trips = math.ceil(totalVolume/100/truckVol) # necessary total trips to mill
+    trips = math.ceil(totalVolume/100.0/truckVol) # necessary total trips to mill
     totalHaulCost = round(haulTimeRT*haulCost*trips) # total costs for all trips
 
 
