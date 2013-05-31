@@ -1,6 +1,6 @@
 import math, ogr, gis, skidding, routing, hauling, harvesting
 
-def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, PartialCut = 0, ):
+def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, millID = None, mill_Lat = None, mill_Lon = None, PartialCut = 0, ):
     #############################################
     # GIS                                       #
     #############################################
@@ -40,7 +40,7 @@ def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, Rem
     # Routing Distance & Time                   #
     #############################################
 
-    routing_result = routing.routing(coord_landing_lat, coord_landing_lon)  # returns one way haul distance in miles and time in minutes
+    routing_result = routing.routing(coord_landing_lat, coord_landing_lon, millID, mill_Lat, mill_Lon )  # returns one way haul distance in miles and time in minutes
     haulDist, haulTime, coord_mill = routing_result
     haulDist = haulDist + haulDistExtension # in miles
     haulDist = round(haulDist, 2)

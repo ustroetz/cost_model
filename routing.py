@@ -2,12 +2,14 @@
 
 import requests, json, ogr
 
-def routing(landing_lat, landing_lon, min_dbh = 0.0, max_dbh = 999.0, millID = None, mill_Lat = None, mill_Lon = None):
+def routing(landing_lat, landing_lon, millID , mill_Lat , mill_Lon):
 
     # create landing coordinates
     coord_landing = '%f,%f' %(landing_lat,landing_lon)
-	
-	# query mill layer based on trees
+
+    # query mill layer based on trees
+    min_dbh = 0.0
+    max_dbh = 999.0
     driver = ogr.GetDriverByName('ESRI Shapefile')
     millshp = driver.Open('U:\My Documents\Tool\Data\mills.shp', 0)
     milllyr = millshp.GetLayer()
