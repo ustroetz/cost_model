@@ -1,6 +1,6 @@
 import math, ogr, gis, skidding, routing, hauling, harvesting
 
-def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, millID = None, mill_Lat = None, mill_Lon = None, PartialCut = 0, ):
+def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID = None, mill_Lat = None, mill_Lon = None, PartialCut = 0, ):
     #############################################
     # GIS                                       #
     #############################################
@@ -27,7 +27,7 @@ def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, Rem
     #############################################
     # Harvest Costs                             #
     #############################################
-    harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT)  # returns harvest cost per CCF and Harvesting System
+    harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT)  # returns harvest cost per CCF and Harvesting System
     harvestCost, HarvestSystem = harvest_result
 
     totalVolume = Area*(TreeVolSLT*RemovalsSLT+RemovalsLLT*TreeVolLLT+RemovalsCT*TreeVolCT)/100 # total removal volume in ft3

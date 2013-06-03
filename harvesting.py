@@ -1,6 +1,6 @@
 import math, xlrd, operator
 
-def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT):
+def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
 
     ################################################
     # Intermediates and General Inputs             #
@@ -76,16 +76,13 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     MoistureContent = 0.5
 
     large_hardwood_fract = 0.0
-    Large_log_tre_res_fract	= 0.38 
+    Large_log_tre_res_fract = 0.38 
     large_wood_density = 62.1225
-    largetreeavgdbh	= 0
+    largetreeavgdbh = 0
     largetreebolewt = 0
 
     CTLTrailSpacing = 50
 
-    HdwdFractionCT	= 0.0
-    HdwdFractionLLT	= 0.0
-    HdwdFractionSLT	= 0.0
     if VolPerAcreALT > 0:
         HdwdFractionALT = (HdwdFractionSLT*VolPerAcreSLT+HdwdFractionLLT*VolPerAcreLLT)/VolPerAcreALT
     else:
