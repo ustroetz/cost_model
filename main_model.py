@@ -1,20 +1,22 @@
 import math, ogr, gis, skidding, routing, hauling, harvesting
 
-def cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID = None, mill_Lat = None, mill_Lon = None, PartialCut = 0, ):
+def cost_model(slope_raster, elevation_raster, lyr, stand, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID = None, mill_Lat = None, mill_Lon = None, PartialCut = 0, ):
     #############################################
     # GIS                                       #
     #############################################
 
     Area = gis.area(stand)
-    Elevation = gis.zonal_stats(elevation_raster, stand)
-    Slope = gis.zonal_stats(slope_raster,stand)
+    Elevation = gis.zonal_stats(elevation_raster, lyr, stand)
+    stand = lyr.GetNextFeature()
+    Slope = gis.zonal_stats(slope_raster, lyr, stand)
+
 
 
     #############################################
     # Skidding Distance & Landing Coordinates   #
     #############################################
 
-    skid_results = skidding.skidding(stand) # returns YardDist in feet, HaulDistExtension in miles, and  Landing Coordinates
+    skid_results = skidding.skidding(lyr, stand) # returns YardDist in feet, HaulDistExtension in miles, and  Landing Coordinates
 
     coord_landing_lat = skid_results[2][0]
     coord_landing_lon = skid_results[2][1]

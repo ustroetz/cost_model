@@ -1,13 +1,19 @@
 import main_model as m
+from pprint import pprint
+import ogr, trtr
 
 ### Harvest Type (clear cut = 0, partial cut = 1)
 PartialCut = 0
 
 ### GIS Data
-stand = 'U:\\My Documents\Tool\\Data\\testarea1.shp'
+property_shp = 'U:\\My Documents\Tool\\Data\\testarea2.shp'
 slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
 elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 
+driver = ogr.GetDriverByName('ESRI Shapefile')
+shp = driver.Open(property_shp, 0)
+lyr = shp.GetLayer()
+stand = lyr.GetNextFeature()
 
 ### Tree Data ###
 
@@ -33,4 +39,4 @@ millID = 75
 mill_Lat = None
 mill_Lon = None
 
-print m.cost_model(stand, slope_raster, elevation_raster, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut)
+pprint (m.cost_model(slope_raster, elevation_raster, lyr, stand, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))

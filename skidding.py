@@ -1,12 +1,8 @@
 import requests, json, ogr, osr
 
-def skidding(stand):
+def skidding(lyr, stand):
     # get centroid coordinates of harvest area
-    driver = ogr.GetDriverByName('ESRI Shapefile')
-    shp = driver.Open(stand, 0)
-    lyr = shp.GetLayer()
-    feat = lyr.GetNextFeature()
-    geom = feat.GetGeometryRef()
+    geom = stand.GetGeometryRef()
 
     # Transform from Web Mercator to WGS84
     sourceSR = lyr.GetSpatialRef()
@@ -16,7 +12,7 @@ def skidding(stand):
     geom.Transform(coordTrans)
     
     # Create centroid of harvest area
-    centroid_geom = geom.Centroid() 
+    centroid_geom = geom.Centroid()
     centroidLon = centroid_geom.GetX() #Get X coordinates
     centroidLat = centroid_geom.GetY() #Get Y cooridnates
 
@@ -27,7 +23,7 @@ def skidding(stand):
     binary = response.content
     data = json.loads(binary)
 
-    # parse json string for landing coordinate 
+    # parse json string for landing coordinate
     landing_coord = data['mapped_coordinate']
     landing_lat = landing_coord[0]
     landing_lon = landing_coord[1]
@@ -48,4 +44,3 @@ def skidding(stand):
         YardDist = YardDistLimit
 
     return YardDist, HaulDistExtension, landing_coord
-

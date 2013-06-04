@@ -4,27 +4,17 @@ import gdal, ogr, osr, numpy
 def area(stand):
 
     # get area
-    driver = ogr.GetDriverByName('ESRI Shapefile')
-    shp = driver.Open(stand, 0)
-    lyr = shp.GetLayer()
-    feat = lyr.GetNextFeature()
-    geom = feat.GetGeometryRef()
-
+    geom = stand.GetGeometryRef()
     area = geom.GetArea() # get area in m2
-
     area = round(area*0.000247105, 4) # convert to acre and round
-
     return area
 
 
 # get mean of stand 
-def zonal_stats(input_value_raster, input_zone_polygon):
-
+def zonal_stats(input_value_raster, lyr, feat):
+    
     # Open data
     raster = gdal.Open(input_value_raster)
-    driver = ogr.GetDriverByName('ESRI Shapefile')
-    shp = driver.Open(input_zone_polygon)
-    lyr = shp.GetLayer()
 
     # get raster georeference info
     transform = raster.GetGeoTransform()
@@ -38,7 +28,6 @@ def zonal_stats(input_value_raster, input_zone_polygon):
     targetSR = osr.SpatialReference()
     targetSR.ImportFromWkt(raster.GetProjectionRef())
     coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
-    feat = lyr.GetNextFeature()
     geom = feat.GetGeometryRef()
     geom.Transform(coordTrans)
 
@@ -63,10 +52,7 @@ def zonal_stats(input_value_raster, input_zone_polygon):
 
     # create memory target raster
     target_ds = gdal.GetDriverByName('MEM').Create('', xcount, ycount, gdal.GDT_Byte)
-    target_ds.SetGeoTransform((
-        xmin, pixelWidth, 0,
-        ymax, 0, pixelHeight,
-    ))
+    target_ds.SetGeoTransform((xmin, pixelWidth, 0, ymax, 0, pixelHeight))
 
     # create for target raster the same projection as for the value raster
     raster_srs = osr.SpatialReference()
@@ -88,3 +74,4 @@ def zonal_stats(input_value_raster, input_zone_polygon):
 
     # calculate mean of zonal raster
     return numpy.mean(zoneraster)
+
