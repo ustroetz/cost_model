@@ -1,6 +1,6 @@
 import main_model as m
 from pprint import pprint
-import ogr, trtr
+import ogr
 
 ### Harvest Type (clear cut = 0, partial cut = 1)
 PartialCut = 0
@@ -9,6 +9,10 @@ PartialCut = 0
 property_shp = 'U:\\My Documents\Tool\\Data\\testarea2.shp'
 slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
 elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
+driver = ogr.GetDriverByName('ESRI Shapefile')
+shp = driver.Open(property_shp, 0)
+lyr = shp.GetLayer()
+
 
 ### Tree Data ###
 
@@ -34,13 +38,5 @@ millID = 75
 mill_Lat = None
 mill_Lon = None
 
-### Loop through stands
-driver = ogr.GetDriverByName('ESRI Shapefile')
-shp = driver.Open(property_shp, 0)
-lyr = shp.GetLayer()
-numFeatures = lyr.GetFeatureCount()
-FID = 0
-while FID < numFeatures:
-    pprint (m.cost_model(slope_raster, elevation_raster, lyr, FID, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))
-    FID += 1
-    print FID
+pprint (m.final(slope_raster, elevation_raster, lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))
+

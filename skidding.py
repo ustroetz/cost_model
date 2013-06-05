@@ -1,11 +1,10 @@
 import requests, json, ogr, osr
 
-def skidding(lyr, FID):
-    # get centroid coordinates of harvest area
-    feat = lyr.GetFeature(FID)
-    geom = feat.GetGeometryRef()
+def skidding(lyr, FID, landing_lat, landing_lon):
 
     # Transform from Web Mercator to WGS84
+    feat = lyr.GetFeature(FID)
+    geom = feat.GetGeometryRef()
     sourceSR = lyr.GetSpatialRef()
     targetSR = osr.SpatialReference()
     targetSR.ImportFromEPSG(4326) # WGS84
@@ -17,21 +16,9 @@ def skidding(lyr, FID):
     centroidLon = centroid_geom.GetX() #Get X coordinates
     centroidLat = centroid_geom.GetY() #Get Y cooridnates
 
-    # get nearest point on road from centroid as json string
-    headers = {'User-Agent': 'Forestry Scenario Planner'}
-    url = "http://router.project-osrm.org/nearest?loc=%f,%f"%(centroidLat, centroidLon)
-    response = requests.get(url, headers=headers)
-    binary = response.content
-    data = json.loads(binary)
-
-    # parse json string for landing coordinate
-    landing_coord = data['mapped_coordinate']
-    landing_lat = landing_coord[0]
-    landing_lon = landing_coord[1]
-
     # create ogr point from strings
     landing_point = ogr.Geometry(ogr.wkbPoint)
-    landing_point.AddPoint(landing_lat,landing_lon)
+    landing_point.AddPoint(landing_lat,landing_lat)
 
     # get distance from centroid to landing
     dist = centroid_geom.Distance(landing_point) # shortest distance to road from centroid of stand
@@ -44,4 +31,4 @@ def skidding(lyr, FID):
         HaulDistExtension = (YardDist-YardDistLimit)*0.000189394
         YardDist = YardDistLimit
 
-    return YardDist, HaulDistExtension, landing_coord
+    return YardDist, HaulDistExtension
