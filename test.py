@@ -10,11 +10,6 @@ property_shp = 'U:\\My Documents\Tool\\Data\\testarea2.shp'
 slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
 elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 
-driver = ogr.GetDriverByName('ESRI Shapefile')
-shp = driver.Open(property_shp, 0)
-lyr = shp.GetLayer()
-stand = lyr.GetNextFeature()
-
 ### Tree Data ###
 
 # Hardwood Fraction
@@ -39,4 +34,13 @@ millID = 75
 mill_Lat = None
 mill_Lon = None
 
-pprint (m.cost_model(slope_raster, elevation_raster, lyr, stand, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))
+### Loop through stands
+driver = ogr.GetDriverByName('ESRI Shapefile')
+shp = driver.Open(property_shp, 0)
+lyr = shp.GetLayer()
+numFeatures = lyr.GetFeatureCount()
+FID = 0
+while FID < numFeatures:
+    pprint (m.cost_model(slope_raster, elevation_raster, lyr, FID, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))
+    FID += 1
+    print FID

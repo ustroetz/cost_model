@@ -1,8 +1,9 @@
 import requests, json, ogr, osr
 
-def skidding(lyr, stand):
+def skidding(lyr, FID):
     # get centroid coordinates of harvest area
-    geom = stand.GetGeometryRef()
+    feat = lyr.GetFeature(FID)
+    geom = feat.GetGeometryRef()
 
     # Transform from Web Mercator to WGS84
     sourceSR = lyr.GetSpatialRef()
