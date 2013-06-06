@@ -1,5 +1,9 @@
 import requests, json, ogr, osr
 
+#############################################
+# Landing Coordinates                       #
+#############################################
+
 def landing(lyr):
     numFeatures = lyr.GetFeatureCount()
     FID = 0
@@ -38,8 +42,6 @@ def landing(lyr):
     data = json.loads(binary)
 
     # parse json string for landing coordinate
-    landing_coord = data['mapped_coordinate']
-    landing_lat = landing_coord[0]
-    landing_lon = landing_coord[1]
-
+    landing_lat, landing_lon = data['mapped_coordinate']
+    
     return landing_lat, landing_lon

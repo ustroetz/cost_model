@@ -6,7 +6,7 @@ import ogr
 PartialCut = 0
 
 ### GIS Data
-property_shp = 'U:\\My Documents\Tool\\Data\\testarea2.shp'
+property_shp = 'U:\\My Documents\Tool\\Data\\testarea3.shp'
 slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
 elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 driver = ogr.GetDriverByName('ESRI Shapefile')
