@@ -6,7 +6,7 @@ import ogr
 PartialCut = 0
 
 ### GIS Data
-property_shp = 'U:\\My Documents\Tool\\Data\\testarea3.shp'
+property_shp = 'U:\\My Documents\Tool\\Data\\testarea1.shp'
 slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
 elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 driver = ogr.GetDriverByName('ESRI Shapefile')
@@ -38,5 +38,5 @@ millID = 75
 mill_Lat = None
 mill_Lon = None
 
-pprint (m.final(slope_raster, elevation_raster, lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))
+pprint (m.cost_func(slope_raster, elevation_raster, lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))
 

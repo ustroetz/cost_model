@@ -1,6 +1,7 @@
 import math, ogr, gis, skidding, routing, hauling, harvesting, landing
 
-def loop_func(slope_raster, elevation_raster, lyr, FID, landing_lat, landing_lon, PartialCut, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, haulDist, haulTime):
+# func for every stand per property
+def stand_func(slope_raster, elevation_raster, lyr, FID, landing_geom, PartialCut, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, haulDist, haulTime):
     
     #############################################
     # Area, Slope, Elevation                    #
@@ -15,8 +16,8 @@ def loop_func(slope_raster, elevation_raster, lyr, FID, landing_lat, landing_lon
     # Skid Distance, Haul Distance Extension    #
     #############################################
 
-    SkidDist, HaulDistExtension = skidding.skidding(lyr, FID, landing_lat, landing_lon)
-
+    SkidDist, HaulDistExtension = skidding.skidding(lyr, FID, landing_geom)
+    HaulDistExtension = round(HaulDistExtension*0.000189394, 3) # convert to miles
 
     #############################################
     # Harvest Cost                              #
@@ -67,37 +68,46 @@ def loop_func(slope_raster, elevation_raster, lyr, FID, landing_lat, landing_lon
 
 
 
-def final(slope_raster, elevation_raster, lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID = None, mill_Lat = None, mill_Lon = None, PartialCut = 0):
 
+# function for total property
+def cost_func(slope_raster, elevation_raster, lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID = None, mill_Lat = None, mill_Lon = None, PartialCut = 0):
+
+    results = {}
+    
     #############################################
     # Landing Coordinates                       #
     #############################################
-    landing_lat, landing_lon = landing.landing(lyr)
+    landing_geom = landing.landing(lyr)
+    landing_lon = landing_geom.GetX()
+    landing_lat = landing_geom.GetY()
+    results['landing_coordinates'] = str(landing_lat)+','+str(landing_lon)
 
 
     #############################################
     # Mill Coordinates, Haul Distance & Time    #
     #############################################
     
-    haulDist, haulTime, coord_mill = routing.routing(landing_lat, landing_lon, millID, mill_Lat, mill_Lon)  # returns one way haul distance in miles and time in minutes
+    haulDist, haulTime, coord_mill = routing.routing(landing_geom, millID, mill_Lat, mill_Lon)  # returns one way haul distance in miles and time in minutes
     if haulDist > 0:
         haulTime = round(haulTime, 2)
     else:
         haulTime = 0.0
 
+    results['mill_coordinates'] = str(coord_mill)
+
     
     #############################################
-    # Stand Loop   #
+    # Stand Loop                                #
     #############################################
     
     numFeatures = lyr.GetFeatureCount()
-    results = {}
     FID = 0
     while FID < numFeatures:
-        for key, val in loop_func(slope_raster, elevation_raster, lyr, FID, landing_lat, landing_lon, PartialCut, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, haulDist, haulTime).items():
+        for key, val in stand_func(slope_raster, elevation_raster, lyr, FID, landing_geom, PartialCut, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, haulDist, haulTime).items():
             results.setdefault(key, []).append(val)
         FID += 1
-    results['mill_coordinates'] = str(coord_mill)
-    results['landing_coordinates'] = str(landing_lat)+','+str(landing_lon)
+
+
+    #############################################    
     return results
 

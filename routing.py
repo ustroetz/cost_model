@@ -2,9 +2,11 @@
 
 import requests, json, ogr
 
-def routing(landing_lat, landing_lon, millID , mill_Lat , mill_Lon):
+def routing(landing_geom, millID , mill_Lat , mill_Lon):
 
     # create landing coordinates
+    landing_lon = landing_geom.GetX()
+    landing_lat = landing_geom.GetY()
     coord_landing = '%f,%f' %(landing_lat,landing_lon)
 
     # query mill layer based on trees
@@ -16,12 +18,12 @@ def routing(landing_lat, landing_lon, millID , mill_Lat , mill_Lon):
     milllyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
 	
     def get_point():
-            # get mill coordinates
-            mill_geom = millfeat.GetGeometryRef()
-            mill_Lon = mill_geom.GetX()
-            mill_Lat = mill_geom.GetY()
-            coord_mill = '%f,%f' %(mill_Lat, mill_Lon)
-            return coord_mill
+        # get mill coordinates
+        mill_geom = millfeat.GetGeometryRef()
+        mill_Lon = mill_geom.GetX()
+        mill_Lat = mill_geom.GetY()
+        coord_mill = '%f,%f' %(mill_Lat, mill_Lon)
+        return coord_mill
             
     def routing(coord_landing, coord_mill):
         # get routing json string from landing to mill

@@ -43,5 +43,9 @@ def landing(lyr):
 
     # parse json string for landing coordinate
     landing_lat, landing_lon = data['mapped_coordinate']
-    
-    return landing_lat, landing_lon
+
+    # create ogr geom point from strings
+    landing_geom = ogr.Geometry(ogr.wkbPoint)
+    landing_geom.AddPoint(landing_lon,landing_lat)
+
+    return landing_geom
