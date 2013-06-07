@@ -1,17 +1,25 @@
 import main_model as m
 from pprint import pprint
-import ogr
+import ogr, xlrd
 
 ### Harvest Type (clear cut = 0, partial cut = 1)
 PartialCut = 0
 
 ### GIS Data
-property_shp = 'U:\\My Documents\Tool\\Data\\testarea1.shp'
 slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
 elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 driver = ogr.GetDriverByName('ESRI Shapefile')
-shp = driver.Open(property_shp, 0)
-lyr = shp.GetLayer()
+
+property_shp = driver.Open('Data//testarea4.shp', 0)
+property_lyr = property_shp.GetLayer()
+
+
+mill_shp = driver.Open('Data//mills.shp', 0)
+mill_lyr = mill_shp.GetLayer()
+
+### Machine Costs
+harvest_mc_wb = xlrd.open_workbook('Data//machinecost.xls')
+haul_mc_wb = xlrd.open_workbook('Data//hauling.xls')
 
 
 ### Tree Data ###
@@ -38,5 +46,5 @@ millID = 75
 mill_Lat = None
 mill_Lon = None
 
-pprint (m.cost_func(slope_raster, elevation_raster, lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))
+pprint (m.cost_func(haul_mc_wb, harvest_mc_wb, slope_raster, elevation_raster, property_lyr, mill_lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, millID, mill_Lat, mill_Lon, PartialCut))
 

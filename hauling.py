@@ -1,13 +1,10 @@
-import xlrd
-
-def haulcost(TravelDistanceOneWay, TimeRoundTrip):
+def haulcost(haul_mc_wb, TravelDistanceOneWay, TimeRoundTrip):
 
     ################################################
     ################PRE CALCULATIONS################
     ################################################
 
-    data = xlrd.open_workbook('U:\My Documents\Tool\Data\hauling.xls')
-    sh = data.sheet_by_index(0)
+    sh = haul_mc_wb.sheet_by_index(0)
     sh.cell(rowx=4,colx=1).value
 
     ##############################

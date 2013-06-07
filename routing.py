@@ -2,7 +2,7 @@
 
 import requests, json, ogr
 
-def routing(landing_geom, millID , mill_Lat , mill_Lon):
+def routing(landing_geom, millID , mill_Lat , mill_Lon, mill_lyr):
 
     # create landing coordinates
     landing_lon = landing_geom.GetX()
@@ -12,10 +12,7 @@ def routing(landing_geom, millID , mill_Lat , mill_Lon):
     # query mill layer based on trees
     min_dbh = 0.0
     max_dbh = 999.0
-    driver = ogr.GetDriverByName('ESRI Shapefile')
-    millshp = driver.Open('U:\My Documents\Tool\Data\mills.shp', 0)
-    milllyr = millshp.GetLayer()
-    milllyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
+    mill_lyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
 	
     def get_point():
         # get mill coordinates
@@ -41,8 +38,8 @@ def routing(landing_geom, millID , mill_Lat , mill_Lon):
 
     # determine mill and run routing 
     if millID is not None:
-        milllyr.SetAttributeFilter("ObjectID = %s" % (str(millID)))
-        millfeat = milllyr.GetNextFeature()
+        mill_lyr.SetAttributeFilter("ObjectID = %s" % (str(millID)))
+        millfeat = mill_lyr.GetNextFeature()
         coord_mill = get_point()
         total_distance, total_time = routing(coord_landing, coord_mill)
         total_distance = total_distance*0.000621371 # convert to miles
@@ -63,8 +60,8 @@ def routing(landing_geom, millID , mill_Lat , mill_Lon):
             dfMinY = landing_lat - offset
             dfMaxY = landing_lat + offset
 
-            milllyr.SetSpatialFilterRect(dfMinX, dfMinY, dfMaxX, dfMaxY)
-            millfeat = milllyr.GetNextFeature()
+            mill_lyr.SetSpatialFilterRect(dfMinX, dfMinY, dfMaxX, dfMaxY)
+            millfeat = mill_lyr.GetNextFeature()
 
             if millfeat:
                 break
@@ -81,7 +78,7 @@ def routing(landing_geom, millID , mill_Lat , mill_Lon):
             timeDict[coord_mill] = total_time
             
             millfeat.Destroy()
-            millfeat = milllyr.GetNextFeature()
+            millfeat = mill_lyr.GetNextFeature()
 
         # Remove items from Dictionary where distance is 0, mill not on road    
         distDict = {key: value for key, value in distDict.items()

@@ -1,12 +1,11 @@
-import math, xlrd, operator
+import math, operator
 
-def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
+def harvestcost(harvest_mc_wb, PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
 
     ################################################
     # Intermediates and General Inputs             #
     ################################################
 
-    machinecostWB = xlrd.open_workbook('U:\My Documents\Tool\Data\machinecost.xls')
     BFperCF = 5.0
 
     RemovalsALT = RemovalsSLT+RemovalsLLT
@@ -265,7 +264,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
         return costpmh
 
     # Getting Arguments from Excel Spreadsheet for Machine Costs
-    sh = machinecostWB.sheet_by_index(0)
+    sh = harvest_mc_wb.sheet_by_index(0)
 
     mcChainsaw = sh.col_values(1, start_rowx=5, end_rowx=19)
     mcFbuncherDriveToTree = sh.col_values(2, start_rowx=5, end_rowx=19)
