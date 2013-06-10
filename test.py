@@ -10,16 +10,16 @@ slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
 elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 driver = ogr.GetDriverByName('ESRI Shapefile')
 
-property_shp = driver.Open('Data//testarea4.shp', 0)
+property_shp = driver.Open('U:\\My Documents\Tool\\Data\\testarea1.shp', 0)
 property_lyr = property_shp.GetLayer()
 
 
-mill_shp = driver.Open('Data//mills.shp', 0)
+mill_shp = driver.Open('U:\\My Documents\Tool\\Data\\mills.shp', 0)
 mill_lyr = mill_shp.GetLayer()
 
 ### Machine Costs
-harvest_mc_wb = xlrd.open_workbook('Data//machinecost.xls')
-haul_mc_wb = xlrd.open_workbook('Data//hauling.xls')
+harvest_mc_wb = xlrd.open_workbook('U:\\My Documents\Tool\\Data\\machinecost.xls')
+haul_mc_wb = xlrd.open_workbook('U:\\My Documents\Tool\\Data\\hauling.xls')
 
 
 ### Tree Data ###

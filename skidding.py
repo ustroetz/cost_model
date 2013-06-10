@@ -1,19 +1,21 @@
 import requests, json, ogr, osr
 
-def skidding(lyr, FID, landing_geom):
+def skidding(lyr, FID, landing_geom, Slope):
 
     # get geometry
     feat = lyr.GetFeature(FID)
     geom = feat.GetGeometryRef()
 
     # Transform fromWGS84 to Web Mercator
-    sourceSR = osr.SpatialReference()
-    sourceSR.ImportFromEPSG(4326) # WGS84
-    targetSR = osr.SpatialReference()
-    targetSR.ImportFromEPSG(3857) # Web Mercator
-    coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
-    landing_geom.Transform(coordTrans)
-    
+    inSR = landing_geom.GetSpatialReference()
+    if inSR is None:
+        sourceSR = osr.SpatialReference()
+        sourceSR.ImportFromEPSG(4326) # WGS84
+        targetSR = osr.SpatialReference()
+        targetSR.ImportFromEPSG(3857) # WGS84
+        coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
+        landing_geom.Transform(coordTrans)
+
     # Create centroid of harvest area
     centroid_geom = geom.Centroid()
     centroidLat = centroid_geom.GetX() #Get X coordinates
@@ -28,7 +30,7 @@ def skidding(lyr, FID, landing_geom):
     points = ring.GetPointCount()
     distList = []
     for p in xrange(points):
-            lon, lat, y  = ring.GetPoint(p)
+            lon, lat, y = ring.GetPoint(p)
             # create ogr point from strings
             polyVertex_geom = ogr.Geometry(ogr.wkbPoint)
             polyVertex_geom.AddPoint(lon, lat)
@@ -39,8 +41,17 @@ def skidding(lyr, FID, landing_geom):
     # Set max YardDist
     HaulDistExtension = 0
     YardDistLimit = 3000
-    if (YardDist-DistStand) > YardDistLimit:
+    if YardDist > 1300 and Slope > 40:
+        YardDistLimit = 10000
+        if YardDist > YardDistLimit:
+                HaulDistExtension = (YardDist-YardDistLimit)*0.000189394
+                YardDist = YardDistLimit
+
+    elif (YardDist-DistStand) > YardDistLimit:
         HaulDistExtension = (YardDist-YardDistLimit)*0.000189394
         YardDist = YardDistLimit
 
     return YardDist, HaulDistExtension
+
+
+

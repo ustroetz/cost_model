@@ -8,10 +8,8 @@ def stand_func(haul_mc_wb, harvest_mc_wb, slope_raster, elevation_raster, proper
     #############################################
 
     Area = gis.area(property_lyr, FID)
-    Elevation = 500.0
-    Slope = 30.0
-#   Elevation = gis.zonal_stats(elevation_raster, property_lyr, FID)
-#   Slope = gis.zonal_stats(slope_raster, property_lyr, FID)
+    Elevation = gis.zonal_stats(elevation_raster, property_lyr, FID)
+    Slope = gis.zonal_stats(slope_raster, property_lyr, FID)
 	
 
 
@@ -19,7 +17,7 @@ def stand_func(haul_mc_wb, harvest_mc_wb, slope_raster, elevation_raster, proper
     # Skid Distance, Haul Distance Extension    #
     #############################################
 
-    SkidDist, HaulDistExtension = skidding.skidding(property_lyr, FID, landing_geom)
+    SkidDist, HaulDistExtension = skidding.skidding(property_lyr, FID, landing_geom, Slope)
     HaulDistExtension = round(HaulDistExtension*0.000189394, 3) # convert to miles
 
     #############################################
