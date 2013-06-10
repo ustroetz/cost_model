@@ -39,16 +39,16 @@ def skidding(lyr, FID, landing_geom, Slope):
     DistStand = max(distList)*3.28084 # get max of list and convert to feet
 
     # Set max YardDist
-    HaulDistExtension = 0
-    YardDistLimit = 3000
+    HaulDistExtension = 0.0
+    YardDistLimit = 3000.0
     if YardDist > 1300 and Slope > 40:
-        YardDistLimit = 10000
+        YardDistLimit = 10000.0
         if YardDist > YardDistLimit:
-                HaulDistExtension = (YardDist-YardDistLimit)*0.000189394
+                HaulDistExtension = (YardDist-YardDistLimit)
                 YardDist = YardDistLimit
 
     elif (YardDist-DistStand) > YardDistLimit:
-        HaulDistExtension = (YardDist-YardDistLimit)*0.000189394
+        HaulDistExtension = (YardDist-YardDistLimit)
         YardDist = YardDistLimit
 
     return YardDist, HaulDistExtension

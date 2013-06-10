@@ -10,7 +10,7 @@ slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
 elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 driver = ogr.GetDriverByName('ESRI Shapefile')
 
-property_shp = driver.Open('U:\\My Documents\Tool\\Data\\testarea1.shp', 0)
+property_shp = driver.Open('U:\\My Documents\Tool\\Data\\testarea5.shp', 0)
 property_lyr = property_shp.GetLayer()
 
 
@@ -42,7 +42,7 @@ RemovalsLLT = 10.0
 TreeVolLLT = 80.0
 
 ### Mill information
-millID = 75
+millID = 335
 mill_Lat = None
 mill_Lon = None
 
