@@ -1,18 +1,18 @@
 import requests, json, ogr, osr
 
-def skidding(lyr, FID, landing_geom, Slope):
+def skidding(lyr, landing_geom, Slope):
 
     # get geometry
-    feat = lyr.GetFeature(FID)
+    feat = lyr.GetNextFeature()
     geom = feat.GetGeometryRef()
 
-    # Transform fromWGS84 to Web Mercator
+    # Transform landing coordinates from from WGS84 to Web Mercator
     inSR = landing_geom.GetSpatialReference()
     if inSR is None:
         sourceSR = osr.SpatialReference()
         sourceSR.ImportFromEPSG(4326) # WGS84
         targetSR = osr.SpatialReference()
-        targetSR.ImportFromEPSG(3857) # WGS84
+        targetSR.ImportFromEPSG(3857) # Web Mercator
         coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
         landing_geom.Transform(coordTrans)
 
@@ -21,37 +21,53 @@ def skidding(lyr, FID, landing_geom, Slope):
     centroidLat = centroid_geom.GetX() #Get X coordinates
     centroidLon = centroid_geom.GetY() #Get Y cooridnates
 
-    # get distance from centroid to landing
-    dist = centroid_geom.Distance(landing_geom) # shortest distance to road from centroid of stand
-    YardDist = round((dist)*3.28084, 2) # convert to feet
+    # Create skidding line
+    skidLine = ogr.Geometry(type=ogr.wkbLineString)
+    skidLine.AddPoint(centroid_geom.GetX(), centroid_geom.GetY())
+    skidLine.AddPoint(landing_geom.GetX(), landing_geom.GetY())
+ 
+    skidLineStand = geom.Intersection(skidLine)
+    for p in range(1):
+        p +=1
+        lon, lat, y = skidLineStand.GetPoint(p)
+        point_geom = ogr.Geometry(ogr.wkbPoint)
+        point_geom.AddPoint(lon, lat)
+        if point_geom.Within(geom) is False:
+            landing_stand_geom = point_geom
 
-    # Loop through stand vertexes and get max dist from centro to polygon edge
-    ring = geom.GetGeometryRef(0)
-    points = ring.GetPointCount()
-    distList = []
-    for p in xrange(points):
-            lon, lat, y = ring.GetPoint(p)
-            # create ogr point from strings
-            polyVertex_geom = ogr.Geometry(ogr.wkbPoint)
-            polyVertex_geom.AddPoint(lon, lat)
-            dist = centroid_geom.Distance(polyVertex_geom)
-            distList.append(dist)
-    DistStand = max(distList)*3.28084 # get max of list and convert to feet
+
+    # get distance from centroid to landing
+    dist_landing = centroid_geom.Distance(landing_geom) # shortest distance to road from centroid of stand
+    # get distance from centroid to landing at stand
+    dist_landing_stand = centroid_geom.Distance(landing_stand_geom) 
+    YardDist = round((dist_landing_stand)*3.28084, 2) # convert to feet
+    # get Haul Distance Extension
+    HaulDistExtension = dist_landing - dist_landing_stand
 
     # Set max YardDist
-    HaulDistExtension = 0.0
-    YardDistLimit = 3000.0
+    YardDistLimit = 1300.0
     if YardDist > 1300 and Slope > 40:
         YardDistLimit = 10000.0
         if YardDist > YardDistLimit:
-                HaulDistExtension = (YardDist-YardDistLimit)
+                HaulDistExtension = (YardDist-YardDistLimit)+ HaulDistExtension
                 YardDist = YardDistLimit
 
-    elif (YardDist-DistStand) > YardDistLimit:
-        HaulDistExtension = (YardDist-YardDistLimit)
+    elif YardDist > YardDistLimit:
+        HaulDistExtension = (YardDist-YardDistLimit) + HaulDistExtension
         YardDist = YardDistLimit
 
-    return YardDist, HaulDistExtension
+    # Transform fromWGS84 to Web Mercator
+    inSR = landing_stand_geom.GetSpatialReference()
+    if inSR is None:
+        sourceSR = osr.SpatialReference()
+        sourceSR.ImportFromEPSG(3857) # Web Mercator
+        targetSR = osr.SpatialReference()
+        targetSR.ImportFromEPSG(4326) # WGS84
+        coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
+        landing_stand_geom.Transform(coordTrans)
+
+
+    return YardDist, HaulDistExtension, landing_stand_geom
 
 
 

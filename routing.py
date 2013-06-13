@@ -2,7 +2,7 @@
 
 import requests, json, ogr
 
-def routing(landing_geom, millID , mill_Lat , mill_Lon, mill_lyr):
+def routing(landing_geom, millID , mill_Lat, mill_Lon, mill_lyr):
 
     # create landing coordinates
     landing_lon = landing_geom.GetX()

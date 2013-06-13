@@ -1,10 +1,10 @@
 import gdal, ogr, osr, numpy
 
 # get area of stand in acres
-def area(lyr, FID):
+def area(lyr):
 
     # get area
-    feat = lyr.GetFeature(FID)
+    feat = lyr.GetNextFeature()
     geom = feat.GetGeometryRef()
     area = geom.GetArea() # get area in m2
     area = round(area*0.000247105, 4) # convert to acre and round
@@ -12,11 +12,11 @@ def area(lyr, FID):
 
 
 # get mean of stand 
-def zonal_stats(input_value_raster, lyr, FID):
+def zonal_stats(input_value_raster, lyr):
     
     # Open data
     raster = gdal.Open(input_value_raster)
-    feat = lyr.GetFeature(FID)
+    feat = lyr.GetNextFeature()
 
     # get raster georeference info
     transform = raster.GetGeoTransform()
