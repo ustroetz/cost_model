@@ -45,8 +45,7 @@ def skidding(lyr, landing_geom, Slope):
     dist_landing_stand = centroid_geom.Distance(landing_stand_geom) 
     YardDist = round((dist_landing_stand)*3.28084, 2) # convert to feet
     # get Haul Distance Extension
-    HaulDistExtension = dist_landing - dist_landing_stand
-    print centroid_geom
+    HaulDistExtension = round((dist_landing - dist_landing_stand)*3.28084, 2) # convert to feet
     # Set max YardDist
     YardDistLimit = 1300.0
     if YardDist > 1300 and Slope > 40:
