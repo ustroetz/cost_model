@@ -12,7 +12,7 @@ def main():
     elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 
     driver = ogr.GetDriverByName('ESRI Shapefile')
-    property_shp = driver.Open('U:\\My Documents\Tool\\Data\\testarea1.shp', 0)
+    property_shp = driver.Open('U:\\My Documents\Tool\\Data\\test_stands.shp', 0)
     property_lyr = property_shp.GetLayer()	
     stand_lyr = property_shp.GetLayer()
 

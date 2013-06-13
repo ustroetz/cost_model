@@ -27,14 +27,17 @@ def skidding(lyr, landing_geom, Slope):
     skidLine.AddPoint(landing_geom.GetX(), landing_geom.GetY())
  
     skidLineStand = geom.Intersection(skidLine)
-    for p in range(1):
-        p +=1
-        lon, lat, y = skidLineStand.GetPoint(p)
+
+    lon, lat, y = skidLineStand.GetPoint(0)
+    point_geom = ogr.Geometry(ogr.wkbPoint)
+    point_geom.AddPoint(lon, lat)
+    if point_geom.Within(geom) is False:
+        landing_stand_geom = point_geom
+    else:
+        lon, lat, y = skidLineStand.GetPoint(1)
         point_geom = ogr.Geometry(ogr.wkbPoint)
         point_geom.AddPoint(lon, lat)
-        if point_geom.Within(geom) is False:
-            landing_stand_geom = point_geom
-
+        landing_stand_geom = point_geom
 
     # get distance from centroid to landing
     dist_landing = centroid_geom.Distance(landing_geom) # shortest distance to road from centroid of stand
@@ -43,7 +46,7 @@ def skidding(lyr, landing_geom, Slope):
     YardDist = round((dist_landing_stand)*3.28084, 2) # convert to feet
     # get Haul Distance Extension
     HaulDistExtension = dist_landing - dist_landing_stand
-
+    print centroid_geom
     # Set max YardDist
     YardDistLimit = 1300.0
     if YardDist > 1300 and Slope > 40:
