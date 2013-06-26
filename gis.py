@@ -4,7 +4,7 @@ import gdal, ogr, osr, numpy
 def area(lyr):
 
     # get area
-    feat = lyr.GetNextFeature()
+    feat = lyr.GetFeature(0) 
     geom = feat.GetGeometryRef()
     area = geom.GetArea() # get area in m2
     area = round(area*0.000247105, 4) # convert to acre and round
@@ -16,7 +16,7 @@ def zonal_stats(input_value_raster, lyr):
     
     # Open data
     raster = gdal.Open(input_value_raster)
-    feat = lyr.GetNextFeature()
+    feat = lyr.GetFeature(0) 
 
     # get raster georeference info
     transform = raster.GetGeoTransform()

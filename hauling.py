@@ -7,7 +7,6 @@ def haulcost(TravelDistanceOneWay, TimeRoundTrip):
     ################################################
     haul_mc_wb = xlrd.open_workbook('hauling_cost.xls')
     sh = haul_mc_wb.sheet_by_index(0)
-    sh.cell(rowx=4,colx=1).value
 
     ##############################
     ### FUEL AND LUBE          ###

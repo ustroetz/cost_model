@@ -12,7 +12,7 @@ def main():
     elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 
     driver = ogr.GetDriverByName('ESRI Shapefile')
-    property_shp = driver.Open('U:\\My Documents\Tool\\Data\\test_stands.shp', 0)
+    property_shp = driver.Open('U:\\My Documents\Tool\\Data\\testarea6.shp', 0)
     property_lyr = property_shp.GetLayer()	
     stand_lyr = property_shp.GetLayer()
 
@@ -31,12 +31,12 @@ def main():
     TreeVolCT = 0.0
 
     # Small Log Trees
-    RemovalsSLT = 100.0
-    TreeVolSLT = 50.0
+    RemovalsSLT = 15.54
+    TreeVolSLT = 39.1
 
     # Large Log Trees
-    RemovalsLLT = 10.0
-    TreeVolLLT = 80.0
+    RemovalsLLT = 12.25
+    TreeVolLLT = 96.08
     
     ### Mill information
     millID = None

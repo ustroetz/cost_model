@@ -3,7 +3,7 @@ import requests, json, ogr, osr
 def skidding(lyr, landing_geom, Slope):
 
     # get geometry
-    feat = lyr.GetNextFeature()
+    feat = lyr.GetFeature(0) 
     geom = feat.GetGeometryRef()
 
     # Transform landing coordinates from from WGS84 to Web Mercator
