@@ -6,7 +6,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     # Intermediates and General Inputs             #
     ################################################
 
-    harvest_mc_wb = xlrd.open_workbook('U:\\My Documents\Tool\\Data\\harvest_cost.xls')
+    harvest_mc_wb = xlrd.open_workbook('harvest_cost.xls')
 
     BFperCF = 5.0
 
