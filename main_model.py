@@ -39,9 +39,9 @@ def cost_func(slope_raster, elevation_raster, stand_lyr, mill_lyr, RemovalsCT, T
         haulDist = haulDist + HaulDistExtension # in miles
         haulDist = round(haulDist, 2)
         if HaulDistExtension > 0:
-            haulTimeRT = haulTime*2.0+65.0+HaulDistExtension*2.0/(30*60.0) # round trip time plus standing time plus travel time on extension
+            haulTimeRT = haulTime*2.0+HaulDistExtension*2.0/(30*60.0) # round trip time plus travel time on extension
         else:        
-            haulTimeRT = haulTime*2.0+65.0 # round trip time plus standing time 
+            haulTimeRT = haulTime*2.0 # round trip time 
         haulCost = hauling.haulcost(haulDist, haulTimeRT)  # returns haul cost per minute
         truckVol = 8.0 # CCF per truck load
         trips = math.ceil(totalVolume/100.0/truckVol) # necessary total trips to mill
