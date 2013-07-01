@@ -10,7 +10,7 @@ def cost_func(slope_raster, elevation_raster, stand_lyr, mill_lyr, RemovalsCT, T
     Area = gis.area(stand_lyr)
     Elevation = gis.zonal_stats(elevation_raster, stand_lyr)
     Slope = gis.zonal_stats(slope_raster, stand_lyr)
-	
+
 
     #############################################
     # Skid Distance, Haul Distance Extension    #

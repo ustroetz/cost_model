@@ -12,11 +12,11 @@ def main():
     elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
 
     driver = ogr.GetDriverByName('ESRI Shapefile')
-    property_shp = driver.Open('U:\\My Documents\Tool\\Data\\testarea6.shp', 0)
+    property_shp = driver.Open('Data//testarea6.shp', 0)
     property_lyr = property_shp.GetLayer()	
     stand_lyr = property_shp.GetLayer()
 
-    mill_shp = driver.Open('U:\\My Documents\Tool\\Data\\mills.shp', 0)
+    mill_shp = driver.Open('Data//mills.shp', 0)
     mill_lyr = mill_shp.GetLayer()
 
 
