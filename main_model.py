@@ -1,7 +1,7 @@
 import math, ogr, gis, skidding, routing, hauling, harvesting, landing
 
 # func for every stand per property
-def cost_func(slope_raster, elevation_raster, stand_lyr, mill_lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, PartialCut, landing_geom, haulDist, haulTime, coord_mill):
+def cost_func(slope_raster, elevation_raster, stand_lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, PartialCut, landing_geom, haulDist, haulTime, coord_mill):
     
     #############################################
     # Area, Slope, Elevation                    #

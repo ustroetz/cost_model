@@ -9,11 +9,6 @@ def routing(landing_geom, millID , mill_Lat, mill_Lon, mill_lyr):
     landing_lat = landing_geom.GetY()
     coord_landing = '%f,%f' %(landing_lat,landing_lon)
 
-    # query mill layer based on trees
-    min_dbh = 0.0
-    max_dbh = 999.0
-    mill_lyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
-	
     def get_point():
         # get mill coordinates
         mill_geom = millfeat.GetGeometryRef()
@@ -50,6 +45,11 @@ def routing(landing_geom, millID , mill_Lat, mill_Lon, mill_lyr):
         total_distance = total_distance*0.000621371 # convert to miles
         total_time = total_time/60.0 # convert to min
     else:
+        # query mill layer based on trees
+        min_dbh = 0.0
+        max_dbh = 999.0
+        mill_lyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
+
         # set spatial filter around landing to include only close by mills
         offset = 0.05
         while True:
