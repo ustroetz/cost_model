@@ -1,22 +1,13 @@
-import math, ogr, gis, skidding, routing, hauling, harvesting, landing
+import math, skidding, routing, hauling, harvesting, landing
 
 # func for every stand per property
-def cost_func(slope_raster, elevation_raster, stand_lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, PartialCut, landing_geom, haulDist, haulTime, coord_mill):
+def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, PartialCut, landing_geom, haulDist, haulTime, coord_mill):
     
-    #############################################
-    # Area, Slope, Elevation                    #
-    #############################################
-
-    Area = gis.area(stand_lyr)
-    Elevation = gis.zonal_stats(elevation_raster, stand_lyr)
-    Slope = gis.zonal_stats(slope_raster, stand_lyr)
-
-
     #############################################
     # Skid Distance, Haul Distance Extension    #
     #############################################
 
-    SkidDist, HaulDistExtension, landing_stand_geom = skidding.skidding(stand_lyr, landing_geom, Slope)
+    SkidDist, HaulDistExtension, landing_stand_geom = skidding.skidding(stand_wkt, landing_geom, Slope)
     HaulDistExtension = round(HaulDistExtension*0.000189394, 3) # convert to miles
     landing_lat, landing_lon = landing_stand_geom.GetX(), landing_stand_geom.GetY()
 

@@ -1,10 +1,9 @@
 import requests, json, ogr, osr
 
-def skidding(lyr, landing_geom, Slope):
+def skidding(stand_wkt, landing_geom, Slope):
 
-    # get geometry
-    feat = lyr.GetFeature(0) 
-    geom = feat.GetGeometryRef()
+    # create geometry
+    geom = ogr.CreateGeometryFromWkt(stand_wkt)
 
     # Transform landing coordinates from from WGS84 to Web Mercator
     inSR = landing_geom.GetSpatialReference()
