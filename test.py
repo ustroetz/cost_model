@@ -35,27 +35,27 @@ def main():
     HdwdFractionLLT = 0.0
 
     # Chip Trees
-    RemovalsCT = 0.0
-    TreeVolCT = 0.0
+    RemovalsCT = 200.0
+    TreeVolCT = 5.0
 
     # Small Log Trees
-    RemovalsSLT = 15.54
-    TreeVolSLT = 39.1
+    RemovalsSLT = 100.00
+    TreeVolSLT = 70.0
 
     # Large Log Trees
-    RemovalsLLT = 12.25
-    TreeVolLLT = 96.08
-
+    RemovalsLLT = 20.00
+    TreeVolLLT = 200.00
+    
     ### Mill information
     # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon
-    mill_shp = driver.Open('Data//ODF_mills.shp', 0)
+    mill_shp = driver.Open('Data//mills.shp', 0)
     mill_lyr = mill_shp.GetLayer()
     millID = None
     mill_Lat = None
     mill_Lon = None
-    # mill_lyr = None
-    # mill_Lat = 41.2564
-    # mill_Lon = -123.5677
+    mill_lyr = None
+    mill_Lat = 41.2564
+    mill_Lon = -123.5677
 
     # Landing Coordinates 
     landing_coords = landing.landing(property_lyr)
