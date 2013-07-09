@@ -105,6 +105,5 @@ def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
         total_distance = distDict[coord_mill]*0.000621371 # convert to miles
         total_time = timeDict[coord_mill]/60.0 # convert to min
 
-    return total_distance, total_time, coord_mill
-
-
+    coord_mill_tuple = tuple([float(x) for x in coord_mill.split(",")])
+    return total_distance, total_time, coord_mill_tuple

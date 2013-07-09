@@ -70,8 +70,8 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
         'total_haul_trips': trips,
         'haul_cost_min': haulCost,
         'total_haul_cost': totalHaulCost,
-        'mill_coordinates': (str(coord_mill)),
-        'landing_coordinates': (str(landing_lon)+','+str(landing_lat)),
+        'mill_coordinates': coord_mill,
+        'landing_coordinates': (landing_lon, landing_lat),
         'total_cost': totalCost
     }
 
