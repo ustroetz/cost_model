@@ -6,6 +6,7 @@ appdir = os.path.realpath(os.path.join(thisdir, '..', 'land_owner_tools', 'lot')
 sys.path.append(appdir)
 import settings
 setup_environ(settings)
+from collections import defaultdict
 
 # import sys
 # from IPython.core import ultratb
@@ -16,6 +17,7 @@ setup_environ(settings)
 import main_model as m
 import routing_main as r
 import landing
+import math
 from pprint import pprint
 from trees.models import Scenario
 from django.db import connection
@@ -33,7 +35,7 @@ def dictfetchall(cursor):
 
 def main():
 
-    scenario = Scenario.objects.get(id=147)
+    scenario = Scenario.objects.get(id=122)
 
     sql = """SELECT
                 ss.id AS sstand_id, a.cond, a.rx, a.year, a.offset, ss.acres AS acres,
@@ -79,8 +81,8 @@ def main():
     # mill_lyr = mill_shp.GetLayer()
     mill_lyr = None
     millID = None
-    mill_Lat = 41.2564
-    mill_Lon = -123.5677
+    mill_Lat = 43.1190
+    mill_Lon = -124.4075
 
     # Landing Coordinates
     # landing_coords = (-124.35033096, 42.980014393)
@@ -96,7 +98,8 @@ def main():
         mill_lyr
     )
 
-    annual_costs = {}
+    annual_haul_cost = defaultdict(int)
+    annual_harvest_cost = defaultdict(int)
     used_records = 0
     skip_noharvest = 0
     skip_error = 0
@@ -121,6 +124,8 @@ def main():
             cut_type = int(row['cut_type'])
         except:
             # no harvest so don't attempt to calculate
+            annual_haul_cost[year] += 0
+            annual_harvest_cost[year] += 0
             skip_noharvest += 1
             continue
 
@@ -131,6 +136,8 @@ def main():
             PartialCut = 1
         else:
             # no harvest so don't attempt to calculate
+            annual_haul_cost[year] += 0
+            annual_harvest_cost[year] += 0
             skip_noharvest += 1
             continue
 
@@ -149,12 +156,6 @@ def main():
         RemovalsLLT = row['lg_tpa']
         TreeVolLLT = row['lg_cf']
         HdwdFractionLLT = row['lg_hw']
-
-        # TODO bail if no harvest info
-
-        # TODO bail if no removals?
-        # ideally cost model should handle this
-        # total_removals = RemovalsLLT + RemovalsSLT + RemovalsCT
 
         cost_args = (
             # stand info
@@ -181,21 +182,27 @@ def main():
         )
 
         try:
-            cost = m.cost_func(*cost_args)
-            # print row['sstand_id'], row['year'], cost['total_cost']
+            result = m.cost_func(*cost_args)
+            # if math.isnan(result['total_cost']):
+            #     ???
+            annual_haul_cost[year] += result['total_haul_cost']
+            annual_harvest_cost[year] += result['total_harvest_cost']
             used_records += 1
-            if year in annual_costs:
-                annual_costs[year] += cost['total_cost']
-            else:
-                annual_costs[year] = cost['total_cost']
-        except ZeroDivisionError:
+        except (ZeroDivisionError, ValueError):
+            annual_haul_cost[year] += 0
+            annual_harvest_cost[year] += 0
             skip_error += 1
             pass
             # import traceback
             # print cost_args
             # print traceback.format_exc()
 
-    pprint(annual_costs)
+    print "Transportation cost:"
+    pprint(dict(annual_haul_cost))
+
+    print "Harvest cost:"
+    pprint(dict(annual_harvest_cost))
+    
     print "used records:", used_records
     print "skipped (no harvest):", skip_noharvest
     print "skipped (errors):", skip_error

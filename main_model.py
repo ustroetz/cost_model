@@ -51,12 +51,26 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT, Removals
 
     totalCost = totalHaulCost+totalHarvestCost
 
-    results = {'total_area':(round(Area,2)),'slope':(round(Slope,2)),'elevation':(round(Elevation,2)),'total_volume':(round(totalVolume,2)),
-               'skid_distance':SkidDist, 'harvest_system':(HarvestSystem),'harvest_cost_ft3':harvestCost,'total_harvest_cost':totalHarvestCost,
-               'haul_distance_extension':HaulDistExtension, 'haul_distance_ow':haulDist, 'haul_time_ow':haulTime, 'total_haul_trips':trips, 'haul_cost_min':haulCost,'total_haul_cost':totalHaulCost,
-               'mill_coordinates': (str(coord_mill)),'landing_coordinates': (str(landing_lon)+','+str(landing_lat)),
-               'total_cost':totalCost}
-    
+    results = {
+        'total_area': (round(Area, 2)),
+        'slope': (round(Slope, 2)),
+        'elevation': (round(Elevation, 2)),
+        'total_volume': (round(totalVolume, 2)),
+        'skid_distance': SkidDist,
+        'harvest_system': (HarvestSystem),
+        'harvest_cost_ft3': harvestCost,
+        'total_harvest_cost': totalHarvestCost,
+        'haul_distance_extension': HaulDistExtension,
+        'haul_distance_ow': haulDist,
+        'haul_time_ow': haulTime,
+        'total_haul_trips': trips,
+        'haul_cost_min': haulCost,
+        'total_haul_cost': totalHaulCost,
+        'mill_coordinates': (str(coord_mill)),
+        'landing_coordinates': (str(landing_lon)+','+str(landing_lat)),
+        'total_cost': totalCost
+    }
+
     return results
 
 

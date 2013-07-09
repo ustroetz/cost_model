@@ -2273,12 +2273,12 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
 
     HarvestingSystem = zip(HarvestingSystemName, HarvestingSystemPrice)
 
-    try:
-        Price = min(filter(lambda t:not math.isnan(t[1]), HarvestingSystem),key=operator.itemgetter(1))
-        HarvestingSystem, Price = Price
-
-    except:
-        Price = float('NaN')
-        HarvestingSystem = 99
+    # TODO investigate ways to make this pass
+    #try:
+    Price = min(filter(lambda t:not math.isnan(t[1]), HarvestingSystem),key=operator.itemgetter(1))
+    HarvestingSystem, Price = Price
+    # except:
+    #     Price = float('NaN')
+    #     HarvestingSystem = 99
 
     return Price, HarvestingSystem # Price in ft3
