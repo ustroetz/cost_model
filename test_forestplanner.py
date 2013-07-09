@@ -6,10 +6,10 @@ appdir = os.path.realpath(os.path.join(thisdir, '..', 'land_owner_tools', 'lot')
 sys.path.append(appdir)
 import settings
 setup_environ(settings)
-# import sys
-# from IPython.core import ultratb
-# sys.excepthook = ultratb.FormattedTB(mode='Verbose',
-#      color_scheme='Linux', call_pdb=1)
+import sys
+from IPython.core import ultratb
+sys.excepthook = ultratb.FormattedTB(mode='Verbose',
+     color_scheme='Linux', call_pdb=1)
 ##############################
 import main_model as m
 import routing_main as r
@@ -25,7 +25,7 @@ def dictfetchall(cursor):
     return [
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
-        if None not in row
+        if None not in row  # remove any nulls; incomplete data can't be used
     ]
 
 
@@ -115,7 +115,8 @@ def main():
         try:
             cut_type = int(row['cut_type'])
         except:
-            cut_type = 0
+            # no harvest so don't attempt to calculate
+            continue
 
         # PartialCut(clear cut = 0, partial cut = 1)
         if cut_type == 3:
@@ -123,9 +124,8 @@ def main():
         elif cut_type in [1, 2]:
             PartialCut = 1
         else:
-            # TODO no harvest so don't attempt to calculate
-            # continue
-            PartialCut = 1
+            # no harvest so don't attempt to calculate
+            continue
 
         # Hardwood Fraction
         # Chip Trees
@@ -180,12 +180,13 @@ def main():
                 annual_costs[year] += cost['total_cost']
             else:
                 annual_costs[year] = cost['total_cost']
-        except:
-            import traceback
-            print cost_args
-            print traceback.format_exc()
+        except ZeroDivisionError:
+            pass
+            # import traceback
+            # print cost_args
+            # print traceback.format_exc()
 
-    #pprint(annual_costs)
+    pprint(annual_costs)
 
 if __name__ == "__main__":
     main()

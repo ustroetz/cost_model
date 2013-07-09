@@ -8,6 +8,7 @@ import os
 def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
 
     # create landing coordinates
+    # TODO unnecessary to create geom and string, use tuple for point
     landing_geom = ogr.Geometry(ogr.wkbPoint)
     landing_geom.AddPoint(*landing_coords)
     landing_lon = landing_geom.GetX()
@@ -16,6 +17,7 @@ def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
 
     def get_point():
         # get mill coordinates
+        # TODO unnecessary to use geom and string, instead use tuple for point
         mill_geom = millfeat.GetGeometryRef()
         mill_Lon = mill_geom.GetX()
         mill_Lat = mill_geom.GetY()

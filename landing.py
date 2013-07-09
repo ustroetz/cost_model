@@ -1,6 +1,6 @@
 import requests, json, ogr, osr
 import os
-#ogr.UseExceptions()
+ogr.UseExceptions()
 
 #############################################
 # Landing Coordinates                       #

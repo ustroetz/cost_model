@@ -58,6 +58,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     else:
         DBHALT = 0.0
 
+    # TODO need to gaurd against zero division errors
     DBH =((RemovalsCT*(DBHCT**2.0)+RemovalsALT*(DBHALT**2.0))/Removals)**0.5
 
     CostSkidUB = 0.0
@@ -1623,6 +1624,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     WeightingProductYardCYCTL = CostCYPUJohnson88*CYCTLVolumePMHDoyal97*relevanceCYCTLDoyal97
     WeightingDivisiorYardCYCTL = CYCTLVolumePMHDoyal97*relevanceCYCTLDoyal97
 
+    # TODO need to gaurd against zero division errors
     CostYardCTL =  round (WeightingProductYardCYCTL/ WeightingDivisiorYardCYCTL, 2)
 
 
@@ -2053,9 +2055,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
 
     # Chipping cost whole tree ($/ ccf)
     CostChipBundledRes = round((ChipperHourlyCost+costPMHLS)/ ChipPLRVolPMHDesrochers95, 2)  
-
-
-
 
     ################################################
     # Loading                                      #
