@@ -53,10 +53,10 @@ def main():
     mill_Lon = -123.5677
 
     # Landing Coordinates 
-    landing_geom = landing.landing(property_lyr)
+    landing_coords = landing.landing(property_lyr)
 
     haulDist, haulTime, coord_mill = r.routing(
-        landing_geom,
+        landing_coords,
         millID,
         mill_Lat,
         mill_Lon,
@@ -81,7 +81,7 @@ def main():
         HdwdFractionLLT,
         PartialCut,
         # routing info
-        landing_geom,
+        landing_coords,
         haulDist,
         haulTime,
         coord_mill

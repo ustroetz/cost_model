@@ -14,10 +14,10 @@ setup_environ(settings)
 import main_model as m
 import routing_main as r
 import landing
-import ogr
 from pprint import pprint
 from trees.models import Scenario
 from django.db import connection
+
 
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"
@@ -25,6 +25,7 @@ def dictfetchall(cursor):
     return [
         dict(zip([col[0] for col in desc], row))
         for row in cursor.fetchall()
+        if None not in row
     ]
 
 
@@ -71,6 +72,7 @@ def main():
 
     ### Mill information
     # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon
+    # TODO get mill layer
     # mill_shp = driver.Open('Data//ODF_mills.shp', 0)
     # mill_lyr = mill_shp.GetLayer()
     mill_lyr = None
@@ -79,14 +81,13 @@ def main():
     mill_Lon = -123.5677
 
     # Landing Coordinates
-    # TODO get from scenario.input_property.geometry_final.point_on_surface
-    # and pass centroid to landing.landing
-    # landing_geom = landing.landing(property_lyr)
-    landing_geom = ogr.Geometry(ogr.wkbPoint)
-    landing_geom.AddPoint(-124.35033096, 42.980014393)
+    # landing_coords = (-124.35033096, 42.980014393)
+    center = scenario.input_property.geometry_final.point_on_surface
+    centroid_coords = center.transform(4326, clone=True).tuple
+    landing_coords = landing.landing(centroid_coords=centroid_coords)
 
     haulDist, haulTime, coord_mill = r.routing(
-        landing_geom,  # todo use WKTS
+        landing_coords,
         millID,
         mill_Lat,
         mill_Lon,
@@ -114,8 +115,7 @@ def main():
         try:
             cut_type = int(row['cut_type'])
         except:
-            pprint(row)
-            sys.exit()
+            cut_type = 0
 
         # PartialCut(clear cut = 0, partial cut = 1)
         if cut_type == 3:
@@ -167,7 +167,7 @@ def main():
             HdwdFractionLLT,
             PartialCut,
             # routing info
-            landing_geom,  # TODO use wkt geoms
+            landing_coords,
             haulDist,
             haulTime,
             coord_mill

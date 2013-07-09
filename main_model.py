@@ -1,14 +1,14 @@
 import math, skidding, routing, hauling, harvesting, landing
 
 # func for every stand per property
-def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, PartialCut, landing_geom, haulDist, haulTime, coord_mill):
+def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, PartialCut, landing_coords, haulDist, haulTime, coord_mill):
     
     #############################################
     # Skid Distance, Haul Distance Extension    #
     #############################################
 
-    SkidDist, HaulDistExtension, landing_stand_geom = skidding.skidding(stand_wkt, landing_geom, Slope)
-    HaulDistExtension = round(HaulDistExtension*0.000189394, 3) # convert to miles
+    SkidDist, HaulDistExtension, landing_stand_geom = skidding.skidding(stand_wkt, landing_coords, Slope)
+    HaulDistExtension = round(HaulDistExtension*0.000189394, 3)  # convert to miles
     landing_lat, landing_lon = landing_stand_geom.GetX(), landing_stand_geom.GetY()
 
 

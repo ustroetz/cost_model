@@ -6,35 +6,40 @@ import os
 # Landing Coordinates                       #
 #############################################
 
-def landing(lyr):
-    numFeatures = lyr.GetFeatureCount()
-    FID = 0
-    centroidLonList = []
-    centroidLatList = []
 
-    # get centroids of stands
-    while FID < numFeatures:
-        feat = lyr.GetFeature(FID)
-        geom = feat.GetGeometryRef()
+def landing(lyr=None, centroid_coords=None):
+    if centroid_coords is None:
+        numFeatures = lyr.GetFeatureCount()
+        FID = 0
+        centroidLonList = []
+        centroidLatList = []
 
-        # Transform from Web Mercator to WGS84
-        sourceSR = lyr.GetSpatialRef()
-        targetSR = osr.SpatialReference()
-        targetSR.ImportFromEPSG(4326) # WGS84
-        coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
-        geom.Transform(coordTrans)
+        # get centroids of stands
+        while FID < numFeatures:
+            feat = lyr.GetFeature(FID)
+            geom = feat.GetGeometryRef()
 
-        # Create centroid of harvest area
-        centroid_geom = geom.Centroid()
-        centroidLon = centroid_geom.GetX() #Get X coordinates
-        centroidLat = centroid_geom.GetY() #Get Y cooridnates
-        centroidLonList.append(centroidLon)
-        centroidLatList.append(centroidLat)
-        FID += 1
+            # Transform from Web Mercator to WGS84
+            sourceSR = lyr.GetSpatialRef()
+            targetSR = osr.SpatialReference()
+            targetSR.ImportFromEPSG(4326)  # WGS84
+            coordTrans = osr.CoordinateTransformation(sourceSR, targetSR)
+            geom.Transform(coordTrans)
 
-    # calcualte centroid of all stands
-    centroidLon = sum(centroidLonList)/numFeatures
-    centroidLat = sum(centroidLatList)/numFeatures
+            # Create centroid of harvest area
+            centroid_geom = geom.Centroid()
+            centroidLon = centroid_geom.GetX()  # Get X coordinates
+            centroidLat = centroid_geom.GetY()  # Get Y cooridnates
+            centroidLonList.append(centroidLon)
+            centroidLatList.append(centroidLat)
+            FID += 1
+
+        # calcualte centroid of all stands
+        centroidLon = sum(centroidLonList)/numFeatures
+        centroidLat = sum(centroidLatList)/numFeatures
+    else:
+        centroidLon = centroid_coords[0]
+        centroidLat = centroid_coords[1]
 
     # get nearest point on road from centroid as json string
     headers = {'User-Agent': 'Forestry Scenario Planner'}
@@ -55,8 +60,4 @@ def landing(lyr):
     # parse json string for landing coordinate
     landing_lat, landing_lon = data['mapped_coordinate']
 
-    # create ogr geom point from strings
-    landing_geom = ogr.Geometry(ogr.wkbPoint)
-    landing_geom.AddPoint(landing_lon, landing_lat)
-
-    return landing_geom
+    return (landing_lon, landing_lat)

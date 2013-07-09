@@ -1,11 +1,15 @@
 # determines the distance and time from the landing to the mill
-
-import requests, json, ogr
+import requests
+import json
+import ogr
 import os
 
-def routing(landing_geom, millID, mill_Lat, mill_Lon, mill_lyr):
+
+def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
 
     # create landing coordinates
+    landing_geom = ogr.Geometry(ogr.wkbPoint)
+    landing_geom.AddPoint(*landing_coords)
     landing_lon = landing_geom.GetX()
     landing_lat = landing_geom.GetY()
     coord_landing = '%f,%f' % (landing_lat, landing_lon)

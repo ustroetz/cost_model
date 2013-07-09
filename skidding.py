@@ -4,10 +4,13 @@ import ogr
 import osr
 #ogr.UseExceptions()
 
-def skidding(stand_wkt, landing_geom, Slope):
+def skidding(stand_wkt, landing_coords, Slope):
 
     # create geometry
     geom = ogr.CreateGeometryFromWkt(stand_wkt)
+
+    landing_geom = ogr.Geometry(ogr.wkbPoint)
+    landing_geom.AddPoint(*landing_coords)
 
     # Transform landing coordinates from from WGS84 to Web Mercator
     inSR = landing_geom.GetSpatialReference()
