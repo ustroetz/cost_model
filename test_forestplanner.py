@@ -43,15 +43,15 @@ def main():
                 a.removed_merch_bdft / 1000.0 AS harvested_timber, -- convert to mbf
                 a.after_merch_bdft / 1000.0 AS standing_timber, -- convert to mbf
                 ST_AsText(ss.geometry_final) AS stand_wkt,
-                a.LG_CF * acres  AS LG_CF,
-                a.LG_HW          AS LG_HW,
-                a.LG_TPA * acres AS LG_TPA,
-                a.SM_CF * acres  AS SM_CF,
-                a.SM_HW          AS SM_HW,
-                a.SM_TPA * acres AS SM_TPA,
-                a.CH_CF * acres  AS CH_CF,
-                a.CH_HW          AS CH_HW,
-                a.CH_TPA * acres AS CH_TPA,
+                a.LG_CF             AS LG_CF,
+                a.LG_HW             AS LG_HW,
+                a.LG_TPA            AS LG_TPA,
+                a.SM_CF             AS SM_CF,
+                a.SM_HW             AS SM_HW,
+                a.SM_TPA            AS SM_TPA,
+                a.CH_CF             AS CH_CF,
+                a.CH_HW             AS CH_HW,
+                a.CH_TPA            AS CH_TPA,
                 stand.elevation  AS elev,
                 stand.slope      AS slope,
                 a.CUT_TYPE       AS CUT_TYPE
@@ -191,7 +191,7 @@ def main():
             annual_haul_cost[year] += 0
             annual_harvest_cost[year] += 0
             skip_error += 1
-            pass
+
             # import traceback
             # print cost_args
             # print traceback.format_exc()
