@@ -1,4 +1,8 @@
-import requests, json, ogr, osr
+import requests
+import json
+import ogr
+import osr
+#ogr.UseExceptions()
 
 def skidding(stand_wkt, landing_geom, Slope):
 
@@ -9,22 +13,20 @@ def skidding(stand_wkt, landing_geom, Slope):
     inSR = landing_geom.GetSpatialReference()
     if inSR is None:
         sourceSR = osr.SpatialReference()
-        sourceSR.ImportFromEPSG(4326) # WGS84
+        sourceSR.ImportFromEPSG(4326)  # WGS84
         targetSR = osr.SpatialReference()
-        targetSR.ImportFromEPSG(3857) # Web Mercator
-        coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
+        targetSR.ImportFromEPSG(3857)  # Web Mercator
+        coordTrans = osr.CoordinateTransformation(sourceSR, targetSR)
         landing_geom.Transform(coordTrans)
 
     # Create centroid of harvest area
     centroid_geom = geom.Centroid()
-    centroidLat = centroid_geom.GetX() #Get X coordinates
-    centroidLon = centroid_geom.GetY() #Get Y cooridnates
 
     # Create skidding line
     skidLine = ogr.Geometry(type=ogr.wkbLineString)
     skidLine.AddPoint(centroid_geom.GetX(), centroid_geom.GetY())
     skidLine.AddPoint(landing_geom.GetX(), landing_geom.GetY())
- 
+
     skidLineStand = geom.Intersection(skidLine)
 
     lon, lat, y = skidLineStand.GetPoint(0)
@@ -39,18 +41,18 @@ def skidding(stand_wkt, landing_geom, Slope):
         landing_stand_geom = point_geom
 
     # get distance from centroid to landing
-    dist_landing = centroid_geom.Distance(landing_geom) # shortest distance to road from centroid of stand
+    dist_landing = centroid_geom.Distance(landing_geom)  # shortest distance to road from centroid of stand
     # get distance from centroid to landing at stand
-    dist_landing_stand = centroid_geom.Distance(landing_stand_geom) 
-    YardDist = round((dist_landing_stand)*3.28084, 2) # convert to feet
+    dist_landing_stand = centroid_geom.Distance(landing_stand_geom)
+    YardDist = round((dist_landing_stand)*3.28084, 2)  # convert to feet
     # get Haul Distance Extension
-    HaulDistExtension = round((dist_landing - dist_landing_stand)*3.28084, 2) # convert to feet
+    HaulDistExtension = round((dist_landing - dist_landing_stand)*3.28084, 2)  # convert to feet
     # Set max YardDist
     YardDistLimit = 1300.0
     if YardDist > 1300 and Slope > 40:
         YardDistLimit = 10000.0
         if YardDist > YardDistLimit:
-                HaulDistExtension = (YardDist-YardDistLimit)+ HaulDistExtension
+                HaulDistExtension = (YardDist-YardDistLimit) + HaulDistExtension
                 YardDist = YardDistLimit
 
     elif YardDist > YardDistLimit:
@@ -61,14 +63,10 @@ def skidding(stand_wkt, landing_geom, Slope):
     inSR = landing_stand_geom.GetSpatialReference()
     if inSR is None:
         sourceSR = osr.SpatialReference()
-        sourceSR.ImportFromEPSG(3857) # Web Mercator
+        sourceSR.ImportFromEPSG(3857)  # Web Mercator
         targetSR = osr.SpatialReference()
-        targetSR.ImportFromEPSG(4326) # WGS84
-        coordTrans = osr.CoordinateTransformation(sourceSR,targetSR)
+        targetSR.ImportFromEPSG(4326)  # WGS84
+        coordTrans = osr.CoordinateTransformation(sourceSR, targetSR)
         landing_stand_geom.Transform(coordTrans)
 
-
     return YardDist, HaulDistExtension, landing_stand_geom
-
-
-

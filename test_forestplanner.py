@@ -1,14 +1,67 @@
-def main():
-    import main_model as m
-    import routing_main as r
-    import ogr
-    from pprint import pprint
+import os
+import sys
+from django.core.management import setup_environ
+thisdir = os.path.dirname(os.path.abspath(__file__))
+appdir = os.path.realpath(os.path.join(thisdir, '..', 'land_owner_tools', 'lot'))
+sys.path.append(appdir)
+import settings
+setup_environ(settings)
+# import sys
+# from IPython.core import ultratb
+# sys.excepthook = ultratb.FormattedTB(mode='Verbose',
+#      color_scheme='Linux', call_pdb=1)
+##############################
+import main_model as m
+import routing_main as r
+import landing
+import ogr
+from pprint import pprint
+from trees.models import Scenario
+from django.db import connection
 
-    driver = ogr.GetDriverByName('ESRI Shapefile')
-    property_shp = driver.Open('Data//test_stands.shp', 0)
-    property_lyr = property_shp.GetLayer()
-    stand_lyr = property_shp.GetLayer()
-    feat = stand_lyr.GetNextFeature()
+def dictfetchall(cursor):
+    "Returns all rows from a cursor as a dict"
+    desc = cursor.description
+    return [
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
+    ]
+
+def main():
+
+    scenario = Scenario.objects.get(id=147)
+
+    sql = """SELECT
+                ss.id AS sstand_id, a.cond, a.rx, a.year, a.offset, ss.acres AS acres,
+                a.total_stand_carbon AS total_carbon,
+                a.agl AS agl_carbon,
+                a.removed_merch_bdft / 1000.0 AS harvested_timber, -- convert to mbf
+                a.after_merch_bdft / 1000.0 AS standing_timber, -- convert to mbf
+                ST_AsText(ss.geometry_final) AS stand_wkt,
+                a.LG_CF * acres  AS LG_CF,
+                a.LG_HW          AS LG_HW,
+                a.LG_TPA * acres AS LG_TPA,
+                a.SM_CF * acres  AS SM_CF,
+                a.SM_HW          AS SM_HW,
+                a.SM_TPA * acres AS SM_TPA,
+                a.CH_CF * acres  AS CH_CF,
+                a.CH_HW          AS CH_HW,
+                a.CH_TPA * acres AS CH_TPA
+            FROM
+                trees_fvsaggregate a
+            JOIN
+                trees_scenariostand ss
+              ON  a.cond = ss.cond_id
+              AND a.rx = ss.rx_internal_num
+              AND a.offset = ss.offset
+            -- WHERE a.site = 2 -- TODO if we introduce multiple site classes, we need to fix
+            AND   var = '%s' -- get from current property
+            AND   ss.scenario_id = %d -- get from current scenario
+            ORDER BY a.year, ss.id;""" % (scenario.input_property.variant.code, scenario.id)
+
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    data = dictfetchall(cursor)
 
     ### Mill information
     # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon
@@ -19,40 +72,62 @@ def main():
     mill_Lat = 41.2564
     mill_Lon = -123.5677
 
-    landing_geom, haulDist, haulTime, coord_mill = r.routing(
-        property_lyr,
+    # Landing Coordinates
+    # TODO get from scenario.input_property.geometry_final.point_on_surface
+    # and pass centroid to landing.landing
+    # landing_geom = landing.landing(property_lyr)
+    landing_geom = ogr.Geometry(ogr.wkbPoint)
+    landing_geom.AddPoint(-124.35033096, 42.980014393)
+
+    haulDist, haulTime, coord_mill = r.routing(
+        landing_geom,  # todo use WKTS
         millID,
         mill_Lat,
         mill_Lon,
         mill_lyr
     )
 
-    while feat:
+    annual_costs = {}
+
+    for row in data:
         ### GIS Data
-        geom = feat.GetGeometryRef()
-        stand_wkt = geom.ExportToWkt()
-        area = 15.5  # gis.area(stand_lyr)
-        elevation = 600  # gis.zonal_stats(elevation_raster, stand_lyr)
-        slope = 14.33  # gis.zonal_stats(slope_raster, stand_lyr)
+        stand_wkt = row['stand_wkt']
+
+        area = row['acres']
+        year = int(row['year'])
+
+        ############################## TODO
+        elevation = 600
+        slope = 14.33
 
         ### Tree Data ###
         # Harvest Type (clear cut = 0, partial cut = 1)
         PartialCut = 0
-        # Hardwood Fraction
-        HdwdFractionCT = 0.15
-        HdwdFractionSLT = 0.0
-        HdwdFractionLLT = 0.0
-        # Chip Trees
-        RemovalsCT = 0.0
-        TreeVolCT = 0.0
-        # Small Log Trees
-        RemovalsSLT = 15.54
-        TreeVolSLT = 39.1
-        # Large Log Trees
-        RemovalsLLT = 12.25
-        TreeVolLLT = 96.08
+        ####################################
 
-        cost = m.cost_func(
+        # Hardwood Fraction
+        # Chip Trees
+        RemovalsCT = row['ch_tpa']
+        TreeVolCT = row['ch_cf']
+        HdwdFractionCT = row['ch_hw']
+
+        # Small Log Trees
+        RemovalsSLT = row['sm_tpa']
+        TreeVolSLT = row['sm_cf']
+        HdwdFractionSLT = row['sm_hw']
+
+        # Large Log Trees
+        RemovalsLLT = row['lg_tpa']
+        TreeVolLLT = row['lg_cf']
+        HdwdFractionLLT = row['lg_hw']
+
+        # TODO bail if no harvest info
+
+        # TODO bail if no removals?
+        # ideally cost model should handle this
+        # total_removals = RemovalsLLT + RemovalsSLT + RemovalsCT
+
+        cost_args = (
             # stand info
             area,
             elevation,
@@ -70,14 +145,25 @@ def main():
             HdwdFractionLLT,
             PartialCut,
             # routing info
-            landing_geom,
+            landing_geom,  # TODO use wkt geoms
             haulDist,
             haulTime,
             coord_mill
         )
 
-        print cost['total_cost']
-        #pprint(cost)
-        feat = stand_lyr.GetNextFeature()
+        try:
+            cost = m.cost_func(*cost_args)
+            #print row['sstand_id'], row['year'], cost['total_cost']
+            if year in annual_costs:
+                annual_costs[year] += cost['total_cost']
+            else:
+                annual_costs[year] = cost['total_cost']
+        except:
+            import traceback
+            print cost_args
+            print traceback.format_exc()
 
-main()
+    #pprint(annual_costs)
+
+if __name__ == "__main__":
+    main()

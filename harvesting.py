@@ -13,6 +13,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     RemovalsALT = RemovalsSLT+RemovalsLLT
     RemovalsST = RemovalsCT+RemovalsSLT
     Removals = RemovalsCT+RemovalsSLT+RemovalsLLT
+    # TODO what if removals are zero!?
 
     VolPerAcreCT = RemovalsCT*TreeVolCT
     VolPerAcreLLT = RemovalsLLT*TreeVolLLT
@@ -174,7 +175,12 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     WoodDensity = (WoodDensityCT*VolPerAcreCT+WoodDensityALT*VolPerAcreALT)/VolPerAcre
 
     def relevancefunction(cost, relevances, volumes):
-        return 100*cost*sum(relevances)/sum(map( operator.mul, relevances, volumes))
+        # TODO What happens when sum(map( operator.mul, relevances, volumes)) == 0??
+        # why would this condition occur
+        sum_map = sum(map( operator.mul, relevances, volumes))
+        if sum_map == 0:
+            sum_map = 0.000001
+        return 100*cost*sum(relevances)/sum_map
 
     def volumePMH (vol, ti):   # Volume per PMH (Volumte, Time) Function
        return (vol/(ti/60.0))
@@ -2060,9 +2066,9 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     ExchangeTrucks = 5.0
 
     # Loading Calculated Values
+    # TODO need to gaurd against zero division errors
     LoadVolALT = LoadWeight*2000/(WoodDensityALT*100)
     LoadVolSLT = LoadWeight*2000/(WoodDensitySLT*100)
-
 
     ## I. Loading Full-Length Logs
 

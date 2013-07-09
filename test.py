@@ -1,6 +1,7 @@
 def main():
     import main_model as m
     import routing_main as r
+    import landing
     from pprint import pprint
     import ogr
     import gis
@@ -51,8 +52,11 @@ def main():
     mill_Lat = 41.2564
     mill_Lon = -123.5677
 
-    landing_geom, haulDist, haulTime, coord_mill = r.routing(
-        property_lyr,
+    # Landing Coordinates 
+    landing_geom = landing.landing(property_lyr)
+
+    haulDist, haulTime, coord_mill = r.routing(
+        landing_geom,
         millID,
         mill_Lat,
         mill_Lon,

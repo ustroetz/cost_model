@@ -2,12 +2,7 @@ import landing
 import routing as r
 
 
-def routing(property_lyr, millID, mill_Lat, mill_Lon, mill_lyr):
-
-    #############################################
-    # Landing Coordinates                       #
-    #############################################
-    landing_geom = landing.landing(property_lyr)
+def routing(landing_geom, millID, mill_Lat, mill_Lon, mill_lyr):
 
     #############################################
     # Mill Coordinates, Haul Distance & Time    #
@@ -19,4 +14,4 @@ def routing(property_lyr, millID, mill_Lat, mill_Lon, mill_lyr):
     else:
         haulTime = 0.0
 
-    return landing_geom, haulDist, haulTime, coord_mill
+    return haulDist, haulTime, coord_mill
