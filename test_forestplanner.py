@@ -17,7 +17,6 @@ from collections import defaultdict
 import main_model as m
 import routing_main as r
 import landing
-import math
 from pprint import pprint
 from trees.models import Scenario
 from django.db import connection
@@ -202,7 +201,7 @@ def main():
 
     print "Harvest cost:"
     pprint(dict(annual_harvest_cost))
-    
+
     print "used records:", used_records
     print "skipped (no harvest):", skip_noharvest
     print "skipped (errors):", skip_error

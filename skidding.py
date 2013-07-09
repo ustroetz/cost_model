@@ -4,6 +4,7 @@ import ogr
 import osr
 ogr.UseExceptions()
 
+
 def skidding(stand_wkt, landing_coords, Slope):
 
     # create geometry

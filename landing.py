@@ -1,4 +1,7 @@
-import requests, json, ogr, osr
+import requests
+import json
+import ogr
+import osr
 import os
 ogr.UseExceptions()
 

@@ -1,6 +1,11 @@
-import math, operator, xlrd
+import math
+import operator
+import xlrd
 
-def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
+
+def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT,
+                RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT,
+                HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
 
     ################################################
     # Intermediates and General Inputs             #
