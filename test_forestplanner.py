@@ -27,6 +27,7 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
+
 def main():
 
     scenario = Scenario.objects.get(id=147)
@@ -46,7 +47,10 @@ def main():
                 a.SM_TPA * acres AS SM_TPA,
                 a.CH_CF * acres  AS CH_CF,
                 a.CH_HW          AS CH_HW,
-                a.CH_TPA * acres AS CH_TPA
+                a.CH_TPA * acres AS CH_TPA,
+                stand.elevation  AS elev,
+                stand.slope      AS slope,
+                a.CUT_TYPE       AS CUT_TYPE
             FROM
                 trees_fvsaggregate a
             JOIN
@@ -54,8 +58,10 @@ def main():
               ON  a.cond = ss.cond_id
               AND a.rx = ss.rx_internal_num
               AND a.offset = ss.offset
+            JOIN trees_stand stand
+              ON ss.stand_id = stand.id
             -- WHERE a.site = 2 -- TODO if we introduce multiple site classes, we need to fix
-            AND   var = '%s' -- get from current property
+            WHERE   var = '%s' -- get from current property
             AND   ss.scenario_id = %d -- get from current scenario
             ORDER BY a.year, ss.id;""" % (scenario.input_property.variant.code, scenario.id)
 
@@ -92,18 +98,34 @@ def main():
     for row in data:
         ### GIS Data
         stand_wkt = row['stand_wkt']
-
         area = row['acres']
         year = int(row['year'])
 
-        ############################## TODO
-        elevation = 600
-        slope = 14.33
+        # NOTE: elevation and slope come directly from stand 
+        # if we use spatial contrainsts to chop scenariostands,
+        # will need to recalc zonal stats
+        elevation = row['elev']
+        slope = row['slope']
 
         ### Tree Data ###
-        # Harvest Type (clear cut = 0, partial cut = 1)
-        PartialCut = 0
-        ####################################
+        # Cut type code indicating type of harvest implemented.
+        # 0 = no harvest, 1 = pre-commercial thin,
+        # 2 = commercial thin, 3 = regeneration harvest
+        try:
+            cut_type = int(row['cut_type'])
+        except:
+            pprint(row)
+            sys.exit()
+
+        # PartialCut(clear cut = 0, partial cut = 1)
+        if cut_type == 3:
+            PartialCut = 0
+        elif cut_type in [1, 2]:
+            PartialCut = 1
+        else:
+            # TODO no harvest so don't attempt to calculate
+            # continue
+            PartialCut = 1
 
         # Hardwood Fraction
         # Chip Trees
