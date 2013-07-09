@@ -6,10 +6,12 @@ appdir = os.path.realpath(os.path.join(thisdir, '..', 'land_owner_tools', 'lot')
 sys.path.append(appdir)
 import settings
 setup_environ(settings)
-import sys
-from IPython.core import ultratb
-sys.excepthook = ultratb.FormattedTB(mode='Verbose',
-     color_scheme='Linux', call_pdb=1)
+
+# import sys
+# from IPython.core import ultratb
+# sys.excepthook = ultratb.FormattedTB(mode='Verbose',
+#      color_scheme='Linux', call_pdb=1)
+
 ##############################
 import main_model as m
 import routing_main as r
@@ -95,6 +97,9 @@ def main():
     )
 
     annual_costs = {}
+    used_records = 0
+    skip_noharvest = 0
+    skip_error = 0
 
     for row in data:
         ### GIS Data
@@ -116,6 +121,7 @@ def main():
             cut_type = int(row['cut_type'])
         except:
             # no harvest so don't attempt to calculate
+            skip_noharvest += 1
             continue
 
         # PartialCut(clear cut = 0, partial cut = 1)
@@ -125,6 +131,7 @@ def main():
             PartialCut = 1
         else:
             # no harvest so don't attempt to calculate
+            skip_noharvest += 1
             continue
 
         # Hardwood Fraction
@@ -175,18 +182,23 @@ def main():
 
         try:
             cost = m.cost_func(*cost_args)
-            #print row['sstand_id'], row['year'], cost['total_cost']
+            # print row['sstand_id'], row['year'], cost['total_cost']
+            used_records += 1
             if year in annual_costs:
                 annual_costs[year] += cost['total_cost']
             else:
                 annual_costs[year] = cost['total_cost']
         except ZeroDivisionError:
+            skip_error += 1
             pass
             # import traceback
             # print cost_args
             # print traceback.format_exc()
 
     pprint(annual_costs)
+    print "used records:", used_records
+    print "skipped (no harvest):", skip_noharvest
+    print "skipped (errors):", skip_error
 
 if __name__ == "__main__":
     main()
