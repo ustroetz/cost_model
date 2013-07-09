@@ -1,26 +1,34 @@
+import main_model as m
+import routing_main as r
+import landing
+from pprint import pprint
+import ogr
+import gis
+
 def main():
-    import main_model as m
-    import routing_main as r
-    from pprint import pprint
-    import ogr
-
-    ### Harvest Type (clear cut = 0, partial cut = 1)
-    PartialCut = 0
-
     ### GIS Data
     slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
     elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
+    #slope_raster = '/usr/local/apps/land_owner_tools/lot/fixtures/downloads/terrain/slope.tif'
+    #elevation_raster = '/usr/local/apps/land_owner_tools/lot/fixtures/downloads/terrain/dem.tif'
 
     driver = ogr.GetDriverByName('ESRI Shapefile')
+    #property_shp = driver.Open('Data//test_stands.shp', 0)
     property_shp = driver.Open('Data//testarea6.shp', 0)
-    property_lyr = property_shp.GetLayer()	
+    property_lyr = property_shp.GetLayer()
     stand_lyr = property_shp.GetLayer()
+    feat = stand_lyr.GetFeature(0)
+    geom = feat.GetGeometryRef()
 
-    mill_shp = driver.Open('Data//mills.shp', 0)
-    mill_lyr = mill_shp.GetLayer()
-
+    stand_wkt = geom.ExportToWkt()
+    area = gis.area(stand_lyr)
+    elevation = gis.zonal_stats(elevation_raster, stand_lyr)
+    slope = gis.zonal_stats(slope_raster, stand_lyr)
 
     ### Tree Data ###
+    # Harvest Type (clear cut = 0, partial cut = 1)
+    PartialCut = 0
+
     # Hardwood Fraction
     HdwdFractionCT = 0.15
     HdwdFractionSLT = 0.0
@@ -37,18 +45,53 @@ def main():
     # Large Log Trees
     RemovalsLLT = 12.25
     TreeVolLLT = 96.08
-    
+
     ### Mill information
+    # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon
+    mill_shp = driver.Open('Data//ODF_mills.shp', 0)
+    mill_lyr = mill_shp.GetLayer()
     millID = None
     mill_Lat = None
     mill_Lon = None
-	
-    landing_geom, haulDist, haulTime, coord_mill = r.routing(property_lyr, millID, mill_Lat, mill_Lon, mill_lyr)
+    # mill_lyr = None
+    # mill_Lat = 41.2564
+    # mill_Lon = -123.5677
 
-    pprint (m.cost_func(slope_raster, elevation_raster, stand_lyr, mill_lyr, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, PartialCut, landing_geom, haulDist, haulTime, coord_mill))
+    # Landing Coordinates 
+    landing_coords = landing.landing(property_lyr)
 
+    haulDist, haulTime, coord_mill = r.routing(
+        landing_coords,
+        millID,
+        mill_Lat,
+        mill_Lon,
+        mill_lyr
+    )
+
+    cost = m.cost_func(
+        # stand info
+        area,
+        elevation,
+        slope,
+        stand_wkt,
+        # harvest info
+        RemovalsCT,
+        TreeVolCT,
+        RemovalsSLT,
+        TreeVolSLT,
+        RemovalsLLT,
+        TreeVolLLT,
+        HdwdFractionCT,
+        HdwdFractionSLT,
+        HdwdFractionLLT,
+        PartialCut,
+        # routing info
+        landing_coords,
+        haulDist,
+        haulTime,
+        coord_mill
+    )
+
+    pprint(cost)
 
 main()
-
-
-

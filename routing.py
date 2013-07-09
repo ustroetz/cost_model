@@ -1,34 +1,45 @@
 # determines the distance and time from the landing to the mill
+import requests
+import json
+import ogr
+import os
 
-import requests, json, ogr
 
-def routing(landing_geom, millID , mill_Lat, mill_Lon, mill_lyr):
+def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
 
     # create landing coordinates
+    # TODO unnecessary to create geom and string, use tuple for point
+    landing_geom = ogr.Geometry(ogr.wkbPoint)
+    landing_geom.AddPoint(*landing_coords)
     landing_lon = landing_geom.GetX()
     landing_lat = landing_geom.GetY()
-    coord_landing = '%f,%f' %(landing_lat,landing_lon)
+    coord_landing = '%f,%f' % (landing_lat, landing_lon)
 
-    # query mill layer based on trees
-    min_dbh = 0.0
-    max_dbh = 999.0
-    mill_lyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
-	
     def get_point():
         # get mill coordinates
+        # TODO unnecessary to use geom and string, instead use tuple for point
         mill_geom = millfeat.GetGeometryRef()
         mill_Lon = mill_geom.GetX()
         mill_Lat = mill_geom.GetY()
-        coord_mill = '%f,%f' %(mill_Lat, mill_Lon)
+        coord_mill = '%f,%f' % (mill_Lat, mill_Lon)
         return coord_mill
-            
+
     def routing(coord_landing, coord_mill):
         # get routing json string from landing to mill
         headers = {'User-Agent': 'Forestry Scenario Planner'}
         url = 'http://router.project-osrm.org/viaroute?loc=' + coord_landing + '&loc=' + coord_mill
-        response = requests.get(url, headers=headers)
-        binary = response.content
-        data = json.loads(binary)
+        key = "%s-%s.cache" % tuple([x.replace(",", "_") for x in [coord_landing, coord_mill]])
+        if os.path.exists(key):
+            # READING FROM CACHE
+            with open(key, 'r') as cache:
+                data = json.loads(cache.read())
+        else:
+            response = requests.get(url, headers=headers)
+            binary = response.content
+            data = json.loads(binary)
+            # WRITING TO CACHE
+            with open(key, 'w') as cache:
+                cache.write(json.dumps(data))
 
         # parse json string for distance
         total_summary = data['route_summary']
@@ -50,6 +61,11 @@ def routing(landing_geom, millID , mill_Lat, mill_Lon, mill_lyr):
         total_distance = total_distance*0.000621371 # convert to miles
         total_time = total_time/60.0 # convert to min
     else:
+        # query mill layer based on trees
+        min_dbh = 0.0
+        max_dbh = 999.0
+        mill_lyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
+
         # set spatial filter around landing to include only close by mills
         offset = 0.05
         while True:
@@ -89,6 +105,5 @@ def routing(landing_geom, millID , mill_Lat, mill_Lon, mill_lyr):
         total_distance = distDict[coord_mill]*0.000621371 # convert to miles
         total_time = timeDict[coord_mill]/60.0 # convert to min
 
-    return total_distance, total_time, coord_mill
-
-
+    coord_mill_tuple = tuple([float(x) for x in coord_mill.split(",")])
+    return total_distance, total_time, coord_mill_tuple

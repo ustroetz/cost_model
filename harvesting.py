@@ -1,6 +1,11 @@
-import math, operator, xlrd
+import math
+import operator
+import xlrd
 
-def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
+
+def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT,
+                RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT,
+                HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
 
     ################################################
     # Intermediates and General Inputs             #
@@ -13,6 +18,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     RemovalsALT = RemovalsSLT+RemovalsLLT
     RemovalsST = RemovalsCT+RemovalsSLT
     Removals = RemovalsCT+RemovalsSLT+RemovalsLLT
+    # TODO what if removals are zero!?
 
     VolPerAcreCT = RemovalsCT*TreeVolCT
     VolPerAcreLLT = RemovalsLLT*TreeVolLLT
@@ -57,6 +63,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     else:
         DBHALT = 0.0
 
+    # TODO need to gaurd against zero division errors
     DBH =((RemovalsCT*(DBHCT**2.0)+RemovalsALT*(DBHALT**2.0))/Removals)**0.5
 
     CostSkidUB = 0.0
@@ -174,7 +181,12 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     WoodDensity = (WoodDensityCT*VolPerAcreCT+WoodDensityALT*VolPerAcreALT)/VolPerAcre
 
     def relevancefunction(cost, relevances, volumes):
-        return 100*cost*sum(relevances)/sum(map( operator.mul, relevances, volumes))
+        # TODO What happens when sum(map( operator.mul, relevances, volumes)) == 0??
+        # why would this condition occur
+        sum_map = sum(map( operator.mul, relevances, volumes))
+        if sum_map == 0:
+            sum_map = 0.000001
+        return 100*cost*sum(relevances)/sum_map
 
     def volumePMH (vol, ti):   # Volume per PMH (Volumte, Time) Function
        return (vol/(ti/60.0))
@@ -1617,6 +1629,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     WeightingProductYardCYCTL = CostCYPUJohnson88*CYCTLVolumePMHDoyal97*relevanceCYCTLDoyal97
     WeightingDivisiorYardCYCTL = CYCTLVolumePMHDoyal97*relevanceCYCTLDoyal97
 
+    # TODO need to gaurd against zero division errors
     CostYardCTL =  round (WeightingProductYardCYCTL/ WeightingDivisiorYardCYCTL, 2)
 
 
@@ -2048,9 +2061,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     # Chipping cost whole tree ($/ ccf)
     CostChipBundledRes = round((ChipperHourlyCost+costPMHLS)/ ChipPLRVolPMHDesrochers95, 2)  
 
-
-
-
     ################################################
     # Loading                                      #
     ################################################
@@ -2060,9 +2070,9 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
     ExchangeTrucks = 5.0
 
     # Loading Calculated Values
+    # TODO need to gaurd against zero division errors
     LoadVolALT = LoadWeight*2000/(WoodDensityALT*100)
     LoadVolSLT = LoadWeight*2000/(WoodDensitySLT*100)
-
 
     ## I. Loading Full-Length Logs
 
@@ -2268,12 +2278,12 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, R
 
     HarvestingSystem = zip(HarvestingSystemName, HarvestingSystemPrice)
 
-    try:
-        Price = min(filter(lambda t:not math.isnan(t[1]), HarvestingSystem),key=operator.itemgetter(1))
-        HarvestingSystem, Price = Price
-
-    except:
-        Price = float('NaN')
-        HarvestingSystem = 99
+    # TODO investigate ways to make this pass
+    #try:
+    Price = min(filter(lambda t:not math.isnan(t[1]), HarvestingSystem),key=operator.itemgetter(1))
+    HarvestingSystem, Price = Price
+    # except:
+    #     Price = float('NaN')
+    #     HarvestingSystem = 99
 
     return Price, HarvestingSystem # Price in ft3
