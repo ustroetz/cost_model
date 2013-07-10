@@ -35,16 +35,16 @@ def main():
     HdwdFractionLLT = 0.0
 
     # Chip Trees
-    RemovalsCT = 0.0
-    TreeVolCT = 0.0
+    RemovalsCT = 200.0
+    TreeVolCT = 5.0
 
     # Small Log Trees
     RemovalsSLT = 100.00
     TreeVolSLT = 70.0
 
     # Large Log Trees
-    RemovalsLLT = 0.00
-    TreeVolLLT = 0.00
+    RemovalsLLT = 20.00
+    TreeVolLLT = 200.00
     
     ### Mill information
     # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon
@@ -53,9 +53,8 @@ def main():
     millID = None
     mill_Lat = None
     mill_Lon = None
-    mill_lyr = None
-    mill_Lat = 41.2564
-    mill_Lon = -123.5677
+#    mill_Lat = 41.2564
+#   mill_Lon = -123.5677
 
     # Landing Coordinates 
     landing_coords = landing.landing(property_lyr)

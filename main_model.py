@@ -40,7 +40,7 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
         else:
             haulTimeRT = haulTime*2.0  # round trip time
         haulCost = hauling.haulcost(haulDist, haulTimeRT)  # returns haul cost per minute
-        truckVol = 400.0  # ft3 per truck load (4-5 MBF)
+        truckVol = 850.0  # ft3 per truck load; 7 CCF (small timber to 10 CCF (large timber)
         trips = math.ceil(totalVolume/truckVol)  # necessary total trips to mill
         totalHaulCost = round(haulTimeRT*haulCost*trips)  # total costs for all trips
     else:
