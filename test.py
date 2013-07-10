@@ -35,16 +35,16 @@ def main():
     HdwdFractionLLT = 0.0
 
     # Chip Trees
-    RemovalsCT = 200.0
-    TreeVolCT = 5.0
+    RemovalsCT = 0.0
+    TreeVolCT = 0.0
 
     # Small Log Trees
     RemovalsSLT = 100.00
     TreeVolSLT = 70.0
 
     # Large Log Trees
-    RemovalsLLT = 20.00
-    TreeVolLLT = 200.00
+    RemovalsLLT = 0.00
+    TreeVolLLT = 0.00
     
     ### Mill information
     # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon

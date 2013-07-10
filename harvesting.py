@@ -2276,38 +2276,45 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
 
         # Check for Tree Limits
         if RemovalsALT >0:
-            if TreeVolSLT> 80 or TreeVolLLT>250 or TreeVolALT>250 or TreeVol>250 or Slope>40:
+            if TreeVolSLT> 80 or TreeVolLLT>250 or TreeVolALT>250 or TreeVol>250:
                  GroundBasedMechWT = float('NaN')
                 
-            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100 or Slope>40:
+            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100:
                  GroundBasedCTL = float('NaN')
                 
-            if TreeVolSLT> 80 or TreeVolLLT>500 or TreeVolALT>500 or TreeVol>500 or Slope>40:
+            if TreeVolSLT> 80 or TreeVolLLT>500 or TreeVolALT>500 or TreeVol>500:
                 GroundBasedManualWT = float('NaN')   
 
-            if TreeVolALT>250 or TreeVol>250 or Slope>40:
+            if TreeVolALT>250 or TreeVol>250:
                 GroundBasedManualLog = float('NaN')
 
-            if TreeVolALT>250 or TreeVol>250 or SkidDist>1300:
+            if TreeVolALT>250 or TreeVol>250:
                 CableManualWT = float('NaN')
 
-            if TreeVolSLT> 80 or TreeVolLLT>500 or TreeVolALT>500 or TreeVol>500 or SkidDist>1300:
+            if TreeVolSLT> 80 or TreeVolLLT>500 or TreeVolALT>500 or TreeVol>500:
                 CableManualWTLog = float('NaN')
 
-            if TreeVolALT>250 or TreeVol>250 or SkidDist>1300:
+            if TreeVolALT>250 or TreeVol>250:
                 CableManualLog = float('NaN')
 
-            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100 or Slope>40 or SkidDist>1300:
+            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100:
                 CableManualCTL = float('NaN')
 
-            if TreeVolALT>250 or TreeVol>250 or SkidDist>10000:
+            if TreeVolALT>250 or TreeVol>250:
                 HelicopterManualWT = float('NaN')
 
-            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100 or Slope>40 or SkidDist>10000:
+            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100:
                 HelicopterManualCTL = float('NaN')
+
+            HarvestingSystemPrice = [GroundBasedMechWT, GroundBasedCTL, GroundBasedManualWT, GroundBasedManualLog,
+                                     CableManualWTLog, CableManualWT, CableManualLog, CableManualCTL,
+                                     HelicopterManualWT, HelicopterManualCTL]
+                    
+            HarvestingSystem = zip(HarvestingSystemName, HarvestingSystemPrice)
 
         try:
             Price = min(filter(lambda t:not math.isnan(t[1]), HarvestingSystem),key=operator.itemgetter(1))
+            print Price
             HarvestingSystem, Price = Price
         except:
             HarvestingSystem = 'NoSystem'
