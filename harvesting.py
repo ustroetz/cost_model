@@ -2181,7 +2181,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         CostForwardAc = round (CostForward*VolPerAcreST/100)
         CostChipCTLAc = round (CostChipCTL*VolPerAcreCT/100)
         CostLoadCTLAc = round (CostLoadCTL*VolPerAcreSLT/100)
-        GroundBasedCTLAc =  CostHarvestAc + CostForwardAc + CostChipCTLAc + CostLoadCTLAc
+        GroundBasedCTLAc = CostHarvestAc + CostForwardAc + CostChipCTLAc + CostLoadCTLAc
         GroundBasedCTL = round (GroundBasedCTLAc/VolPerAcreST, 4)
 
         # Ground-Based Manual WT
@@ -2221,7 +2221,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         # Cable Manual Log
         CostManFLBAc = round (CostManFLB*VolPerAcre/100)
         CableManualLogAc = CostManFLBAc + CostYardUBAc + CostChipWTAc + CostLoadAc
-        CableManualLog = round(CableManualLogAc/VolPerAcre, 4)  
+        CableManualLog = round(CableManualLogAc/VolPerAcre, 4)
 
         # Cable CTL
         CostHarvestAc = round (CostHarvest*VolPerAcreST/100)
@@ -2230,8 +2230,8 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         CableManualCTL = round(CableManualCTLAc/VolPerAcreST, 4)
 
         # Helicopter Manual WT
-        CostHeliYardMLAc =  round(CostHeliYardML*VolPerAcre/100)
-        CostHeliLoadMLAc =  round(CostHeliLoadML*VolPerAcreALT/100)
+        CostHeliYardMLAc = round(CostHeliYardML*VolPerAcre/100)
+        CostHeliLoadMLAc = round(CostHeliLoadML*VolPerAcreALT/100)
         HelicopterManualWTAc = CostHeliLoadMLAc + CostHeliYardMLAc + CostManFLBAc + CostChipWTAc
         HelicopterManualWT = round (HelicopterManualWTAc/VolPerAcre, 4)
 
@@ -2314,7 +2314,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
 
         try:
             Price = min(filter(lambda t:not math.isnan(t[1]), HarvestingSystem),key=operator.itemgetter(1))
-            print Price
             HarvestingSystem, Price = Price
         except:
             HarvestingSystem = 'NoSystem'
