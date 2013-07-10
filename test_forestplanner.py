@@ -97,8 +97,8 @@ def main():
         mill_lyr
     )
 
-    annual_haul_cost = defaultdict(int)
-    annual_harvest_cost = defaultdict(int)
+    annual_haul_cost = defaultdict(float)
+    annual_harvest_cost = defaultdict(float)
     used_records = 0
     skip_noharvest = 0
     skip_error = 0
@@ -196,12 +196,12 @@ def main():
             # print cost_args
             # print traceback.format_exc()
 
-    print "Transportation cost:"
-    pprint(dict(annual_haul_cost))
+    print "--------"
+    print "Year, HarvestCost, TransportationCost"
+    for year in sorted(dict(annual_harvest_cost).keys()):
+        print ", ".join(str(x) for x in [year, annual_harvest_cost[year], annual_haul_cost[year]])
 
-    print "Harvest cost:"
-    pprint(dict(annual_harvest_cost))
-
+    print "--------"
     print "used records:", used_records
     print "skipped (no harvest):", skip_noharvest
     print "skipped (errors):", skip_error
