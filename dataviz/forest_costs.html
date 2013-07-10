@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  #chart1 {
+    height: 500px;
+    margin: 10px;
+    min-width: 100px;
+    min-height: 100px;
+  }
+</style>
+<body>
+
+  <div id="chart1">
+    <svg></svg>
+  </div>
+
+<pre id="csvdata" style="display:none;">
+year,harvestCost,transportationCost
+2013,0,0
+2018,0,0
+2023,0,0
+2028,0,0
+2033,506.0,680.0
+2038,216.0,340.0
+2043,1077.0,850.0
+2048,854.0,680.0
+2053,1538.0,1190.0
+2058,199.0,340.0
+2063,1492.0,850.0
+2068,1546.0,680.0
+2073,1529.0,1190.0
+2078,146.0,340.0
+2083,810.0,850.0
+2088,770.0,680.0
+2093,865.0,1190.0
+2098,126.0,340.0
+2103,628.0,850.0
+2108,705.0,680.0
+</pre>
+
+<link href="./nv.d3.css" rel="stylesheet" type="text/css">
+<script src="./d3.v3.min.js"></script>
+<script src="./nv.d3.min.js"></script>
+
+<script>
+
+var csv_raw = d3.select("#csvdata").text();
+var csv = d3.csv.parse(csv_raw);
+var data = [
+  {
+    key: 'Harvest Cost',
+    values: csv.map(function(d) {
+        return {x: parseInt(d.year), y: parseFloat(d.harvestCost, 10)};
+      })
+  },  
+  {
+    key: 'Transportation Cost',
+    values: csv.map(function(d) {
+        return {x: parseInt(d.year), y: parseFloat(d.transportationCost, 10)};
+      })  
+  },  
+];
+
+var chart;
+
+nv.addGraph(function() {
+    chart = nv.models.multiBarChart()
+
+    chart.multibar
+      .hideable(true);
+
+    chart.reduceXTicks(false).staggerLabels(true);
+
+    chart.xAxis
+        .showMaxMin(true);
+
+    chart.yAxis
+        .tickFormat(d3.format('$,d'));
+
+    d3.select('#chart1 svg')
+        .datum(data)
+      .transition().duration(300).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+});
+
+</script>
