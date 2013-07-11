@@ -25,8 +25,8 @@ m.cost_func(
     RemovalsLLT,                # Large log trees removed (trees per acre)
     TreeVolLLT,                 # Large log average volume (cubic feet)
     HdwdFractionCT,             # Proportion of hardwood chip trees (volume of hardwood divided by total volume)
-    HdwdFractionSLT,            # Proportion of hardwood small log trees(volume of hardwood divided by total volume)
-    HdwdFractionLLT,            # Proportion of hardwood large log trees(volume of hardwood divided by total volume)
+    HdwdFractionSLT,            # Proportion of hardwood small log trees (volume of hardwood divided by total volume)
+    HdwdFractionLLT,            # Proportion of hardwood large log trees (volume of hardwood divided by total volume)
     PartialCut,                 # Regen/Clearcut = 0, Thin = 1
 
     # routing info
