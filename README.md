@@ -37,7 +37,7 @@ m.cost_func(
 )
 ```
 
-### Ouputs
+### Outputs
 
 ```
 {
@@ -62,3 +62,5 @@ m.cost_func(
 ```
 
 ### Assumptions
+
+TODO
