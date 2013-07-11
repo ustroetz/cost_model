@@ -24,15 +24,15 @@ m.cost_func(
     TreeVolSLT,                 # Small log average volume (cubic feet) 
     RemovalsLLT,                # Large log trees removed (trees per acre)
     TreeVolLLT,                 # Large log average volume (cubic feet)
-    HdwdFractionCT,             # Proportion of hardwood chip trees 
-    HdwdFractionSLT,            # Proportion of hardwood small log trees
-    HdwdFractionLLT,            # Proportion of hardwood large log trees
+    HdwdFractionCT,             # Proportion of hardwood chip trees (volume of hardwood divided by total volume)
+    HdwdFractionSLT,            # Proportion of hardwood small log trees (volume of hardwood divided by total volume)
+    HdwdFractionLLT,            # Proportion of hardwood large log trees (volume of hardwood divided by total volume)
     PartialCut,                 # Regen/Clearcut = 0, Thin = 1
 
     # routing info
     landing_coords,             # coordinate of landing ((lon, lat) tuple)
     haulDist,                   # distance to mill (miles)
-    haulTime,                   # transit time to mill (hours? TODO)
+    haulTime,                   # transit time to mill (minutes)
     coord_mill                  # coordinate of mill ((lon, lat) tuple) 
 )
 ```
@@ -42,15 +42,15 @@ m.cost_func(
 ```
 {
  'elevation': 505.09,                    # feet
- 'harvest_cost_ft3': 0.5092,             # cubic feet? TODO
+ 'harvest_cost_ft3': 0.5092,             # US dollars/cubic feet
  'harvest_system': 'GroundBasedMechWT',  # harvest method
- 'haul_cost_min': 0.7604,                # TODO
+ 'haul_cost_min': 0.7604,                # US dollars/minute
  'haul_distance_extension': 1.051,       # miles from stand landing to road
- 'haul_distance_ow': 31.24,              # miles? TODO
- 'haul_time_ow': 56.7,                   # hours
+ 'haul_distance_ow': 31.24,              # miles
+ 'haul_time_ow': 56.7,                   # minutes
  'landing_coordinates': (42.7, -124.3),  # lon, lat
  'mill_coordinates': (43.11, -124.407),  # lon, lat
- 'skid_distance': 825.23,                # feet? TODO
+ 'skid_distance': 825.23,                # feet
  'slope': 22.91,                         # percent
  'total_area': 8.52,                     # acres
  'total_cost': 9628.0,                   # US dollars
