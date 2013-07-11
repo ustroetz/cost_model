@@ -32,7 +32,7 @@ m.cost_func(
     # routing info
     landing_coords,             # coordinate of landing ((lon, lat) tuple)
     haulDist,                   # distance to mill (miles)
-    haulTime,                   # transit time to mill (hours?)
+    haulTime,                   # transit time to mill (hours? TODO)
     coord_mill                  # coordinate of mill ((lon, lat) tuple) 
 )
 ```
@@ -41,23 +41,23 @@ m.cost_func(
 
 ```
 {
- 'elevation': 505.09,
- 'harvest_cost_ft3': 0.5092,
- 'harvest_system': 'GroundBasedMechWT',
- 'haul_cost_min': 0.7604,
- 'haul_distance_extension': 1.051,
- 'haul_distance_ow': 31.24,
- 'haul_time_ow': 56.7,
- 'landing_coordinates': (42.791597377229024, -124.34608736173503),
- 'mill_coordinates': (43.119, -124.4075),
- 'skid_distance': 825.23,
- 'slope': 22.91,
- 'total_area': 8.52,
- 'total_cost': 9628.0,
- 'total_harvest_cost': 7990.0,
- 'total_haul_cost': 1638.0,
- 'total_haul_trips': 19.0,
- 'total_volume': 15692.23
+ 'elevation': 505.09,                    # feet
+ 'harvest_cost_ft3': 0.5092,             # cubic feet? TODO
+ 'harvest_system': 'GroundBasedMechWT',  # harvest method
+ 'haul_cost_min': 0.7604,                # TODO
+ 'haul_distance_extension': 1.051,       # miles from stand landing to road
+ 'haul_distance_ow': 31.24,              # miles? TODO
+ 'haul_time_ow': 56.7,                   # hours
+ 'landing_coordinates': (42.7, -124.3),  # lon, lat
+ 'mill_coordinates': (43.11, -124.407),  # lon, lat
+ 'skid_distance': 825.23,                # feet? TODO
+ 'slope': 22.91,                         # percent
+ 'total_area': 8.52,                     # acres
+ 'total_cost': 9628.0,                   # US dollars
+ 'total_harvest_cost': 7990.0,           # US dollars
+ 'total_haul_cost': 1638.0,              # US dollars
+ 'total_haul_trips': 19.0,               # number of trips
+ 'total_volume': 15692.23                # cubic feet
 }
 ```
 

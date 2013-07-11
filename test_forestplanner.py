@@ -103,10 +103,13 @@ def main():
     skip_noharvest = 0
     skip_error = 0
 
+    year = None
     for row in data:
         ### GIS Data
         stand_wkt = row['stand_wkt']
         area = row['acres']
+        if year != int(row['year']):
+            print "Calculating cost per stand in year", int(row['year'])
         year = int(row['year'])
 
         # NOTE: elevation and slope come directly from stand 
