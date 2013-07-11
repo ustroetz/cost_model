@@ -26,7 +26,7 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
     harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT)
     harvestCost, HarvestSystem = harvest_result  # returns harvest cost per CCF and Harvesting System
 
-    totalVolume = Area*(TreeVolSLT*RemovalsSLT+RemovalsLLT*TreeVolLLT+RemovalsCT*TreeVolCT)/100.0  # total removal volume in ft3
+    totalVolume = Area*(TreeVolSLT*RemovalsSLT+RemovalsLLT*TreeVolLLT+RemovalsCT*TreeVolCT)  # total removal volume in ft3
     totalHarvestCost = round(harvestCost*totalVolume)  # total harvest costs for stand
 
     #############################################
@@ -40,8 +40,8 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
         else:
             haulTimeRT = haulTime*2.0  # round trip time
         haulCost = hauling.haulcost(haulDist, haulTimeRT)  # returns haul cost per minute
-        truckVol = 8.0  # CCF per truck load
-        trips = math.ceil(totalVolume/100.0/truckVol)  # necessary total trips to mill
+        truckVol = 850.0  # ft3 per truck load; 7 CCF (small timber to 10 CCF (large timber)
+        trips = math.ceil(totalVolume/truckVol)  # necessary total trips to mill
         totalHaulCost = round(haulTimeRT*haulCost*trips)  # total costs for all trips
     else:
         haulTimeRT = 0.0

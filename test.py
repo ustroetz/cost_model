@@ -53,9 +53,8 @@ def main():
     millID = None
     mill_Lat = None
     mill_Lon = None
-    mill_lyr = None
-    mill_Lat = 41.2564
-    mill_Lon = -123.5677
+#    mill_Lat = 41.2564
+#   mill_Lon = -123.5677
 
     # Landing Coordinates 
     landing_coords = landing.landing(property_lyr)
