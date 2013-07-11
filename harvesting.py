@@ -1595,42 +1595,43 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
 
 
         ##############################
-        # CY  Partialcut, Unbunched  #
+        # CY Bunched CTL Logs        #
         ##############################
 
-        YarderCapacity = YarderCapacity
-        TurnVol = min(YarderCapacity,max(AreaLimitedTurnVol,TreeVol))
-        Logs = max(1.0,(TurnVol/LogVol))
-        TurnEndAre = 2.0*TurnVol/LogLength
-        DeckHeight = 5.0
+        if TreeVolST > 0.0:
+            YarderCapacity = YarderCapacity
+            TurnVol = min(YarderCapacity,max(AreaLimitedTurnVol,TreeVol))
+            Logs = max(1.0,(TurnVol/LogVol))
+            TurnEndAre = 2.0*TurnVol/LogLength
+            DeckHeight = 5.0
 
-        # Relevance
-        # Diamond D210 Standing Skyline w/Eaglet Motorized Carriage (Doyal, 97)
-        if YarderCTLLogVol<10:
-            relevanceCYCTLDoyal97 = 1
-        elif YarderCTLLogVol<25:
-            relevanceCYCTLDoyal97 = 5/3-YarderCTLLogVol/15
+            # Relevance
+            # Diamond D210 Standing Skyline w/Eaglet Motorized Carriage (Doyal, 97)
+            if YarderCTLLogVol<10:
+                relevanceCYCTLDoyal97 = 1
+            elif YarderCTLLogVol<25:
+                relevanceCYCTLDoyal97 = 5/3-YarderCTLLogVol/15
+            else:
+                relevanceCYCTLDoyal97 = 0
+
+            # Turn Time
+            TTDoyal97 = (145.5+43.77*3+45.88*0+0.639*LatDist-26.1*2+0.0004806*SkidDist**2+0.007775*LatDist**2)/100
+
+            # Calculate Volume per PMH
+            CTLBunchArea = CTLTrailSpacing*24/2
+            BunchLimitedTurnVol = VolPerAcreST*CTLBunchArea*1.5/43560
+            TurnVol = min(115,max(BunchLimitedTurnVol,TreeVolST))
+            CYCTLVolumePMHDoyal97 = volumePMH (TurnVol, TTDoyal97)
+
+            # Cable Yarding Bunched CTL Logs ($/ ccf)
+            CostCYCTLDoyal97 = 100.0*YarderHourlyCost/CYCTLVolumePMHDoyal97+PCLiveStandSLChangeCost
+
+            WeightingProductYardCYCTL = CostCYCTLDoyal97*CYCTLVolumePMHDoyal97*relevanceCYCTLDoyal97
+            WeightingDivisiorYardCYCTL = CYCTLVolumePMHDoyal97*relevanceCYCTLDoyal97
+
+            CostYardCTL =  round (WeightingProductYardCYCTL/ WeightingDivisiorYardCYCTL, 2)
         else:
-            relevanceCYCTLDoyal97 = 0
-
-        # Turn Time
-        TTDoyal97 = (145.5+43.77*3+45.88*0+0.639*LatDist-26.1*2+0.0004806*SkidDist**2+0.007775*LatDist**2)/100
-
-        # Calculate Volume per PMH
-        CTLBunchArea = CTLTrailSpacing*24/2
-        BunchLimitedTurnVol = VolPerAcreST*CTLBunchArea*1.5/43560
-        TurnVol = min(115,max(BunchLimitedTurnVol,TreeVolST))
-        CYCTLVolumePMHDoyal97 = volumePMH (TurnVol, TTDoyal97)
-
-        # Cable Yarding, PartialCut, Unbunched Cost ($/ ccf)
-        CostCYPUJohnson88 = 100.0*YarderHourlyCost/CYCTLVolumePMHDoyal97+PCLiveStandSLChangeCost
-
-        WeightingProductYardCYCTL = CostCYPUJohnson88*CYCTLVolumePMHDoyal97*relevanceCYCTLDoyal97
-        WeightingDivisiorYardCYCTL = CYCTLVolumePMHDoyal97*relevanceCYCTLDoyal97
-
-        CostYardCTL =  round (WeightingProductYardCYCTL/ WeightingDivisiorYardCYCTL, 2)
-
-
+            CostYardCTL = 0 
 
 
         ################################################
@@ -2182,7 +2183,10 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         CostChipCTLAc = round (CostChipCTL*VolPerAcreCT/100)
         CostLoadCTLAc = round (CostLoadCTL*VolPerAcreSLT/100)
         GroundBasedCTLAc = CostHarvestAc + CostForwardAc + CostChipCTLAc + CostLoadCTLAc
-        GroundBasedCTL = round (GroundBasedCTLAc/VolPerAcreST, 4)
+        if TreeVolSLT>0:
+            GroundBasedCTL = round (GroundBasedCTLAc/VolPerAcreST, 4)
+        else:
+            GroundBasedCTL = 0.0
 
         # Ground-Based Manual WT
         CostManFLBLLT2Ac = round (CostManFLBLLT2*VolPerAcreLLT/100)
@@ -2227,7 +2231,10 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         CostHarvestAc = round (CostHarvest*VolPerAcreST/100)
         CostYardCTLAc = round (CostYardCTL*VolPerAcreST/100)
         CableManualCTLAc = CostHarvestAc + CostYardCTLAc + CostChipWTAc + CostLoadCTLAc
-        CableManualCTL = round(CableManualCTLAc/VolPerAcreST, 4)
+        if TreeVolSLT>0:
+            CableManualCTL = round(CableManualCTLAc/VolPerAcreST, 4)
+        else:
+            CableManualCTL = 0
 
         # Helicopter Manual WT
         CostHeliYardMLAc = round(CostHeliYardML*VolPerAcre/100)
@@ -2239,7 +2246,10 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         CostHeliYardCTLAc = round(CostHeliYardCTL*VolPerAcreST/100)
         CostHeliLoadCTLAc = round(CostHeliLoadCTL*VolPerAcreSLT/100)
         HelicopterManualCTLAc = CostHeliLoadCTLAc + CostHeliYardCTLAc + CostHarvestAc + CostChipWTAc
-        HelicopterManualCTL = round (HelicopterManualCTLAc/VolPerAcreST, 4)
+        if RemovalsSLT > 0:
+            HelicopterManualCTL = round (HelicopterManualCTLAc/VolPerAcreST, 4)
+        else:
+            HelicopterManualCTL = 0
 
         HarvestingSystemName = ['GroundBasedMechWT', 'GroundBasedCTL', 'GroundBasedManualWT', 'GroundBasedManualLog',
          'CableManualWTLog', 'CableManualWT', 'CableManualLog', 'CableManualCTL',
@@ -2279,7 +2289,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVolSLT> 80 or TreeVolLLT>250 or TreeVolALT>250 or TreeVol>250:
                  GroundBasedMechWT = float('NaN')
                 
-            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100:
+            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT>80 or TreeVolLLT>100or TreeVolSLT<0:
                  GroundBasedCTL = float('NaN')
                 
             if TreeVolSLT> 80 or TreeVolLLT>500 or TreeVolALT>500 or TreeVol>500:
@@ -2297,13 +2307,13 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVolALT>250 or TreeVol>250:
                 CableManualLog = float('NaN')
 
-            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100:
+            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT>80 or TreeVolLLT>100 or TreeVolSLT<0:
                 CableManualCTL = float('NaN')
 
             if TreeVolALT>250 or TreeVol>250:
                 HelicopterManualWT = float('NaN')
 
-            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT> 80 or TreeVolLLT>100:
+            if RemovalsLLT>10 or (100*RemovalsLLT/RemovalsALT)>10 or TreeVolSLT>80 or TreeVolLLT>100 or TreeVolSLT<0:
                 HelicopterManualCTL = float('NaN')
 
             HarvestingSystemPrice = [GroundBasedMechWT, GroundBasedCTL, GroundBasedManualWT, GroundBasedManualLog,
