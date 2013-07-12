@@ -15,7 +15,7 @@ from collections import defaultdict
 
 ##############################
 from forestcost import main_model as m
-from forestcost import routing_main as r
+from forestcost import routing as r
 from forestcost import landing
 import operator
 import random
@@ -76,28 +76,17 @@ def main():
     cursor.execute(sql)
     data = dictfetchall(cursor)
 
-    ### Mill information
-    # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon
-    # TODO get mill layer
-    # mill_shp = driver.Open('Data//ODF_mills.shp', 0)
-    # mill_lyr = mill_shp.GetLayer()
-    mill_lyr = None
-    millID = None
-    mill_Lat = 43.1190
-    mill_Lon = -124.4075
+    # Mill information
+    mill_shp = 'Data/mills.shp'
 
     # Landing Coordinates
-    # landing_coords = (-124.35033096, 42.980014393)
     center = scenario.input_property.geometry_final.point_on_surface
     centroid_coords = center.transform(4326, clone=True).tuple
     landing_coords = landing.landing(centroid_coords=centroid_coords)
 
     haulDist, haulTime, coord_mill = r.routing(
         landing_coords,
-        millID,
-        mill_Lat,
-        mill_Lon,
-        mill_lyr
+        mill_shp=mill_shp
     )
 
     annual_total_cost = defaultdict(float)
@@ -215,13 +204,12 @@ def main():
             # print cost_args
             # print traceback.format_exc()
 
-    print "--------"
-    print "year, heliHarvestCost, cableHarvestCost, groundHarvestCost, transportationCost"
 
     def ordered_costs(x):
         sorted_x = sorted(x.iteritems(), key=operator.itemgetter(0))
         return [-1 * z[1] for z in sorted_x]
 
+    print "--------"
     print "    var heli =", json.dumps(ordered_costs(annual_heli_harvest_cost)), ";"
     print "    var cable =", json.dumps(ordered_costs(annual_cable_harvest_cost)), ";"
     print "    var ground =", json.dumps(ordered_costs(annual_ground_harvest_cost)), ";"
@@ -238,7 +226,7 @@ def main():
     print "    var profit =", json.dumps(profit), ";"
 
     print "--------"
-
+    print "year, heliHarvestCost, cableHarvestCost, groundHarvestCost, transportationCost"
     for year in sorted(dict(annual_haul_cost).keys()):
         print ", ".join(str(x)
             for x in [

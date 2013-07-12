@@ -1,20 +1,25 @@
 # determines the distance and time from the landing to the mill
 import requests
 import json
-import ogr
+from osgeo import ogr
 import os
 import tempfile
 
 
-def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
+def routing(landing_coords, mill_coords=None, mill_shp=None, mill_filter=None):
 
-    # create landing coordinates
-    # TODO unnecessary to create geom and string, use tuple for point
-    landing_geom = ogr.Geometry(ogr.wkbPoint)
-    landing_geom.AddPoint(*landing_coords)
-    landing_lon = landing_geom.GetX()
-    landing_lat = landing_geom.GetY()
-    coord_landing = '%f,%f' % (landing_lat, landing_lon)
+    if not (mill_coords or mill_shp):
+        raise Exception("Either mill_coords or mill_shp is required")
+
+    # create landing coordinate string
+    coord_landing = '%f,%f' % (landing_coords[1], landing_coords[0])
+
+    if mill_shp:
+        driver = ogr.GetDriverByName('ESRI Shapefile')
+        mill_ds = driver.Open(mill_shp, 0)
+        mill_lyr = mill_ds.GetLayer()
+    else:
+        mill_lyr = None
 
     def get_point():
         # get mill coordinates
@@ -45,48 +50,45 @@ def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
 
         # parse json string for distance
         total_summary = data['route_summary']
-        total_distance = total_summary['total_distance'] # in meters
-        total_time = total_summary['total_time']# in sec
+        total_distance = total_summary['total_distance']  # in meters
+        total_time = total_summary['total_time']  # in sec
         return total_distance, total_time
 
-    # determine mill and run routing 
-    if millID is not None:
-        mill_lyr.SetAttributeFilter("ObjectID = %s" % (str(millID)))
-        millfeat = mill_lyr.GetNextFeature()
-        coord_mill = get_point()
+    # determine mill and run routing
+    if mill_coords:
+        coord_mill = '%f,%f' % (mill_coords[1], mill_coords[0])
         total_distance, total_time = routing(coord_landing, coord_mill)
-        total_distance = total_distance*0.000621371 # convert to miles
-        total_time = total_time/60.0 # convert to min 
-    elif mill_Lat is not None:
-        coord_mill = '%f,%f' %(mill_Lat, mill_Lon)
-        total_distance, total_time = routing(coord_landing, coord_mill)
-        total_distance = total_distance*0.000621371 # convert to miles
-        total_time = total_time/60.0 # convert to min
-    else:
-        # query mill layer based on trees
-        min_dbh = 0.0
-        max_dbh = 999.0
-        mill_lyr.SetAttributeFilter("min_dbh >= %s and max_dbh <= %s" % (str(min_dbh), str(max_dbh)))
+        total_distance = total_distance*0.000621371  # convert to miles
+        total_time = total_time/60.0  # convert to min
+    elif mill_lyr:
+        need_bbox_expansion = True
+        if mill_filter:
+            mill_lyr.SetAttributeFilter(mill_filter)
+            fcount = mill_lyr.GetFeatureCount()
+            if fcount == 0:
+                raise Exception("No features matching attribute filter `%s`" % mill_filter)
+            elif fcount < 5:
+                # only a few, no need to do a spatial filter as well
+                need_bbox_expansion = False
 
         # set spatial filter around landing to include only close by mills
-        offset = 0.05
-        while True:
-            offset += 0.05
+        offset = 0.02
+        fcount = 0
+        while fcount < 3 and need_bbox_expansion:  # require at least X mills in the bbox
+            offset *= 2  # exponentially grow the bbox
 
-            dfMinX = landing_lon - offset
-            dfMaxX = landing_lon + offset
-            dfMinY = landing_lat - offset
-            dfMaxY = landing_lat + offset
+            dfMinX = landing_coords[0] - offset
+            dfMaxX = landing_coords[0] + offset
+            dfMinY = landing_coords[1] - offset
+            dfMaxY = landing_coords[1] + offset
 
             mill_lyr.SetSpatialFilterRect(dfMinX, dfMinY, dfMaxX, dfMaxY)
-            millfeat = mill_lyr.GetNextFeature()
-
-            if millfeat:
-                break
+            fcount = mill_lyr.GetFeatureCount()
 
         distDict = {}
         timeDict = {}
 
+        millfeat = mill_lyr.GetNextFeature()
         while millfeat:
             coord_mill = get_point()
 
@@ -94,18 +96,29 @@ def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
 
             distDict[coord_mill] = total_distance
             timeDict[coord_mill] = total_time
-            
+
             millfeat.Destroy()
             millfeat = mill_lyr.GetNextFeature()
 
-        # Remove items from Dictionary where distance is 0, mill not on road    
+        # Remove items from Dictionary where distance is 0, mill not on road
         distDict = {key: value for key, value in distDict.items()
                     if value > 0}
 
         # get distance and time to closest mill
         coord_mill = min(distDict, key=distDict.get)
-        total_distance = distDict[coord_mill]*0.000621371 # convert to miles
-        total_time = timeDict[coord_mill]/60.0 # convert to min
+        total_distance = distDict[coord_mill]*0.000621371  # convert to miles
+        total_time = timeDict[coord_mill]/60.0  # convert to min
 
-    coord_mill_tuple = tuple([float(x) for x in coord_mill.split(",")])
+    coord_mill_tuple = tuple([float(x) for x in reversed(coord_mill.split(","))])
+
+    if total_time > 0:
+        total_time = round(total_time, 2)
+    else:
+        total_time = 0.0
+
+    try:
+        mill_ds.Destroy()  # clean up after ogr
+    except UnboundLocalError:
+        pass
+
     return total_distance, total_time, coord_mill_tuple

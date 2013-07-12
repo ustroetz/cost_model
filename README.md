@@ -7,6 +7,8 @@ TODO overview of model for software developer audience
 
 ### Inputs
 
+The primary interface is the cost function; given information about stand attributes, harvest 
+and mills, the cost function will estimate harvest and transportation costs. 
 ```
 import main_model as m
 m.cost_func(
@@ -59,6 +61,36 @@ m.cost_func(
  'total_haul_trips': 19.0,               # number of trips
  'total_volume': 15692.23                # cubic feet
 }
+```
+
+### Routing 
+The routing information can be determined by selecting the closest mill from a
+shapefile
+
+```
+mill_shp = 'Data//mills.shp'
+landing_coords = (-118.620, 44.911)
+
+haulDist, haulTime, coord_mill = r.routing(
+    landing_coords,
+    None,
+    None,
+    mill_shp
+)
+```
+
+or by specifying the exact location of the mill
+
+```
+mill_coords = (-119.250013, 44.429948)
+landing_coords = (-118.620, 44.911)
+
+haulDist, haulTime, coord_mill = r.routing(
+    landing_coords,
+    None,
+    mill_coords,
+    None 
+)
 ```
 
 ### Assumptions
