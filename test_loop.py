@@ -1,6 +1,6 @@
 def main():
-    import main_model as m
-    import routing_main as r
+    from forestcost import main_model as m
+    from forestcost import routing_main as r
     from pprint import pprint
     import ogr
 

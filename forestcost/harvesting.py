@@ -1,6 +1,7 @@
 import math
 import operator
 import xlrd
+import os
 
 
 def harvestcost(PartialCut, Slope, SkidDist, Elevation,
@@ -9,12 +10,13 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 RemovalsLLT, TreeVolLLT,
                 HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
     if (RemovalsCT + RemovalsSLT+RemovalsLLT) > 0:
-            
+
         ################################################
         # Intermediates and General Inputs             #
         ################################################
 
-        harvest_mc_wb = xlrd.open_workbook('harvest_cost.xls')
+        harvest_mc_wb = xlrd.open_workbook(
+            os.path.join(os.path.dirname(__file__), 'harvest_cost.xls'))
 
         BFperCF = 5.0
 

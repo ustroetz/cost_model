@@ -1,4 +1,4 @@
-import main_model as m
+from forestcost import main_model as m
 from pprint import pprint
 
 
