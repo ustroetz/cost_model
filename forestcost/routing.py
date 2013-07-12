@@ -3,6 +3,7 @@ import requests
 import json
 import ogr
 import os
+import tempfile
 
 
 def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
@@ -28,7 +29,8 @@ def routing(landing_coords, millID, mill_Lat, mill_Lon, mill_lyr):
         # get routing json string from landing to mill
         headers = {'User-Agent': 'Forestry Scenario Planner'}
         url = 'http://router.project-osrm.org/viaroute?loc=' + coord_landing + '&loc=' + coord_mill
-        key = "%s-%s.cache" % tuple([x.replace(",", "_") for x in [coord_landing, coord_mill]])
+        tmp = tempfile.gettempdir()
+        key = os.path.join(tmp, "%s-%s.cache" % tuple([x.replace(",", "_") for x in [coord_landing, coord_mill]]))
         if os.path.exists(key):
             # READING FROM CACHE
             with open(key, 'r') as cache:

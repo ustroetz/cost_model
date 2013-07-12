@@ -3,6 +3,7 @@ import json
 import ogr
 import osr
 import os
+import tempfile
 ogr.UseExceptions()
 
 #############################################
@@ -47,7 +48,8 @@ def landing(lyr=None, centroid_coords=None):
     # get nearest point on road from centroid as json string
     headers = {'User-Agent': 'Forestry Scenario Planner'}
     url = "http://router.project-osrm.org/nearest?loc=%f,%f" % (centroidLat, centroidLon)
-    key = "%s_%s-None.cache" % (centroidLat, centroidLon)
+    tmp = tempfile.gettempdir()
+    key = os.path.join(tmp, "%s_%s-None.cache" % (centroidLat, centroidLon))
     if os.path.exists(key):
         # READING FROM CACHE
         with open(key, 'r') as cache:
