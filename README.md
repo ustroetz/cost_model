@@ -71,11 +71,9 @@ shapefile
 mill_shp = 'Data//mills.shp'
 landing_coords = (-118.620, 44.911)
 
-haulDist, haulTime, coord_mill = r.routing(
+haul_distance, haul_time, coord_mill = r.routing(
     landing_coords,
-    None,
-    None,
-    mill_shp
+    mill_shp=mill_shp
 )
 ```
 
@@ -85,11 +83,21 @@ or by specifying the exact location of the mill
 mill_coords = (-119.250013, 44.429948)
 landing_coords = (-118.620, 44.911)
 
-haulDist, haulTime, coord_mill = r.routing(
+haul_distance, haul_time, coord_mill = r.routing(
     landing_coords,
-    None,
-    mill_coords,
-    None 
+    mill_coords=mill_coords,
+)
+```
+
+additionally you can filter the mill shapefile using OGR SQL queries
+
+```
+mill_filter = "CITY = 'John Day'"
+
+haul_distance, haul_time, coord_mill = r.routing(
+    landing_coords,
+    mill_shp=mill_shp,
+    mill_filter=mill_filter,
 )
 ```
 
