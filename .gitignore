@@ -2,3 +2,4 @@
 venv/
 Data/
 *.cache
+*.egg-info

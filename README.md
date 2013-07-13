@@ -5,10 +5,18 @@
 
 TODO overview of model for software developer audience
 
+### Installation
+
+Requires `xlrd` and `python-gdal`. 
+
+To install, simply `python setup.py install` or work directly from the root directory
+
 ### Inputs
 
+The primary interface is the cost function; given information about stand attributes, harvest 
+and mills, the cost function will estimate harvest and transportation costs. 
 ```
-import main_model as m
+from forestcost import main_model
 m.cost_func(
 
     # stand info
@@ -59,6 +67,46 @@ m.cost_func(
  'total_haul_trips': 19.0,               # number of trips
  'total_volume': 15692.23                # cubic feet
 }
+```
+
+### Routing 
+The routing information can be determined by selecting the closest mill from a
+shapefile
+
+```
+from forestcost import routing
+
+mill_shp = 'Data//mills.shp'
+landing_coords = (-118.620, 44.911)
+
+haul_distance, haul_time, coord_mill = r.routing(
+    landing_coords,
+    mill_shp=mill_shp
+)
+```
+
+or by specifying the exact location of the mill
+
+```
+mill_coords = (-119.250013, 44.429948)
+landing_coords = (-118.620, 44.911)
+
+haul_distance, haul_time, coord_mill = r.routing(
+    landing_coords,
+    mill_coords=mill_coords,
+)
+```
+
+additionally you can filter the mill shapefile using OGR SQL queries
+
+```
+mill_filter = "CITY = 'John Day'"
+
+haul_distance, haul_time, coord_mill = r.routing(
+    landing_coords,
+    mill_shp=mill_shp,
+    mill_filter=mill_filter,
+)
 ```
 
 ### Assumptions

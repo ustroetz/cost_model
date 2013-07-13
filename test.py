@@ -1,6 +1,6 @@
-import main_model as m
-import routing_main as r
-import landing
+from forestcost import main_model as m
+from forestcost import routing as r
+from forestcost import landing
 from pprint import pprint
 import ogr
 import gis
@@ -45,26 +45,17 @@ def main():
     # Large Log Trees
     RemovalsLLT = 20.00
     TreeVolLLT = 200.00
-    
-    ### Mill information
-    # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon
-    mill_shp = driver.Open('Data//mills.shp', 0)
-    mill_lyr = mill_shp.GetLayer()
-    millID = None
-    mill_Lat = None
-    mill_Lon = None
-#    mill_Lat = 41.2564
-#   mill_Lon = -123.5677
 
-    # Landing Coordinates 
+    ### Mill information
+    mill_shp = 'Data//mills.shp'
+    #mill_coords = (-123.5677, 41.2564)
+
+    # Landing Coordinates
     landing_coords = landing.landing(property_lyr)
 
     haulDist, haulTime, coord_mill = r.routing(
         landing_coords,
-        millID,
-        mill_Lat,
-        mill_Lon,
-        mill_lyr
+        mill_shp=mill_shp
     )
 
     cost = m.cost_func(

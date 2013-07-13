@@ -14,9 +14,12 @@ from collections import defaultdict
 #      color_scheme='Linux', call_pdb=1)
 
 ##############################
-import main_model as m
-import routing_main as r
-import landing
+from forestcost import main_model as m
+from forestcost import routing as r
+from forestcost import landing
+import operator
+import random
+import json
 from pprint import pprint
 from trees.models import Scenario
 from django.db import connection
@@ -73,41 +76,43 @@ def main():
     cursor.execute(sql)
     data = dictfetchall(cursor)
 
-    ### Mill information
-    # Can use mill_lyr alone, mill_lyr AND millID, OR mill_Lat and mill_Lon
-    # TODO get mill layer
-    # mill_shp = driver.Open('Data//ODF_mills.shp', 0)
-    # mill_lyr = mill_shp.GetLayer()
-    mill_lyr = None
-    millID = None
-    mill_Lat = 43.1190
-    mill_Lon = -124.4075
+    # Mill information
+    mill_shp = 'Data/mills.shp'
 
     # Landing Coordinates
-    # landing_coords = (-124.35033096, 42.980014393)
     center = scenario.input_property.geometry_final.point_on_surface
     centroid_coords = center.transform(4326, clone=True).tuple
     landing_coords = landing.landing(centroid_coords=centroid_coords)
 
     haulDist, haulTime, coord_mill = r.routing(
         landing_coords,
-        millID,
-        mill_Lat,
-        mill_Lon,
-        mill_lyr
+        mill_shp=mill_shp
     )
 
+    annual_total_cost = defaultdict(float)
     annual_haul_cost = defaultdict(float)
-    annual_harvest_cost = defaultdict(float)
+    annual_heli_harvest_cost = defaultdict(float)
+    annual_ground_harvest_cost = defaultdict(float)
+    annual_cable_harvest_cost = defaultdict(float)
     used_records = 0
     skip_noharvest = 0
     skip_error = 0
 
+    year = None
+    years = []
     for row in data:
         ### GIS Data
         stand_wkt = row['stand_wkt']
         area = row['acres']
-        year = int(row['year'])
+        if year != int(row['year']):
+            year = int(row['year'])
+            print "Calculating cost per stand in year", year
+            years.append(year)
+            annual_total_cost[year] += 0
+            annual_haul_cost[year] += 0
+            annual_heli_harvest_cost[year] += 0
+            annual_ground_harvest_cost[year] += 0
+            annual_cable_harvest_cost[year] += 0
 
         # NOTE: elevation and slope come directly from stand 
         # if we use spatial contrainsts to chop scenariostands,
@@ -123,10 +128,7 @@ def main():
             cut_type = int(row['cut_type'])
         except:
             # no harvest so don't attempt to calculate
-            annual_haul_cost[year] += 0
-            annual_harvest_cost[year] += 0
-            skip_noharvest += 1
-            continue
+            cut_type = 0
 
         # PartialCut(clear cut = 0, partial cut = 1)
         if cut_type == 3:
@@ -135,8 +137,6 @@ def main():
             PartialCut = 1
         else:
             # no harvest so don't attempt to calculate
-            annual_haul_cost[year] += 0
-            annual_harvest_cost[year] += 0
             skip_noharvest += 1
             continue
 
@@ -182,24 +182,61 @@ def main():
 
         try:
             result = m.cost_func(*cost_args)
-            # if math.isnan(result['total_cost']):
-            #     ???
             annual_haul_cost[year] += result['total_haul_cost']
-            annual_harvest_cost[year] += result['total_harvest_cost']
+            annual_total_cost[year] += result['total_cost']
+
+            system = result['harvest_system']
+            if system.startswith("Helicopter"):
+                annual_heli_harvest_cost[year] += result['total_harvest_cost']
+            elif system.startswith("Ground"):
+                annual_ground_harvest_cost[year] += result['total_harvest_cost']
+            elif system.startswith("Cable"):
+                annual_cable_harvest_cost[year] += result['total_harvest_cost']
+            else:
+                # TODO
+                annual_cable_harvest_cost[year] += result['total_harvest_cost']
+                #raise ValueError
             used_records += 1
         except (ZeroDivisionError, ValueError):
-            annual_haul_cost[year] += 0
-            annual_harvest_cost[year] += 0
             skip_error += 1
 
             # import traceback
             # print cost_args
             # print traceback.format_exc()
 
+
+    def ordered_costs(x):
+        sorted_x = sorted(x.iteritems(), key=operator.itemgetter(0))
+        return [-1 * z[1] for z in sorted_x]
+
     print "--------"
-    print "Year, HarvestCost, TransportationCost"
-    for year in sorted(dict(annual_harvest_cost).keys()):
-        print ", ".join(str(x) for x in [year, annual_harvest_cost[year], annual_haul_cost[year]])
+    print "    var heli =", json.dumps(ordered_costs(annual_heli_harvest_cost)), ";"
+    print "    var cable =", json.dumps(ordered_costs(annual_cable_harvest_cost)), ";"
+    print "    var ground =", json.dumps(ordered_costs(annual_ground_harvest_cost)), ";"
+    print "    var haul =", json.dumps(ordered_costs(annual_haul_cost)), ";"
+    print "    var years =", json.dumps(sorted(annual_haul_cost.keys())), ";"
+
+    # RANDOMLY determine a revenue w/in % of total cost; HACK
+    rev = [-1 * x * (1.0 + (0.35 - (random.random() * 0.5))) for x in ordered_costs(annual_total_cost)]
+    #rev = [-1 * x for x in ordered_costs(annual_total_cost)]
+    print "    var revenue =", json.dumps(rev), ";"
+
+    # determine profit
+    profit = [revenue + cost for revenue, cost in zip(rev, ordered_costs(annual_total_cost))]
+    print "    var profit =", json.dumps(profit), ";"
+
+    print "--------"
+    print "year, heliHarvestCost, cableHarvestCost, groundHarvestCost, transportationCost"
+    for year in sorted(dict(annual_haul_cost).keys()):
+        print ", ".join(str(x)
+            for x in [
+                year,
+                annual_heli_harvest_cost[year],
+                annual_cable_harvest_cost[year],
+                annual_ground_harvest_cost[year],
+                annual_haul_cost[year]
+            ]
+        )
 
     print "--------"
     print "used records:", used_records

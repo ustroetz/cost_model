@@ -1,9 +1,10 @@
-def main():
-    import main_model as m
-    import routing_main as r
-    from pprint import pprint
-    import ogr
+from forestcost import main_model as m
+from forestcost import routing as r
+from pprint import pprint
+import ogr
 
+
+def main():
     ### Harvest Type (clear cut = 0, partial cut = 1)
     PartialCut = 0
 
@@ -13,21 +14,13 @@ def main():
 
     driver = ogr.GetDriverByName('ESRI Shapefile')
     property_shp = driver.Open('U:\\My Documents\Tool\\Data\\testarea6.shp', 0)
-    property_lyr = property_shp.GetLayer()	
+    property_lyr = property_shp.GetLayer()
     stand_lyr = property_shp.GetLayer()
 
-    mill_shp = driver.Open('U:\\My Documents\Tool\\Data\\mills.shp', 0)
-    mill_lyr = mill_shp.GetLayer()
-
-
-
-    
     ### Mill information
-    millID = None
-    mill_Lat = None
-    mill_Lon = None
-	
-#    landing_geom, haulDist, haulTime, coord_mill = r.routing(property_lyr, millID, mill_Lat, mill_Lon, mill_lyr)
+    mill_shp = 'U:\\My Documents\Tool\\Data\\mills.shp'
+
+#    landing_geom, haulDist, haulTime, coord_mill = r.routing(property_lyr, mill_shp=mill_shp)
 
     import csv
     data = csv.reader(open('C:\\Users\\ustroetz\\Downloads\\fvsaggregate.csv', 'rb'))
