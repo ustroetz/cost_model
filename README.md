@@ -5,12 +5,18 @@
 
 TODO overview of model for software developer audience
 
+### Installation
+
+Requires `xlrd` and `python-gdal`. 
+
+To install, simply `python setup.py install` or work directly from the root directory
+
 ### Inputs
 
 The primary interface is the cost function; given information about stand attributes, harvest 
 and mills, the cost function will estimate harvest and transportation costs. 
 ```
-import main_model as m
+from forestcost import main_model
 m.cost_func(
 
     # stand info
@@ -68,6 +74,8 @@ The routing information can be determined by selecting the closest mill from a
 shapefile
 
 ```
+from forestcost import routing
+
 mill_shp = 'Data//mills.shp'
 landing_coords = (-118.620, 44.911)
 
