@@ -1,20 +1,17 @@
 from forestcost import main_model as m
 from forestcost import routing as r
 from forestcost import landing
+from forestcost import gis
 from pprint import pprint
 import ogr
-import gis
 
 def main():
     ### GIS Data
-    slope_raster = 'G:\\Basedata\\PNW\\terrain\\slope'
-    elevation_raster = 'G:\\Basedata\\PNW\\terrain\\dem_prjr6'
-    #slope_raster = '/usr/local/apps/land_owner_tools/lot/fixtures/downloads/terrain/slope.tif'
-    #elevation_raster = '/usr/local/apps/land_owner_tools/lot/fixtures/downloads/terrain/dem.tif'
+    slope_raster = 'testdata//slope.tif'
+    elevation_raster = 'testdata//dem.tif'
 
     driver = ogr.GetDriverByName('ESRI Shapefile')
-    #property_shp = driver.Open('Data//test_stands.shp', 0)
-    property_shp = driver.Open('Data//testarea6.shp', 0)
+    property_shp = driver.Open('testdata//test_stand.shp', 0)
     property_lyr = property_shp.GetLayer()
     stand_lyr = property_shp.GetLayer()
     feat = stand_lyr.GetFeature(0)
@@ -47,7 +44,7 @@ def main():
     TreeVolLLT = 200.00
 
     ### Mill information
-    mill_shp = 'Data//mills.shp'
+    mill_shp = 'testdata//mills.shp'
     #mill_coords = (-123.5677, 41.2564)
 
     # Landing Coordinates
