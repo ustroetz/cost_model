@@ -3,3 +3,4 @@ venv/
 Data/
 *.cache
 *.egg-info
+*.DS_Store
