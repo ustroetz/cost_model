@@ -16,8 +16,8 @@ def main():
     stand_lyr = property_shp.GetLayer()
     feat = stand_lyr.GetFeature(0)
     geom = feat.GetGeometryRef()
-
     stand_wkt = geom.ExportToWkt()
+
     area = gis.area(stand_lyr)
     elevation = gis.zonal_stats(elevation_raster, stand_lyr)
     slope = gis.zonal_stats(slope_raster, stand_lyr)
@@ -49,7 +49,6 @@ def main():
 
     # Landing Coordinates
     landing_coords = landing.landing(property_lyr)
-
     haulDist, haulTime, coord_mill = r.routing(
         landing_coords,
         mill_shp=mill_shp
@@ -82,3 +81,5 @@ def main():
     pprint(cost)
 
 main()
+
+
