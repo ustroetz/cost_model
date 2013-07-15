@@ -1,4 +1,4 @@
-# unit test suite for main_model.py
+# unit test suite for forestcost
 # run 'py.test test_main_model.py'
 
 from forestcost import landing
