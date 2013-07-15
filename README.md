@@ -7,7 +7,7 @@ TODO overview of model for software developer audience
 
 ### Installation
 
-Requires `xlrd`, `python-gdal`, `json`, `requests`, and `numpy`, . 
+Requires `xlrd`, `python-gdal`, `json`, `requests`, and `numpy`. 
 
 To install, simply `python setup.py install` or work directly from the root directory
 
