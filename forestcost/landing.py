@@ -1,3 +1,5 @@
+# Determines Landing Coordinates on closes road to property
+
 import requests
 import json
 import ogr
@@ -5,10 +7,6 @@ import osr
 import os
 import tempfile
 ogr.UseExceptions()
-
-#############################################
-# Landing Coordinates                       #
-#############################################
 
 
 def landing(lyr=None, centroid_coords=None):

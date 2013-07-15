@@ -14,10 +14,8 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
     #############################################
     # Skid Distance, Haul Distance Extension    #
     #############################################
-
-    SkidDist, HaulDistExtension, landing_stand_geom = skidding.skidding(stand_wkt, landing_coords, Slope)
+    SkidDist, HaulDistExtension, coord_landing_stand = skidding.skidding(stand_wkt, landing_coords, Slope)
     HaulDistExtension = round(HaulDistExtension*0.000189394, 3)  # convert to miles
-    landing_lat, landing_lon = landing_stand_geom.GetX(), landing_stand_geom.GetY()
 
     #############################################
     # Harvest Cost                              #
@@ -77,7 +75,7 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
         'haul_cost_min': haulCost,
         'total_haul_cost': totalHaulCost,
         'mill_coordinates': coord_mill,
-        'landing_coordinates': (landing_lon, landing_lat),
+        'landing_coordinates': coord_landing_stand,
         'total_cost': totalCost
     }
 

@@ -97,4 +97,9 @@ def skidding(stand_wkt, landing_coords, Slope):
         coordTrans = osr.CoordinateTransformation(sourceSR, targetSR)
         landing_stand_geom.Transform(coordTrans)
 
-    return YardDist, HaulDistExtension, landing_stand_geom
+    # Create coordinate stand landing tuple
+    landing_lat, landing_lon = landing_stand_geom.GetX(), landing_stand_geom.GetY()
+    coord_landing_stand = (landing_lat, landing_lon)
+    coord_landing_stand_tuple = tuple(coord_landing_stand)
+    
+    return YardDist, HaulDistExtension, coord_landing_stand_tuple
