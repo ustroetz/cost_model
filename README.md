@@ -114,7 +114,7 @@ haul_distance, haul_time, coord_mill = r.routing(
 The harvesting module uses the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA for the cos equations. Documentation for the FRCS can be found [here] (http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
 Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls
 
-Harvesting estimates costs for the follwing harvesting systems:
+Harvesting estimates costs ($/cubic foot) for the follwing harvesting systems:
 
 * Ground-Based Manual Whole Tree =  trees are felled with chainsaws but not limbed or bucked. Rubber-tired skidders (choker and grapple) collect and transport whole trees. Trees are chipped or processed mechanically with stroke or single-grip processors and loaded onto trucks.
 `GroundBasedManualWT = CostManFLBLLT2 + CostManFellST2 + CostSkidUB + CostProcess + CostChipWT + CostLoad`
@@ -138,6 +138,8 @@ Harvesting estimates costs for the follwing harvesting systems:
 `HelicopterManualWT = CostManFLB + CostHeliYardML +  CostChipWT + CostHeliLoadML`
 
  System limits: `TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150`
+ 
+The `Price` ($/cubic feet) and the `HarvestingSystem` (name) of the least expensive harvesting system is returned from the function. If no harvesting system is suitable due to the limitations `Price = NaN` and  `HarvestingSystem = 'NoSystem'`
 
 
 
