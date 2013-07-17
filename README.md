@@ -111,21 +111,36 @@ haul_distance, haul_time, coord_mill = r.routing(
 
 ### [Harvesting] (forestcost/harvesting.py)
 
-The harvesting module uses the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA. Documentation for the FRCS can be found [here] (http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
+The harvesting module uses the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA for the cos equations. Documentation for the FRCS can be found [here] (http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
+Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls
 
 Harvesting estimates costs for the follwing harvesting systems:
 
 * Ground-Based Manual Whole Tree =  trees are felled with chainsaws but not limbed or bucked. Rubber-tired skidders (choker and grapple) collect and transport whole trees. Trees are chipped or processed mechanically with stroke or single-grip processors and loaded onto trucks.
 `GroundBasedManualWT = CostManFLBLLT2 + CostManFellST2 + CostSkidUB + CostProcess + CostChipWT + CostLoad`
 
+ System limits: `Slope<40 and TreeVolCT<80 and TreeVolSLT<80 and TreeVolLLT<500 and TreeVolALT<500 and TreeVol<500`
+
+
 * Ground-Based Mech Whole Tree = trees are felled and bunched; drive-to-tree machines are assumed for flat ground, whereas swingboom and self-leveling versions are included for steeper terrain. Rubber-tired grapple skidders transport bunches to the landing. Trees are chipped or processed mechanically with stroke or single-grip processors and loaded onto trucks.
 `GroundBasedMechWT = CostFellBunch+CostManFLBLLT+CostSkidBun+CostProcess+CostChipWT+CostLoad`
+
+ System limits: `Slope<40  and TreeVolCT<80 and TreeVolSLT<80 and TreeVolLLT<250 and TreeVolALT<250 and TreeVol<250`
+
 
 * Cable Manual Whole Tree = trees are felled with chainsaws, but not limbed or bucked. (Trees too large to be yarded in one piece or too large to be mechanically processed at the landing are limbed and bucked in the woods.) Cable yarders transport the trees to the landing for chipping or mechanical processing and loading onto trucks.
 `CableManualWT = CostManFLBLLT2 + CostManFellST2 + CostYardUB + CostProcess + CostChipWT + CostLoad`
 
+ System limits: `SkidDist<1300 and TreeVolCT<80 and TreeVolSLT<80 and TreeVolLLT<500 and TreeVolALT<500 and TreeVol<500`
+
+
 * Helicopter Manual Whole Tree = trees are felled with chainsaws, limbed, and bucked at the stump. The helicopters then transport the logs out of the stand. Logs to be hauled in log form are loaded onto trucks, and those to be chipped are processed through a disk chipper and blown into chip vans.
 `HelicopterManualWT = CostManFLB + CostHeliYardML +  CostChipWT + CostHeliLoadML`
+
+ System limits: `TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150`
+
+
+
 
 
 
