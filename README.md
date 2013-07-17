@@ -110,12 +110,14 @@ haul_distance, haul_time, coord_mill = r.routing(
 ```
 
 ### [Harvesting] (forestcost/harvesting.py)
-Harvesting calculates the costs (US dollars/cubic feet) for  four harvesting systems and returns the price (`Price` US dollar/cubic feet) and name (`HarvestingSystem`) of least expensive one. If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
+Harvesting calculates the costs for  four harvesting systems and returns the `Price` (US dollar/cubic feet) and `HarvestingSystem` (name) for the least expensive one. 
+If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
 
-Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA [(Documentation](http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
-Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls
+Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA [(Documentation)](http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
 
-Input:
+Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls).
+
+##### Inputs
 ```
     RemovalsCT,                 # Chip trees removed (trees per acre)
     TreeVolCT,                  # Chip tree average volume (cubic feet)
@@ -129,13 +131,13 @@ Input:
     PartialCut,                 # Regen/Clearcut = 0, Thin = 1
 ```
 
-Output 
+##### Outputs 
 ```
     Price,                      # US dollars/cubic feet
     HarvestingSystem,           # name of harvest method
 ```    
 
-Harvest methods, individual costs, and limitations:
+##### Harvest methods, individual costs, and limitations:
 
 * Ground-Based Manual Whole Tree =  trees are felled with chainsaws but not limbed or bucked. Rubber-tired skidders (choker and grapple) collect and transport whole trees. Trees are chipped or processed mechanically with stroke or single-grip processors and loaded onto trucks.
 `GroundBasedManualWT = CostManFLBLLT2 + CostManFellST2 + CostSkidUB + CostProcess + CostChipWT + CostLoad`
