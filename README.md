@@ -5,6 +5,12 @@
 
 TODO overview of model for software developer audience
 
+######  Costs not included
+* Harvest equipment move-in costs
+* Road construction costs
+* Manamgment costs
+* Reforestation costs
+
 ### Installation
 
 Requires `xlrd`, `python-gdal`, `json`, `requests`, and `numpy`. 
@@ -68,8 +74,8 @@ m.cost_func(
  'total_volume': 15692.23                # cubic feet
 }
 ```
-
-### [Harvesting] (forestcost/harvesting.py)
+## Individual Modules
+#### [Harvesting] (forestcost/harvesting.py)
 Harvesting calculates the costs for  four harvesting systems and returns the `Price` (US dollar/cubic feet) and `HarvestingSystem` (name) for the least expensive one. 
 If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
 
@@ -77,7 +83,7 @@ Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://w
 
 Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls).
 
-##### Inputs
+###### Inputs
 ```
     RemovalsCT,                 # Chip trees removed (trees per acre)
     TreeVolCT,                  # Chip tree average volume (cubic feet)
@@ -91,13 +97,13 @@ Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harve
     PartialCut,                 # Regen/Clearcut = 0, Thin = 1
 ```
 
-##### Outputs 
+###### Outputs 
 ```
     Price,                      # US dollars/cubic feet
     HarvestingSystem,           # name of harvest method
 ```    
 
-##### Harvest methods, individual costs, and limitations:
+###### Harvest methods, individual costs, and limitations:
 
 * Ground-Based Manual Whole Tree =  trees are felled with chainsaws but not limbed or bucked. Rubber-tired skidders (choker and grapple) collect and transport whole trees. Trees are chipped or processed mechanically with stroke or single-grip processors and loaded onto trucks.
 `GroundBasedManualWT = CostManFLBLLT2 + CostManFellST2 + CostSkidUB + CostProcess + CostChipWT + CostLoad`
@@ -122,19 +128,19 @@ Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harve
 
  System limits: `TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150`
 
-### [Hauling] (forestcost/hauling.py)
+#### [Hauling] (forestcost/hauling.py)
 TODO
 
-### [GIS] (forestcost/gis.py)
+#### [GIS] (forestcost/gis.py)
 TODO
 
-### [Landing] (forestcost/landing.py)
+#### [Landing] (forestcost/landing.py)
 TODO
 
-### [Skidding] (forestcost/skidding.py)
+#### [Skidding] (forestcost/skidding.py)
 TODO
 
-### [Routing] (forestcost/routing.py)
+#### [Routing] (forestcost/routing.py)
 The routing information can be determined by selecting the closest mill from a
 shapefile
 
@@ -174,15 +180,11 @@ haul_distance, haul_time, coord_mill = r.routing(
 )
 ```
 
-### [Main Model] (forestcost/main_model.py)
+#### [Main Model] (forestcost/main_model.py)
 TODO
 
-### Costs not included
-* Harvest equipment move-in costs
-* Road construction costs
-* Manamgment costs
-* Reforestation costs
 
-## License
+
+### License
 
 
