@@ -73,7 +73,7 @@ m.cost_func(
 Harvesting calculates the costs for  four harvesting systems and returns the `Price` (US dollar/cubic feet) and `HarvestingSystem` (name) for the least expensive one. 
 If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
 
-Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA [(Documentation)](http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
+Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/frcs.shtml) from the USDA.
 
 Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls).
 
@@ -183,5 +183,6 @@ TODO
 * Manamgment costs
 * Reforestation costs
 
+## License
 
 
