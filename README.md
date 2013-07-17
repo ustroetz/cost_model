@@ -141,6 +141,10 @@ Harvesting estimates costs (US dollar/cubic foot) for the follwing harvesting sy
  
 The `Price` (US dollars/cubic feet) and the `HarvestingSystem` (name) of the least expensive harvesting system is returned from the function. If no harvesting system is suitable due to the limitations `Price = NaN` and  `HarvestingSystem = 'NoSystem'` is returned.
 
+### Costs not included
+* harvest equipment move-in costs
+* Costs for road building
+* Manamgment costs
 
 
 
