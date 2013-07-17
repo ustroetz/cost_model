@@ -110,7 +110,7 @@ haul_distance, haul_time, coord_mill = r.routing(
 ```
 
 ### [Harvesting] (forestcost/harvesting.py)
-Harvesting calculates a `Price` (US dollars/cubic feet) for  four harvesting systems. The least expensive harvesting system is returned from the function. If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
+Harvesting calculates the costs (US dollars/cubic feet) for  four harvesting systems and returns the price (`Price` US dollar/cubic feet) and name (`HarvestingSystem`) of least expensive one. If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
 
 Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA [(Documentation](http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
 Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls
