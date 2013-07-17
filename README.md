@@ -110,11 +110,32 @@ haul_distance, haul_time, coord_mill = r.routing(
 ```
 
 ### [Harvesting] (forestcost/harvesting.py)
+Harvesting calculates a `Price` (US dollars/cubic feet) for  four harvesting systems. The least expensive harvesting system is returned from the function. If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
 
-The harvesting module uses the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA for the cos equations. Documentation for the FRCS can be found [here] (http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
+Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/FRCS-West.xls) from the USDA [(Documentation](http://www.fs.fed.us/pnw/data/frcs/frcs.shtml).
 Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls
 
-Harvesting estimates costs (US dollar/cubic foot) for the follwing harvesting systems:
+Input:
+```
+    RemovalsCT,                 # Chip trees removed (trees per acre)
+    TreeVolCT,                  # Chip tree average volume (cubic feet)
+    RemovalsSLT,                # Small log trees removed (trees per acre)
+    TreeVolSLT,                 # Small log average volume (cubic feet) 
+    RemovalsLLT,                # Large log trees removed (trees per acre)
+    TreeVolLLT,                 # Large log average volume (cubic feet)
+    HdwdFractionCT,             # Proportion of hardwood chip trees (volume of hardwood divided by total volume)
+    HdwdFractionSLT,            # Proportion of hardwood small log trees (volume of hardwood divided by total volume)
+    HdwdFractionLLT,            # Proportion of hardwood large log trees (volume of hardwood divided by total volume)
+    PartialCut,                 # Regen/Clearcut = 0, Thin = 1
+```
+
+Output 
+```
+    Price,                      # US dollars/cubic feet
+    HarvestingSystem,           # name of harvest method
+```    
+
+Harvest methods, individual costs, and limitations:
 
 * Ground-Based Manual Whole Tree =  trees are felled with chainsaws but not limbed or bucked. Rubber-tired skidders (choker and grapple) collect and transport whole trees. Trees are chipped or processed mechanically with stroke or single-grip processors and loaded onto trucks.
 `GroundBasedManualWT = CostManFLBLLT2 + CostManFellST2 + CostSkidUB + CostProcess + CostChipWT + CostLoad`
@@ -139,12 +160,11 @@ Harvesting estimates costs (US dollar/cubic foot) for the follwing harvesting sy
 
  System limits: `TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150`
  
-The `Price` (US dollars/cubic feet) and the `HarvestingSystem` (name) of the least expensive harvesting system is returned from the function. If no harvesting system is suitable due to the limitations `Price = NaN` and  `HarvestingSystem = 'NoSystem'` is returned.
-
 ### Costs not included
-* harvest equipment move-in costs
-* Costs for road building
+* Harvest equipment move-in costs
+* Road construction costs
 * Manamgment costs
+* Reforestation costs
 
 
 
