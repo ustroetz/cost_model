@@ -69,46 +69,6 @@ m.cost_func(
 }
 ```
 
-### Routing 
-The routing information can be determined by selecting the closest mill from a
-shapefile
-
-```
-from forestcost import routing
-
-mill_shp = 'Data//mills.shp'
-landing_coords = (-118.620, 44.911)
-
-haul_distance, haul_time, coord_mill = r.routing(
-    landing_coords,
-    mill_shp=mill_shp
-)
-```
-
-or by specifying the exact location of the mill
-
-```
-mill_coords = (-119.250013, 44.429948)
-landing_coords = (-118.620, 44.911)
-
-haul_distance, haul_time, coord_mill = r.routing(
-    landing_coords,
-    mill_coords=mill_coords,
-)
-```
-
-additionally you can filter the mill shapefile using OGR SQL queries
-
-```
-mill_filter = "CITY = 'John Day'"
-
-haul_distance, haul_time, coord_mill = r.routing(
-    landing_coords,
-    mill_shp=mill_shp,
-    mill_filter=mill_filter,
-)
-```
-
 ### [Harvesting] (forestcost/harvesting.py)
 Harvesting calculates the costs for  four harvesting systems and returns the `Price` (US dollar/cubic feet) and `HarvestingSystem` (name) for the least expensive one. 
 If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
@@ -161,12 +121,6 @@ Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harve
 `HelicopterManualWT = CostManFLB + CostHeliYardML +  CostChipWT + CostHeliLoadML`
 
  System limits: `TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150`
- 
-### Costs not included
-* Harvest equipment move-in costs
-* Road construction costs
-* Manamgment costs
-* Reforestation costs
 
 ### [Hauling] (forestcost/hauling.py)
 TODO
@@ -181,12 +135,53 @@ TODO
 TODO
 
 ### [Routing] (forestcost/routing.py)
-TODO
+The routing information can be determined by selecting the closest mill from a
+shapefile
+
+```
+from forestcost import routing
+
+mill_shp = 'Data//mills.shp'
+landing_coords = (-118.620, 44.911)
+
+haul_distance, haul_time, coord_mill = r.routing(
+    landing_coords,
+    mill_shp=mill_shp
+)
+```
+
+or by specifying the exact location of the mill
+
+```
+mill_coords = (-119.250013, 44.429948)
+landing_coords = (-118.620, 44.911)
+
+haul_distance, haul_time, coord_mill = r.routing(
+    landing_coords,
+    mill_coords=mill_coords,
+)
+```
+
+additionally you can filter the mill shapefile using OGR SQL queries
+
+```
+mill_filter = "CITY = 'John Day'"
+
+haul_distance, haul_time, coord_mill = r.routing(
+    landing_coords,
+    mill_shp=mill_shp,
+    mill_filter=mill_filter,
+)
+```
 
 ### [Main Model] (forestcost/main_model.py)
 TODO
 
-
+### Costs not included
+* Harvest equipment move-in costs
+* Road construction costs
+* Manamgment costs
+* Reforestation costs
 
 
 
