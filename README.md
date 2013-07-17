@@ -111,4 +111,36 @@ haul_distance, haul_time, coord_mill = r.routing(
 
 ### Assumptions
 
-TODO
+#### Harvesting Systems
+
+* Ground-Based Mech WT
+CostFellBunch
+CostManFLBLLT
+CostSkidBun
+CostProcess
+CostChipWT
+CostLoad
+
+* Cable Manual WT
+CostManFLBLLT2
+CostManFellST2
+CostProcess
+CostChipWT
+CostYardUB
+CostLoad
+
+* Helicopter Manual WT
+CostHeliYardML
+CostHeliLoadML
+CostManFLBAc 
+CostChipWTAc
+
+# Ground-Based Manual WT
+CostManFLBLLT2
+CostManFellST2
+CostSkidUB
+CostProcess
+CostChipWT
+CostLoad
+
+
