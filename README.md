@@ -139,7 +139,7 @@ Harvesting estimates costs ($/cubic foot) for the follwing harvesting systems:
 
  System limits: `TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150`
  
-The `Price` ($/cubic feet) and the `HarvestingSystem` (name) of the least expensive harvesting system is returned from the function. If no harvesting system is suitable due to the limitations `Price = NaN` and  `HarvestingSystem = 'NoSystem'`
+The `Price` ($/cubic feet) and the `HarvestingSystem` (name) of the least expensive harvesting system is returned from the function. If no harvesting system is suitable due to the limitations `Price = NaN` and  `HarvestingSystem = 'NoSystem'` is returned.
 
 
 
