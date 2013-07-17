@@ -74,7 +74,7 @@ m.cost_func(
  'total_volume': 15692.23                # cubic feet
 }
 ```
-## Individual Modules
+## Description of sub-modules
 #### [Harvesting] (forestcost/harvesting.py)
 Harvesting calculates the costs for  four harvesting systems and returns the `Price` (US dollar/cubic feet) and `HarvestingSystem` (name) for the least expensive one. 
 If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
