@@ -8,7 +8,7 @@ TODO overview of model for software developer audience
 ######  Costs not included
 * Harvest equipment move-in costs
 * Road construction costs
-* Manamgment costs
+* Management costs
 * Reforestation costs
 
 ### Installation
