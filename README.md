@@ -129,11 +129,22 @@ Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harve
  System limits: `TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150`
 
 #### [Hauling] (forestcost/hauling.py)
-Hauling calculates and returns the cost per min (`AverageCPmin`) (US dollar/min) to operate a standard stinger-steer log truck. 
+Hauling calculates and returns the cost per min (`AverageCPmin`) (US dollar/min) to operate a standard stinger-steer log truck (18 tires). 
 
 Harvesting is based on the [Log Truck Haul Cost] (http://www.fs.usda.gov/detail/r6/landmanagement/resourcemanagement/?cid=fsbdev2_027048) from the USDA.
 
 Machine costs and labor costs are stored in [haul_cost.xls] (forestcost/haul_cost.xls).
+
+###### Inputs
+```
+    TravelDistanceOneWay,       # One way distance from landing to the mill (miles)
+    TimeRoundTrip,              # Round trip time from landing to the mill and back (minutes)
+```
+
+###### Outputs 
+```
+    AverageCPmin                # Average owning, operating, and labor cost for log truck (US dollars/ minutes)
+```    
 
 #### [GIS] (forestcost/gis.py)
 TODO
