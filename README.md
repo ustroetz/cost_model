@@ -147,7 +147,33 @@ Machine costs and labor costs are stored in [haul_cost.xls] (forestcost/haul_cos
 ```    
 
 #### [GIS] (forestcost/gis.py)
-TODO
+GIS includes the functions `area` and `zonal_stats`.
+
+##### Area
+`area` returns the total area (acers) of the stand.
+
+###### Inputs
+```
+    lyr                         # OGR Layer of stand
+```
+
+###### Outputs 
+```
+    area                        # area of stand (acres)
+```    
+##### Zonal statistics
+`zonal_stats` returns the mean values of a raster within the zones of the stand. It is used to calculate the mean of the `Slope` and `Elevation` within the zones of the stand.
+
+###### Inputs
+```
+    input_value_raster,         # Value raster of Slope or Elevation
+    lyr                         # OGR Layer of stand
+```
+
+###### Outputs 
+```
+    mean                        # Mean values of a raster (Slope/Elevation within the zones of the stand
+```    
 
 #### [Landing] (forestcost/landing.py)
 TODO
