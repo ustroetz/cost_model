@@ -759,7 +759,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             TurnVolHensel791 = LogVol*LogsHensel791
             TTHensel791 = (72.26+0.0638*BFperCF*LogVol+0.1152*SkidDist-996/(max(20.0,Slope)))/60.0
 
-            YarderCapacity = 113.0
+            YarderCapacity = (6000+ManualMachineSize*3000)/WoodDensity
             TurnVolHensel792 = min(YarderCapacity,max(AreaLimitedTurnVol,TreeVol))
             LogsHensel792 = max(1.0,(TurnVolHensel792/LogVol))
             TTHensel792 = (177.3+0.3568*LogVol+0.000522*SkidDist**2+0.0105*Slope**2)/60.0
