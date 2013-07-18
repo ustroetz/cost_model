@@ -76,7 +76,7 @@ m.cost_func(
 ```
 ## Modules
 #### [Harvesting] (forestcost/harvesting.py)
-Harvesting calculates the costs for  four harvesting systems and returns the `Price` (US dollar/cubic feet) and `HarvestingSystem` (name) for the least expensive one. 
+Harvesting calculates the costs for four harvesting systems and returns the `Price` (US dollar/cubic feet) and `HarvestingSystem` (name) for the least expensive one. 
 If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
 
 Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/frcs.shtml) from the USDA.
@@ -129,7 +129,7 @@ Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harve
  System limits: `TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150`
 
 #### [Hauling] (forestcost/hauling.py)
-Hauling calculates and returns the cost per min (`AverageCPmin`) (US dollar/min) to operate a standard stinger-steer log truck (18 tires). 
+Hauling calculates and returns the price `AverageCPmin` (US dollar/min) to operate a standard stinger-steer log truck (18 tires). 
 
 Harvesting is based on the [Log Truck Haul Cost] (http://www.fs.usda.gov/detail/r6/landmanagement/resourcemanagement/?cid=fsbdev2_027048) from the USDA.
 
