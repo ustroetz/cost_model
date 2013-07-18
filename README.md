@@ -189,7 +189,27 @@ Landing returns the road landing coordinates on the closest road to the property
 ```    
 
 #### [Skidding] (forestcost/skidding.py)
-TODO
+Skidding returns the skidding distance from the centroid of the stand to the stand landing, the coordinates of the stand landing, and the distance from the stand landing to the road landing.
+
+1. A straight line from the centroid of the stand to the road landing is created.
+2. Where the line intersects with the stand is the stand landing.
+3. Distance from the centroid to the stand landing is the skidding distance and distance from the stand landing to the road landing is the haul distance extension and considered as road.
+
+![Alt text](http://s10.postimg.org/6dwy8f0h5/Capture.png)
+
+###### Inputs
+```
+    stand_wkt,                  # Well-Known Text geometry of stand polygon
+    landing_coords,             # coordinate of road landing from landing.py 
+    Slope                       # Slope (%)
+```
+
+###### Outputs 
+```
+    YardDist,                   # Skidding distance (feet)
+    HaulDistExtension,          # Haul distance extension (feet)
+    coord_landing_stand_tuple   # coordinate of stand landing ((lon, lat) tuple)
+```   
 
 #### [Routing] (forestcost/routing.py)
 The routing information can be determined by selecting the closest mill from a
