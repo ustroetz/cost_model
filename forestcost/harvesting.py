@@ -63,9 +63,9 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             return costpmh
 
 
-        ##############################
-        # Skidding Cost unbunched    #
-        ##############################
+        ################################################
+        # Skidding Cost unbunched                      #
+        ################################################
         def CostSkidUBfunc():
 
             if SkidDist>0:
@@ -147,9 +147,9 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             return CostSkidUB
 
 			
-        ##############################
-        # Skidding Cost bunched      #
-        ##############################
+        ################################################
+        # Skidding Cost bunched                        #
+        ################################################
         def CostSkidBunfunc():
 
             if SkidDist>0:
@@ -167,7 +167,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if ButtDiam < 15:
                     relevanceSBJohnson88 = 1
                 elif ButtDiam < 20:
-                    relevanceSBJohnson88 = 4 - ButtDiam/5
+                    relevanceSBJohnson88 = 4 - ButtDiam/5.0
                 else:
                     relevanceSBJohnson88 = 0
 
@@ -178,11 +178,11 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if TreeVol < 5:
                     relevanceSBKosicki00 = 0
                 elif TreeVol < 10:
-                    relevanceSBKosicki00 = -1 + TreeVol/5
+                    relevanceSBKosicki00 = -1 + TreeVol/5.0
                 elif TreeVol < 50:
                     relevanceSBKosicki00 = 1
                 elif TreeVol < 100:
-                    relevanceSBKosicki00 = 2 - TreeVol/50
+                    relevanceSBKosicki00 = 2 - TreeVol/50.0
                 else:
                     relevanceSBKosicki00 = 0
 
@@ -190,11 +190,11 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if TreeVol < 5:
                     relevanceSBHenderson01 = 0
                 elif TreeVol < 10:
-                    relevanceSBHenderson01 = -1 + TreeVol/5
+                    relevanceSBHenderson01 = -1 + TreeVol/5.0
                 elif TreeVol < 50:
                     relevanceSBHenderson01 =  1
                 elif TreeVol < 100:
-                    relevanceSBHenderson01 = 2 - TreeVol/50
+                    relevanceSBHenderson01 = 2 - TreeVol/50.0
                 else:
                     relevanceSBHenderson01 = 0
 
@@ -202,7 +202,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if TreeVol < 30:
                     relevanceSBKosicki021 = 1
                 elif TreeVol < 60:
-                    relevanceSBKosicki021 = 2 - TreeVol/30
+                    relevanceSBKosicki021 = 2 - TreeVol/30.0
                 else:
                     relevanceSBKosicki021 = 0
 
@@ -210,11 +210,11 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if TreeVol < 5:
                     relevanceSBBoswell98 = 0
                 elif TreeVol < 10:
-                    relevanceSBBoswell98 = -1 + TreeVol/5
+                    relevanceSBBoswell98 = -1 + TreeVol/5.0
                 elif TreeVol < 100:
                     relevanceSBBoswell98 = 1
                 elif TreeVol < 150:
-                    relevanceSBBoswell98 = 3 - TreeVol/50
+                    relevanceSBBoswell98 = 3 - TreeVol/50.0
                 else:
                     relevanceSBBoswell98 = 0
                     
@@ -222,7 +222,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if TreeVol < 40:
                     relevanceSBKosicki022 = 1
                 elif TreeVol < 80:
-                    relevanceSBKosicki022 = 2 - TreeVol/40
+                    relevanceSBKosicki022 = 2 - TreeVol/40.0
                 else:
                     relevanceSBKosicki022 = 0
 
@@ -311,11 +311,11 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if treevol < 5:
                     relevanceMFeAndersson98 = 0
             elif treevol < 15:
-                    relevanceMFeAndersson98 = -0.5 + treevol/10
+                    relevanceMFeAndersson98 = -0.5 + treevol/10.0
             elif treevol < 90:
                     relevanceMFeAndersson98 = 1
             elif treevol < 180:
-                    relevanceMFeAndersson98 = 2 - treevol/90
+                    relevanceMFeAndersson98 = 2 - treevol/90.0
             else:
                     relevanceMFeAndersson98 = 0
 
@@ -361,17 +361,17 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if treevol < 1:
                     relevanceMFLBKellogg1999 = 0
             elif treevol < 2:
-                    relevanceMFLBKellogg1999 = -1 + treevol/1
+                    relevanceMFLBKellogg1999 = -1 + treevol/1.0
             elif treevol < 70:
                     relevanceMFLBKellogg1999 = 1
             else:
-                    relevanceMFLBKellogg1999 = 1.2-treevol/350
+                    relevanceMFLBKellogg1999 = 1.2-treevol/350.0
 
             # Andersson, B. and G. Young, 98
             if treevol < 5:
                     relevanceMFLBAndersson1998 = 0
             elif treevol < 15:
-                    relevanceMFLBAndersson1998 = -0.5+treevol/10
+                    relevanceMFLBAndersson1998 = -0.5+treevol/10.0
             else:
                     relevanceMFLBAndersson1998 = 1
 
@@ -680,11 +680,11 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if LogVol<5:
                 relevanceCYCUSchillings69 = 0
             elif LogVol<10:
-                relevanceCYCUSchillings69 = -1+LogVol/5
+                relevanceCYCUSchillings69 = -1+LogVol/5.0
             elif LogVol<50:
                 relevanceCYCUSchillings69 = 1
             elif LogVol<100:
-                relevanceCYCUSchillings69 = 2-LogVol/50
+                relevanceCYCUSchillings69 = 2-LogVol/50.0
             else:
                 relevanceCYCUSchillings69 = 1
 
@@ -692,7 +692,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if LogVol<5:
                 relevanceCYCUHensel791 = 0
             elif LogVol<10:
-                relevanceCYCUHensel791 = -1+LogVol/5
+                relevanceCYCUHensel791 = -1+LogVol/5.0
             else:
                 relevanceCYCUHensel791 = 1
 
@@ -700,7 +700,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if LogVol<5:
                 relevanceCYCUHensel792 = 0
             elif LogVol<10:
-                relevanceCYCUHensel792 = -1+LogVol/5
+                relevanceCYCUHensel792 = -1+LogVol/5.0
             else:
                 relevanceCYCUHensel792 = 1
 
@@ -708,7 +708,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if LogVol<5:
                 relevanceCYCUHensel793 = 0
             elif LogVol<10:
-                relevanceCYCUHensel793 = -1+LogVol/5
+                relevanceCYCUHensel793 = -1+LogVol/5.0
             else:
                 relevanceCYCUHensel793 = 1
 
@@ -716,7 +716,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if LogVol<30:
                 relevanceCYCUGardner801 = 1
             elif LogVol<60:
-                relevanceCYCUGardner801 = 2-LogVol/30
+                relevanceCYCUGardner801 = 2-LogVol/30.0
             else:
                 relevanceCYCUGardner801 = 0
 
@@ -724,7 +724,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if LogVol<30:
                 relevanceCYCUGardner802 = 1
             elif LogVol<60:
-                relevanceCYCUGardner802 = 2-LogVol/30
+                relevanceCYCUGardner802 = 2-LogVol/30.0
             else:
                 relevanceCYCUGardner802 = 0
 
@@ -739,7 +739,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVol<80:
                 relevanceCYCUAndersson98 = 1
             elif TreeVol<160:
-                relevanceCYCUAndersson98 = 2-TreeVol/80
+                relevanceCYCUAndersson98 = 2-TreeVol/80.0
             else:
                 relevanceCYCUAndersson98 = 0
 
@@ -830,7 +830,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         def CostYardPCUBfunc(): 
             TurnArea = 800.0
             AreaLimitedTurnVol = VolPerAcre*TurnArea/43560.0
-            YarderCapacity = 113.0
+            YarderCapacity = (6000+ManualMachineSize*3000)/WoodDensity
             TurnVol = min(YarderCapacity,max(AreaLimitedTurnVol,TreeVol))
             Logs = max(1.0,(TurnVol/LogVol))
             TurnEndAre = 2.0*TurnVol/LogLength
@@ -841,7 +841,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVol<10:
                 relevanceCYPUJohnson88 = 1
             elif TreeVol<20:
-                relevanceCYPUJohnson88 = 2-TreeVol/10
+                relevanceCYPUJohnson88 = 2-TreeVol/10.0
             else:
                 relevanceCYPUJohnson88 = 0
 
@@ -849,7 +849,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TurnVol<200:
                 relevanceCYPUKellogg86 = 1
             elif TurnVol<400:
-                relevanceCYPUKellogg86v = 2-TurnVol/200
+                relevanceCYPUKellogg86v = 2-TurnVol/200.0
             else:
                 relevanceCYPUKellogg86 = 0
 
@@ -857,7 +857,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if LogVol<30:
                 relevanceCYPUGardner801 = 1
             elif LogVol<60:
-                relevanceCYPUGardner801 = 2-LogVol/30
+                relevanceCYPUGardner801 = 2-LogVol/30.0
             else:
                 relevanceCYPUGardner801 = 0
 
@@ -865,7 +865,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if LogVol<30:
                 relevanceCYPUGardner802 = 1
             elif LogVol<60:
-                relevanceCYPUGardner802 = 2-LogVol/30
+                relevanceCYPUGardner802 = 2-LogVol/30.0
             else:
                 relevanceCYPUGardner802 = 0
 
@@ -880,7 +880,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVol<90:
                 relevanceCYPUBoswell01 = 1
             elif TreeVol<180:
-                relevanceCYPUBoswell01 = 2-TreeVol/90
+                relevanceCYPUBoswell01 = 2-TreeVol/90.0
             else:
                 relevanceCYPUBoswell01 = 0
 
@@ -888,7 +888,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVol<90:
                 relevanceCYPUPavel99 =1
             elif TreeVol<180:
-                relevanceCYPUPavel99 = 2-TreeVol/90
+                relevanceCYPUPavel99 = 2-TreeVol/90.0
             else:
                 relevanceCYPUPavel99 = 0
 
@@ -896,7 +896,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVol<60:
                 relevanceCYPUKellogg96 = 1
             elif TreeVol<120:
-                relevanceCYPUKellogg96 = 2-TreeVol/60
+                relevanceCYPUKellogg96 = 2-TreeVol/60.0
             else:
                 relevanceCYPUKellogg96 = 0
 
@@ -904,7 +904,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVol<70:
                 relevanceCYPUKellogg99 = 1
             elif TreeVol<140:
-                relevanceCYPUKellogg99 = 2-TreeVol/70
+                relevanceCYPUKellogg99 = 2-TreeVol/70.0
             else:
                 relevanceCYPUKellogg99 = 0
 
@@ -912,11 +912,11 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             if TreeVol<5:
                 relevanceCYPUHuyler97 = 0
             elif TreeVol<10:
-                relevanceCYPUHuyler97 = -1+TreeVol/5
+                relevanceCYPUHuyler97 = -1+TreeVol/5.0
             elif TreeVol<40:
                 relevanceCYPUHuyler97 = 1
             elif TreeVol<80:
-                relevanceCYPUHuyler97 = 2-TreeVol/40
+                relevanceCYPUHuyler97 = 2-TreeVol/40.0
             else:
                 relevanceCYPUHuyler97 = 0
 
@@ -1198,7 +1198,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if TreeVolSLT<50:
                     relevanceProSchroder97 = 1
                 elif TreeVolSLT<100:
-                    relevanceProSchroder97 = 2-TreeVolSLT/50
+                    relevanceProSchroder97 = 2-TreeVolSLT/50.0
                 else:
                     relevanceProSchroder97 = 0
 
@@ -1209,7 +1209,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if TreeVolSLT<20:
                     relevanceProHoltzscher97 = 1
                 elif TreeVolSLT<40:
-                    relevanceProHoltzscher97 = 2-TreeVolSLT/20
+                    relevanceProHoltzscher97 = 2-TreeVolSLT/20.0
                 else:
                     relevanceProHoltzscher97 = 0
 
@@ -1365,7 +1365,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
 
 
         ################################################
-        # Final Calculations                          #
+        # Final Calculations                           #
         ################################################
         if (RemovalsCT+RemovalsSLT+RemovalsLLT)>0 and (TreeVolCT+TreeVolSLT+TreeVolLLT)>0:
 
@@ -1429,7 +1429,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             CHardwoodSLT = 1.0+HdwdCostPremium*HdwdFractionSLT
             CHardwoodST = 1.0+HdwdCostPremium*HdwdFractionST
                 
-
             WoodDensityCT = 60.0
             WoodDensityLLT = 62.1225
             WoodDensitySLT = 58.6235
