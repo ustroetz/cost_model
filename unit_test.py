@@ -172,7 +172,7 @@ def test_harvesting_CableManualWT_PartialCut():
         
         # Input
         PartialCut = 1 
-        Slope = 30
+        Slope = 60
         SkidDist = 1200
         Elevation = 100
         RemovalsCT = 200.0 
@@ -186,7 +186,7 @@ def test_harvesting_CableManualWT_PartialCut():
         HdwdFractionLLT = 0.0
         
         # Expected Output
-        harvestCost = 0.5273
+        harvestCost = 0.5467
         HarvestSystem = 'CableManualWT'
         
         assert(harvesting.harvestcost(
