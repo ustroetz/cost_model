@@ -175,7 +175,7 @@ Landing returns the road landing coordinates on the closest road to the property
     
 1. Centroids of all stands are created
 2. Centroid of all centroids is created (center of property)
-3. OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to find the nearest point on a street which is the road landing. 
+3. OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to find the nearest point on a street which is the road landing. Only roads of OpenStreetMap are considered as roads.
 
 ###### Inputs
 ```
