@@ -1,4 +1,4 @@
-# Determines Landing Coordinates on closes road to property
+# Determines landing coordinates on closest road to property
 
 import requests
 import json
