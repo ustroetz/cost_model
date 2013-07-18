@@ -171,7 +171,22 @@ Machine costs and labor costs are stored in [haul_cost.xls] (forestcost/haul_cos
 ```    
 
 #### [Landing] (forestcost/landing.py)
-TODO
+Landing returns the road landing coordinates on the closest road to the property (stand landing coordinates are determined with [skidding.py](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding)).
+    
+1. Centroids of all stands are created
+2. Centroid of all centroids is created (center of property)
+3. OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to find the nearest point on a street which is the road landing. 
+
+###### Inputs
+```
+    lyr=None                     # OGR layer of property
+    centroid_coords=None         # coordinate of centroid of property ((lon, lat) tuple)
+```
+
+###### Outputs 
+```
+    landing_coords               # coordinate of road landing ((lon, lat) tuple)
+```    
 
 #### [Skidding] (forestcost/skidding.py)
 TODO
