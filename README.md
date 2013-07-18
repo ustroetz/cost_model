@@ -154,7 +154,7 @@ GIS includes the functions `area` and `zonal_stats`.
 
 ###### Inputs
 ```
-    lyr                         # OGR Layer of stand
+    lyr                         # OGR layer of stand
 ```
 
 ###### Outputs 
@@ -162,16 +162,16 @@ GIS includes the functions `area` and `zonal_stats`.
     area                        # area of stand (acres)
 ```    
 ##### Zonal statistics
-`zonal_stats` returns the mean values of the Slope and Elevation raster within the zones of the stand. 
+`zonal_stats` returns the mean values of the slope and elevation raster within the zones of the stand. 
 ###### Inputs
 ```
-    input_value_raster,         # Value raster of Slope/ Elevation
-    lyr                         # OGR Layer of stand
+    input_value_raster,         # Value raster of slope/elevation
+    lyr                         # OGR layer of stand
 ```
 
 ###### Outputs 
 ```
-    mean                        # Mean values of the Slope/Elevation raster within the zones of the stand
+    mean                        # Mean values of the slope/elevation raster within the zones of the stand
 ```    
 
 #### [Landing] (forestcost/landing.py)
