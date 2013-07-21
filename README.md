@@ -18,13 +18,16 @@ Requires `xlrd`, `python-gdal`, `json`, `requests`, and `numpy`.
 
 To install, simply `python setup.py install` or work directly from the root directory
 
-### Inputs
+## Modules
 
-The primary interface is the cost function; given information about stand attributes, harvest 
-and mills, the cost function will estimate harvest and transportation costs. 
+#### [Main Model] (forestcost/main_model.py)
+The Main Model defines the cost function which is the primary interface; given information about stand attributes, harvest 
+and routing, the cost function will estimate harvest and transportation costs. 
+
+### Inputs
 ```
 from forestcost import main_model
-m.cost_func(
+main_model.cost_func(
 
     # stand info
     area,                       # Stand area (acres)
@@ -75,7 +78,6 @@ m.cost_func(
  'total_volume': 15692.23                # cubic feet
 }
 ```
-## Modules
 #### [Harvesting] (forestcost/harvesting.py)
 Harvesting calculates the costs for four harvesting systems and returns the price (US dollar/cubic feet) and name of the least expensive one. 
 If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
@@ -86,6 +88,9 @@ Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harve
 
 ###### Inputs
 ```
+from forestcost import harvesting
+harvesting.harvestcost(
+
     RemovalsCT,                 # Chip trees removed (trees per acre)
     TreeVolCT,                  # Chip tree average volume (cubic feet)
     RemovalsSLT,                # Small log trees removed (trees per acre)
@@ -96,6 +101,7 @@ Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harve
     HdwdFractionSLT,            # Proportion of hardwood small log trees (volume of hardwood divided by total volume)
     HdwdFractionLLT,            # Proportion of hardwood large log trees (volume of hardwood divided by total volume)
     PartialCut,                 # Regen/Clearcut = 0, Thin = 1
+)
 ```
 
 ###### Outputs 
@@ -138,8 +144,12 @@ Machine costs and labor costs are stored in [haul_cost.xls] (forestcost/haul_cos
 
 ###### Inputs
 ```
+from forestcost import hauling
+hauling.haulcost(
+
     TravelDistanceOneWay,       # One way distance from landing to the mill (miles)
     TimeRoundTrip,              # Round trip time from landing to the mill and back (minutes)
+)
 ```
 
 ###### Outputs 
@@ -148,22 +158,30 @@ Machine costs and labor costs are stored in [haul_cost.xls] (forestcost/haul_cos
 ```    
 
 #### [GIS] (forestcost/gis.py)
-`area` function returns the total area (acers) of the stand.
+The area function returns the total area (acers) of the stand.
 
 ###### Inputs
 ```
+from forestcost import gis
+gis.area(
+
     lyr                         # OGR layer of stand
+)
 ```
 
 ###### Outputs 
 ```
     area                        # area of stand (acres)
 ```    
-`zonal_stats` function returns the mean values of the slope and elevation raster within the zones of the stand. 
+The zonal statistics function returns the mean values of the slope and elevation raster within the zones of the stand. 
 ###### Inputs
 ```
+from forestcost import gis
+gis.zonal_stats(
+
     input_value_raster,         # Value raster of slope/elevation
     lyr                         # OGR layer of stand
+)
 ```
 
 ###### Outputs 
@@ -180,8 +198,12 @@ Landing returns the road landing coordinates on the closest road to the property
 
 ###### Inputs
 ```
+from forestcost import landing
+landing.landing(
+
     lyr=None                     # OGR layer of property
     centroid_coords=None         # coordinate of centroid of property ((lon, lat) tuple)
+)
 ```
 
 ###### Outputs 
@@ -200,9 +222,13 @@ Skidding returns the skidding distance from the centroid of the stand to the sta
 
 ###### Inputs
 ```
+from forestcost import skidding
+skidding.skidding(
+
     stand_wkt,                  # Well-Known Text geometry of stand polygon
     landing_coords,             # coordinate of road landing from landing.py 
     Slope                       # Slope (%)
+)
 ```
 
 ###### Outputs 
@@ -251,8 +277,5 @@ haul_distance, haul_time, coord_mill = r.routing(
     mill_filter=mill_filter,
 )
 ```
-
-#### [Main Model] (forestcost/main_model.py)
-TODO
 
 
