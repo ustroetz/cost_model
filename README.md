@@ -81,7 +81,7 @@ main_model.cost_func(
 
 ###### Individual Parts
 
-* Skid Distance, Haul Distance Extension  
+* Skid Distance and Haul Distance Extension  
 Skidding distance (feet), hauling distance extension (meter), and the landing coordiantes ((lon, lat (tuple)) are returned from [skidding](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding).
 The hauling distance extension is converted from meters to miles.
 
