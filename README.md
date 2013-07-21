@@ -188,7 +188,10 @@ Skidding returns the skidding distance from the centroid of the stand to the sta
 2. Where the line intersects with the stand is the stand landing.
 3. Distance from the centroid to the stand landing is the skidding distance and distance from the stand landing to the road landing is the haul distance extension and considered as road.
 4. Skidding distance limit is 1,300 feet (additional skidding distance is added to haul distance extension). If skidding distance > 1,300 and slope > 40 than the limit is 10,000 feet (helicopter logging).
-![Alt text](http://s10.postimg.org/6dwy8f0h5/Capture.png)
+  
+<p align="center">
+  <img src="http://s10.postimg.org/6dwy8f0h5/Capture.png" />
+</p>
 
 ###### Inputs
 ```
