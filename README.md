@@ -255,6 +255,4 @@ haul_distance, haul_time, coord_mill = r.routing(
 #### [Main Model] (forestcost/main_model.py)
 TODO
 
-## License
-TODO
 
