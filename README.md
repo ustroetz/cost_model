@@ -87,21 +87,20 @@ The hauling distance extension is converted from meters to miles.
 
 * Harvest Cost
 Harvest cost (US dollars/cubic feet) and the name of the selected harvest system is returned from [harvesting](https://github.com/ustroetz/cost_model/blob/master/README.md#harvesting).
-`totalHarvestCost = harvestCost*totalVolume` (US dollar)
+`totalHarvestCost = harvestCost*totalVolume     # US dollar`
 
 * Hauling Cost  
-`haulDist = haulDist + HaulDistExtension` (miles)
-
-For the hauling distance extension a travel speed of 30 MPH is assumed. 
-`haulTimeRoundTrip = haulTime*2.0+HaulDistExtension*2.0/(30*60.0)` (minutes)
-Haul cost (US dollars/minute) is returned from [hauling](https://github.com/ustroetz/cost_model/blob/master/README.md#hauling).
-Volume per load of a standard stinger-steer log truck varies from 700 (small timber) to 1000 cubic feet (large timber).
-`truckVol = percentageChipTrees*700+percentageSmallLogTrees*850+percentageLargeLogTrees*1000` (cubic feet)
-`trips = totalVolume/truckVol` (adjusted upward)
-`totalHaulCost = haulTimeRT*haulCost*trips` (US dollar)
+`haulDist = haulDist + HaulDistExtension        # miles`  
+For the hauling distance extension a travel speed of 30 MPH is assumed.  
+`haulTimeRoundTrip = haulTime*2.0+HaulDistExtension*2.0/(30*60.0)        # minutes`    
+Haul cost (US dollars/minute) is returned from [hauling](https://github.com/ustroetz/cost_model/blob/master/README.md#hauling).  
+Volume per load of a standard stinger-steer log truck varies from 700 (small timber) to 1000 cubic feet (large timber).  
+`truckVol = percentageChipTrees*700+percentageSmallLogTrees*850+percentageLargeLogTrees*1000        # cubic feet`  
+`trips = totalVolume/truckVol                   # adjusted upward`  
+`totalHaulCost = haulTimeRT*haulCost*trips      # US dollar`
 
 * Total Costs  
-`totalCost = totalHaulCost + totalHarvestCost` (US dollar)
+`totalCost = totalHaulCost + totalHarvestCost   # US dollar`
 
 #### [Harvesting] (forestcost/harvesting.py)
 Harvesting calculates the costs for four harvesting systems and returns the price (US dollar/cubic feet) and name of the least expensive one. 
