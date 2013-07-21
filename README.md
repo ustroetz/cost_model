@@ -24,7 +24,7 @@ To install, simply `python setup.py install` or work directly from the root dire
 The Main Model defines the cost function which is the primary interface; given information about stand attributes, harvest 
 and routing, the cost function will estimate harvest and transportation costs. 
 
-### Inputs
+###### Inputs
 ```
 from forestcost import main_model
 main_model.cost_func(
@@ -55,7 +55,7 @@ main_model.cost_func(
 )
 ```
 
-### Outputs
+###### Outputs
 
 ```
 {
@@ -78,6 +78,27 @@ main_model.cost_func(
  'total_volume': 15692.23                # cubic feet
 }
 ```
+
+###### Individual Parts
+* Skid Distance, Haul Distance Extension
+Skidding distance (feet), hauling distance extension (meter), and the landing coordiantes ((lon, lat (tuple)) are returned from [skidding](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding)
+The hauling distance extension is converted from meters to miles.
+
+* Harvest Cost     
+Harvest cost (US dollars/cubic feet) and the name of the selected harvest system is returned from [harvesting](https://github.com/ustroetz/cost_model/blob/master/README.md#harvesting)
+`totalHarvestCost = harvestCost*totalVolume´ in US dollar
+
+* Hauling Cost  
+Hauling distance and haul distance extension are added together to the total one way haulind distance.
+For the hauling distance extension a travel speed of 30 MPH is assumed. Hauling time roundtrip is calculated by doppeling the one-way time plus adding the travel time on the extension.
+Haul cost (US dollars/minute) is returned from [hauling](https://github.com/ustroetz/cost_model/blob/master/README.md#hauling)
+Volume per load of a standard stinger-steer log truck varies from 700 (small timber to 1000 cubic feet (large timber).
+`truckVol = percentageCT*700+percentageSLT*850+percentageLLT*1000´
+Necessary total trips are calculated by dividing total volume by truck volume (adjusted upward).
+`totalHaulCost = haulTimeRT*haulCost*trips´ in US dollar
+
+* Total Costs 
+`totalCost = totalHaulCost + totalHarvestCost´ in US dollar
 #### [Harvesting] (forestcost/harvesting.py)
 Harvesting calculates the costs for four harvesting systems and returns the price (US dollar/cubic feet) and name of the least expensive one. 
 If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
