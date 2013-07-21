@@ -81,11 +81,11 @@ main_model.cost_func(
 
 ###### Individual Parts
 
-* Skid Distance, Haul Distance Extension
+* Skid Distance, Haul Distance Extension  
 Skidding distance (feet), hauling distance extension (meter), and the landing coordiantes ((lon, lat (tuple)) are returned from [skidding](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding).
 The hauling distance extension is converted from meters to miles.
 
-* Harvest Cost
+* Harvest Cost  
 Harvest cost (US dollars/cubic feet) and the name of the selected harvest system is returned from [harvesting](https://github.com/ustroetz/cost_model/blob/master/README.md#harvesting).
 `totalHarvestCost = harvestCost*totalVolume                             # US dollar`
 
