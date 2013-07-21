@@ -82,7 +82,6 @@ main_model.cost_func(
 ###### Individual Parts
 
 * Skid Distance, Haul Distance Extension
-
 Skidding distance (feet), hauling distance extension (meter), and the landing coordiantes ((lon, lat (tuple)) are returned from [skidding](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding).
 The hauling distance extension is converted from meters to miles.
 
@@ -92,6 +91,7 @@ Harvest cost (US dollars/cubic feet) and the name of the selected harvest system
 
 * Hauling Cost  
 `haulDist = haulDist + HaulDistExtension` (miles)
+
 For the hauling distance extension a travel speed of 30 MPH is assumed. 
 `haulTimeRoundTrip = haulTime*2.0+HaulDistExtension*2.0/(30*60.0)` (minutes)
 Haul cost (US dollars/minute) is returned from [hauling](https://github.com/ustroetz/cost_model/blob/master/README.md#hauling).
@@ -100,8 +100,7 @@ Volume per load of a standard stinger-steer log truck varies from 700 (small tim
 `trips = totalVolume/truckVol` (adjusted upward)
 `totalHaulCost = haulTimeRT*haulCost*trips` (US dollar)
 
-* Total Costs 
-
+* Total Costs  
 `totalCost = totalHaulCost + totalHarvestCost` (US dollar)
 
 #### [Harvesting] (forestcost/harvesting.py)
