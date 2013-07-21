@@ -180,6 +180,35 @@ hauling.haulcost(
     AverageCPmin                # Average owning, operating, and labor cost for log truck (US dollars/ minutes)
 ```    
 
+
+#### [Skidding] (forestcost/skidding.py)
+Skidding returns the skidding distance from the centroid of the stand to the stand landing, the coordinates of the stand landing, and the distance from the stand landing to the road landing.
+
+1. A straight line from the centroid of the stand to the road landing is created.
+2. Where the line intersects with the stand is the stand landing.
+3. Distance from the centroid to the stand landing is the skidding distance and distance from the stand landing to the road landing is the haul distance extension and considered as road.
+4. Skidding distance limit is 1,300 feet (additional skidding distance is added to haul distance extension). If skidding distance > 1,300 and slope > 40 than the limit is 10,000 feet (helicopter logging).
+![Alt text](http://s10.postimg.org/6dwy8f0h5/Capture.png)
+
+###### Inputs
+```
+from forestcost import skidding
+skidding.skidding(
+
+    stand_wkt,                  # Well-Known Text geometry of stand polygon
+    landing_coords,             # coordinate of road landing from landing.py 
+    Slope                       # Slope (%)
+)
+```
+
+###### Outputs 
+```
+    YardDist,                   # Skidding distance (feet)
+    HaulDistExtension,          # Haul distance extension (feet)
+    coord_landing_stand_tuple   # coordinate of stand landing ((lon, lat) tuple)
+```  
+
+
 #### [GIS] (forestcost/gis.py)
 The area function returns the total area (acers) of the stand.
 
@@ -232,34 +261,7 @@ landing.landing(
 ###### Outputs 
 ```
     landing_coords               # coordinate of road landing ((lon, lat) tuple)
-```    
-
-#### [Skidding] (forestcost/skidding.py)
-Skidding returns the skidding distance from the centroid of the stand to the stand landing, the coordinates of the stand landing, and the distance from the stand landing to the road landing.
-
-1. A straight line from the centroid of the stand to the road landing is created.
-2. Where the line intersects with the stand is the stand landing.
-3. Distance from the centroid to the stand landing is the skidding distance and distance from the stand landing to the road landing is the haul distance extension and considered as road.
-4. Skidding distance limit is 1,300 feet (additional skidding distance is added to haul distance extension). If skidding distance > 1,300 and slope > 40 than the limit is 10,000 feet (helicopter logging).
-![Alt text](http://s10.postimg.org/6dwy8f0h5/Capture.png)
-
-###### Inputs
-```
-from forestcost import skidding
-skidding.skidding(
-
-    stand_wkt,                  # Well-Known Text geometry of stand polygon
-    landing_coords,             # coordinate of road landing from landing.py 
-    Slope                       # Slope (%)
-)
-```
-
-###### Outputs 
-```
-    YardDist,                   # Skidding distance (feet)
-    HaulDistExtension,          # Haul distance extension (feet)
-    coord_landing_stand_tuple   # coordinate of stand landing ((lon, lat) tuple)
-```   
+```     
 
 #### [Routing] (forestcost/routing.py)
 The routing information can be determined by selecting the closest mill from a
