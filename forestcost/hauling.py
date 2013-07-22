@@ -8,7 +8,7 @@ def haulcost(TravelDistanceOneWay, TimeRoundTrip):
     ################PRE CALCULATIONS################
     ################################################
     haul_mc_wb = xlrd.open_workbook(
-        os.path.join(os.path.dirname(__file__), 'hauling_cost.xls'))
+        os.path.join(os.path.dirname(__file__), 'haul_cost.xls'))
 
     sh = haul_mc_wb.sheet_by_index(0)
 
