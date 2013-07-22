@@ -85,7 +85,8 @@ main_model.cost_func(
 ###### Individual Parts
 
 * Skid Distance and Haul Distance Extension  
-Skidding distance (feet), hauling distance extension (meter), and the landing coordiantes ((lon, lat (tuple)) are returned from [skidding](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding). The hauling distance extension is converted from meters to miles.
+Skidding distance (feet), hauling distance extension (meter), and the landing coordiantes (lon, lat (tuple)) are returned from [skidding](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding).  
+`HaulDistExtension = HaulDistExtension*0.000189394 # convert from meter to miles`
 
 * Harvest Cost  
 Harvest cost (US dollars/cubic feet) and the name of the selected harvest system is returned from [harvesting](https://github.com/ustroetz/cost_model/blob/master/README.md#harvesting).
@@ -106,10 +107,10 @@ Haul cost (US dollars/minute) is returned from [hauling](https://github.com/ustr
 
 #### [Harvesting] (forestcost/harvesting.py)
 Harvesting calculates the costs for four harvesting systems and returns the price (US dollar/cubic feet) and name of the least expensive one. 
-If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.
-
-Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/frcs.shtml) from the USDA.
-
+If no harvesting system is suitable due to limitations of the systems `Price = NaN` and `HarvestingSystem = 'NoSystem'` is returned.  
+  
+Harvesting is based on the Fuel Reduction Cost Simulator [(FRCS-West)] (http://www.fs.fed.us/pnw/data/frcs/frcs.shtml) from the USDA.  
+  
 Machine costs and labor costs are stored in [harvest_cost.xls] (forestcost/harvest_cost.xls).
 
 ###### Inputs
@@ -163,9 +164,9 @@ harvesting.harvestcost(
 
 #### [Hauling] (forestcost/hauling.py)
 Hauling returns the cost (US dollar/min) to operate a standard stinger-steer log truck (18 tires). 
-
+  
 Harvesting is based on the [Log Truck Haul Cost] (http://www.fs.usda.gov/detail/r6/landmanagement/resourcemanagement/?cid=fsbdev2_027048) from the USDA.
-
+  
 Machine costs and labor costs are stored in [haul_cost.xls] (forestcost/haul_cost.xls).
 
 ###### Inputs
@@ -270,6 +271,7 @@ landing.landing(
 
 #### [Routing] (forestcost/routing.py) (feeds into Main Model)
 Routing returns the one-way distance and time from the road landing to the mill and the coordinates of the selected mill.  
+  
 OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to determine the distance and time.  
   
 Routing either automatically determines the closest mill by creating exponential expanding bounding boxes around the landing until at least three mills are found. 
