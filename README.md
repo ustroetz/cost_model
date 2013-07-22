@@ -17,7 +17,7 @@ Both together result in the total delivered cost (US Dollar).
 
 ### Installation
 
-Requires `xlrd`, `python-gdal`, `json`, `requests`, and `numpy`. 
+Requires `xlrd`, `python-gdal`, `json`, `requests`, and `numpy`
 
 To install, simply `python setup.py install` or work directly from the root directory
 
