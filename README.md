@@ -259,8 +259,7 @@ Landing returns the road landing coordinates on the closest road to the property
 from forestcost import landing
 landing.landing(
 
-    lyr=None                     # OGR layer of property
-    centroid_coords=None         # coordinate of centroid of property ((lon, lat) tuple)
+    lyr                          # OGR layer of property
 )
 ```
 
