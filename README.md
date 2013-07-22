@@ -3,8 +3,9 @@
 
 ### Overview
 
-The Timber Harvest Cost Model estimates total delivered costs (US dollar) from stumpage to mill gate for a timber stand. The two main components of the model are the harvest costs and hauling costs. 
-The model estimates a harvest cost (US Dollar/cubic foot) and a hauling cost (US Dollar/minute). Harvest cost (US Dollar/cubic foot) is multipled by the total volume (cubic foot) of the stand. 
+The Timber Harvest Cost Model estimates total delivered costs (US dollar) from stumpage to mill gate for a timber stand.
+The two main components of the model are the harvest costs (US Dollar/cubic foot) and hauling costs (US Dollar/minute) which are estiamted by the model. 
+Harvest cost (US Dollar/cubic foot) is multipled by the total volume (cubic foot) of the stand. 
 Hauling cost (US Dollar/minute) is multiplied by the total hauling time (minutes)(landing to the mill gate) and by the total necessary hauling trips. 
 Both together result in the total delivered cost (US Dollar).
 
