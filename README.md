@@ -267,43 +267,53 @@ landing.landing(
 ```     
 
 #### [Routing] (forestcost/routing.py)
-The routing information can be determined by selecting the closest mill from a
-shapefile
+Routing returns the one-way distance and time from the road landing to the mill, and the coordinates of the selected mill.  
+OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to determine the distance and time.  
+  
+Routing either automatically determines the closest mill by creating exponantly expanding bounding boxes around the landing until at least three mills are found. 
+If three mills are found the routes for them are determined and the one with the shortest distance is selected.
 
+###### Inputs
 ```
 from forestcost import routing
 
-mill_shp = 'Data//mills.shp'
-landing_coords = (-118.620, 44.911)
+mill_shp = 'Data//mills.shp'        # shapefile containing mill points
+landing_coords = (-118.620, 44.911) # coordinates of road landing ((lon, lat) tuple)
 
-haul_distance, haul_time, coord_mill = r.routing(
+routing.routing(
     landing_coords,
     mill_shp=mill_shp
 )
 ```
-
-or by specifying the exact location of the mill
+Or the exact mill location can be specified.
 
 ```
-mill_coords = (-119.250013, 44.429948)
-landing_coords = (-118.620, 44.911)
+mill_coords = (-119.250, 44.429)    # coordinates of selected mill ((lon, lat) tuple)
+landing_coords = (-118.620, 44.911) # coordinates of road landing ((lon, lat) tuple)
 
-haul_distance, haul_time, coord_mill = r.routing(
+routing.routing(
     landing_coords,
     mill_coords=mill_coords,
 )
 ```
 
-additionally you can filter the mill shapefile using OGR SQL queries
+Additionally the mill shapefile can be filtered using OGR SQL queries
 
 ```
-mill_filter = "CITY = 'John Day'"
+mill_shp = 'Data//mills.shp'        # shapefile containing mill points
+landing_coords = (-118.620, 44.911) # coordinates of road landing ((lon, lat) tuple)
+mill_filter = "CITY = 'John Day'"   # filter using OGR SQL query
 
-haul_distance, haul_time, coord_mill = r.routing(
+routing.routing(
     landing_coords,
     mill_shp=mill_shp,
     mill_filter=mill_filter,
 )
 ```
-
+###### Outputs
+```
+total_distance,                     # one-way distance from road landing to mill (miles)
+total_time,                         # one-way time from road landing to mill (minutes)
+coord_mill_tuple                    # coordinates of selected mill ((lon, lat) tuple)
+```
 
