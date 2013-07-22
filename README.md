@@ -271,7 +271,7 @@ Routing returns the one-way distance and time from the road landing to the mill,
 OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to determine the distance and time.  
   
 Routing either automatically determines the closest mill by creating exponential expanding bounding boxes around the landing until at least three mills are found. 
-If three mills are found the routes for them are determined and the one with the shortest distance is selected.
+If three mills are found the routes for each one are determined and the shortest one is selected.
 
 ###### Inputs
 ```
