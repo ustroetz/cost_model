@@ -269,7 +269,7 @@ landing.landing(
 ```     
 
 #### [Routing] (forestcost/routing.py)
-Routing returns the one-way distance and time from the road landing to the mill, and the coordinates of the selected mill.  
+Routing returns the one-way distance and time from the road landing to the mill and the coordinates of the selected mill.  
 OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to determine the distance and time.  
   
 Routing either automatically determines the closest mill by creating exponential expanding bounding boxes around the landing until at least three mills are found. 
