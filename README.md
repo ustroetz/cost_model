@@ -247,7 +247,7 @@ gis.zonal_stats(
     mean                        # Mean values of the slope/elevation raster within the zones of the stand
 ```    
 
-#### [Landing] (forestcost/landing.py)
+#### [Landing] (forestcost/landing.py) (feeds into Main Model)
 Landing returns the road landing coordinates on the closest road to the property (stand landing coordinates are determined with [skidding.py](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding)).
     
 1. Centroids of all stands are created
@@ -268,7 +268,7 @@ landing.landing(
     landing_coords               # coordinate of road landing ((lon, lat) tuple)
 ```     
 
-#### [Routing] (forestcost/routing.py)
+#### [Routing] (forestcost/routing.py) (feeds into Main Model)
 Routing returns the one-way distance and time from the road landing to the mill and the coordinates of the selected mill.  
 OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to determine the distance and time.  
   
