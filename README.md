@@ -3,11 +3,11 @@
 
 ### Overview
 
-The Timber Harvest Cost Model estimates total delivered costs (US dollar) from the stumpage to the mill gate for a timber stand.
-The two main components of the model are the harvest cost (US Dollar/cubic foot) and the hauling cost (US Dollar/minute) which are estimated by the model. 
-Harvest cost (US Dollar/cubic foot) is multipled by the total volume (cubic foot) of the stand. 
-Hauling cost (US Dollar/minute) is multiplied by the total hauling time (minutes) from the landing to the mill gate and by the total necessary hauling trips. 
-Both together result in the total delivered cost (US Dollar).
+The Timber Harvest Cost Model estimates total delivered costs ($ US) from the stumpage to the mill gate for a timber stand.
+The two main components of the model are the harvest cost ($ US/cubic foot) and the hauling cost ($ US/minute) which are estimated by the model. 
+Harvest cost ($ US/cubic foot) is multipled by the total volume (cubic foot) of the stand. 
+Hauling cost ($ US/minute) is multiplied by the total hauling time (minutes) from the landing to the mill gate and by the total necessary hauling trips. 
+Both together result in the total delivered cost ($ US).
 
 ######  Costs not included
 * Harvest equipment move-in costs
@@ -24,7 +24,7 @@ To install, simply `python setup.py install` or work directly from the root dire
 ## Modules
 
 #### [Main Model] (forestcost/main_model.py)
-The Main Model defines the cost function which is the primary interface; given information about stand attributes, harvest 
+The Main Model defines the cost function which is the primary interface; given information about stand attributes, tree attributes 
 and routing, the cost function will estimate harvest and transportation costs. 
 
 ###### Inputs
@@ -84,21 +84,21 @@ main_model.cost_func(
 
 ###### Individual Parts
 
-* Skid Distance and Haul Distance Extension  
-Skidding distance (feet), hauling distance extension (meter), and the landing coordiantes (lon, lat (tuple)) are returned from [skidding](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding).  
+* Skidding Distance and Haul Distance Extension  
+Skidding distance (feet), hauling distance extension (meters), and the landing coordiantes (lon, lat (tuple)) are returned from [skidding](https://github.com/ustroetz/cost_model/blob/master/README.md#skidding).  
 `HaulDistExtension = HaulDistExtension*0.000189394 # convert from meter to miles`
 
-* Harvest Cost  
-Harvest cost (US dollars/cubic feet) and the name of the selected harvest system is returned from [harvesting](https://github.com/ustroetz/cost_model/blob/master/README.md#harvesting).
+* Harvesting Cost  
+Harvesting cost (US dollars/cubic feet) and the name of the selected harvest system is returned from [harvesting](https://github.com/ustroetz/cost_model/blob/master/README.md#harvesting).
 `totalHarvestCost = harvestCost*totalVolume # US dollar`
 
 * Hauling Cost  
-Haul cost (US dollars/minute) is returned from [hauling](https://github.com/ustroetz/cost_model/blob/master/README.md#hauling).  
+Hauling cost (US dollars/minute) is returned from [hauling](https://github.com/ustroetz/cost_model/blob/master/README.md#hauling).  
 `haulDist = haulDist + HaulDistExtension    # miles`  
 `haulTimeRoundTrip = haulTime*2.0+HaulDistExtension*2.0/(30*60.0)   # minutes`  
 &nbsp;&nbsp;&nbsp;&nbsp;30 mph on hauling distance extension
 `truckVol = percentageChipTrees*700+percentageSmallLogTrees*850+percentageLargeLogTrees*1000    # cubic feet`  
-&nbsp;&nbsp;&nbsp;&nbsp;standard stinger-steer log truck: 700 cubic feet small timber to 1000 cubic feet large timber
+&nbsp;&nbsp;&nbsp;&nbsp;standard stinger-steer log truck: 700 cubic feet of small timber to 1000 cubic feet of large timber
 `trips = totalVolume/truckVol   # adjusted upward`  
 `totalHaulCost = haulTimeRoundTrip*haulCost*trips   # US dollar`
 
@@ -145,7 +145,7 @@ harvesting.harvestcost(
  System limits: `Slope<40 and TreeVolCT<80 and TreeVolSLT<80 and TreeVolLLT<500 and TreeVolALT<500 and TreeVol<500`
 
 
-* Ground-Based Mech Whole Tree = trees are felled and bunched; drive-to-tree machines are assumed for flat ground, whereas swingboom and self-leveling versions are included for steeper terrain. Rubber-tired grapple skidders transport bunches to the landing. Trees are chipped or processed mechanically with stroke or single-grip processors and loaded onto trucks.
+* Ground-Based Mechanized Whole Tree = trees are felled and bunched; drive-to-tree machines are assumed for flat ground, whereas swingboom and self-leveling versions are included for steeper terrain. Rubber-tired grapple skidders transport bunches to the landing. Trees are chipped or processed mechanically with stroke or single-grip processors and loaded onto trucks.  
 `GroundBasedMechWT = CostFellBunch+CostManFLBLLT+CostSkidBun+CostProcess+CostChipWT+CostLoad`
 
  System limits: `Slope<40  and TreeVolCT<80 and TreeVolSLT<80 and TreeVolLLT<250 and TreeVolALT<250 and TreeVol<250`
@@ -191,7 +191,7 @@ Skidding returns the skidding distance from the centroid of the stand to the sta
 1. A straight line from the centroid of the stand to the road landing is created.
 2. Where the line intersects with the stand is the stand landing.
 3. Distance from the centroid to the stand landing is the skidding distance and distance from the stand landing to the road landing is the haul distance extension and considered as road.
-4. Skidding distance limit is 1,300 feet (additional skidding distance is added to haul distance extension). If skidding distance > 1,300 and slope > 40 than the limit is 10,000 feet (helicopter logging).
+4. Skidding distance limit is 1,300 feet (additional skidding distance is added to haul distance extension). If the skidding distance > 1,300 and the slope > 40 then the limit is 10,000 feet (helicopter logging).
   
 <p align="center">
   <img src="http://s10.postimg.org/6dwy8f0h5/Capture.png" />
@@ -273,8 +273,9 @@ landing.landing(
 Routing returns the one-way distance and time from the road landing to the mill and the coordinates of the selected mill.  
   
 OpenStreetMap with [OSRM Routing API] (https://github.com/DennisOSRM/Project-OSRM/wiki) is used to determine the distance and time.  
-  
-Routing either automatically determines the closest mill by creating exponential expanding bounding boxes around the landing until at least three mills are found. 
+
+Routing either automatically determines the closest mill or the exact mill location can be specified.  
+If routing determines the closest mill automatically, exponentially expanding bounding boxes around the landing are created until at least three mills are found. 
 If three mills are found the routes for each one are determined and the shortest one is selected.
 
 ###### Inputs
@@ -289,7 +290,7 @@ routing.routing(
     mill_shp=mill_shp
 )
 ```
-Or the exact mill location can be specified.
+Alternatively the exact mill location can be specified.
 
 ```
 mill_coords = (-119.250, 44.429)    # coordinates of selected mill ((lon, lat) tuple)
