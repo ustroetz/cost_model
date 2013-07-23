@@ -498,7 +498,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 # Hydro-Ax 211 (Hartsough, 01)
                 if DBHST<10:
                     relevanceFBDHartsough01 = 1.0
-                elif DBHST<20:
+                elif DBHST<15:
                     relevanceFBDHartsough01 = 3.0-DBHST/5.0
                 else:
                     relevanceFBDHartsough01= 0
@@ -522,7 +522,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 if Slope<5:
                     relevanceFBSJohnson88 = 0
                 elif Slope<20:
-                    relevanceFBSJohnson88 = relevanceFBSJohnson88*(1.0/3.0+Slope/15.0)
+                    relevanceFBSJohnson88 = relevanceFBSJohnson88*(-1.0/3.0+Slope/15.0)
                 else:
                     relevanceFBSJohnson88 = relevanceFBSJohnson88
 
