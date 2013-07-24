@@ -158,7 +158,7 @@ def test_harvesting_CableManualWT():
         HdwdFractionLLT = 0.0
         
         # Expected Output
-        harvestCost = 0.7584
+        harvestCost = 0.7595
         HarvestSystem = 'CableManualWT'
         
         assert(harvesting.harvestcost(
