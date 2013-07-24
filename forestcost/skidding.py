@@ -1,5 +1,3 @@
-import requests
-import json
 import ogr
 import osr
 ogr.UseExceptions()

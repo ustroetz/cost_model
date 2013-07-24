@@ -2,7 +2,6 @@ import math
 import skidding
 import hauling
 import harvesting
-import landing
 
 
 # func for every stand per property

@@ -1,4 +1,4 @@
-import gdal, ogr, osr, numpy
+import gdal, osr, numpy
 
 # get area of stand in acres
 def area(lyr):
