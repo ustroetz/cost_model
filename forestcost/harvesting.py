@@ -158,9 +158,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                     TurnVol = 44.87*TreeVol**0.282*CSlopeSkidForwLoadSize
                 else:
                     TurnVol = 31.62*TreeVol**0.282*CSlopeSkidForwLoadSize
-                LogsPerTurnS = TurnVol/LogVol
-                ChokerLogs = min(10.0, LogsPerTurnS)
-                ChokerTurnVol = ChokerLogs*LogVol   
 
                 # relevance Inputs
                 # Grapple Skidders (Johnson, 88)
@@ -761,11 +758,9 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
 
             YarderCapacity = (6000+ManualMachineSize*3000)/WoodDensity
             TurnVolHensel792 = min(YarderCapacity,max(AreaLimitedTurnVol,TreeVol))
-            LogsHensel792 = max(1.0,(TurnVolHensel792/LogVol))
             TTHensel792 = (177.3+0.3568*LogVol+0.000522*SkidDist**2+0.0105*Slope**2)/60.0
 
             TurnVolHensel793 = min(YarderCapacity,max(AreaLimitedTurnVol,TreeVol))
-            LogsHensel793 = max(1.0,(TurnVolHensel793/LogVol))
             TTHensel793= (164+0.04872*BFperCF*LogVol+0.000405*SkidDist**2.0+607.0/(max(20.0,Slope)))/60.0
 
             TurnVolGardner801 = min(YarderCapacity,max(AreaLimitedTurnVol,TreeVol))
@@ -1029,16 +1024,13 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             # Helicpoter  Assumptions and Inputs
             HookAreaDiam = 75.0
             ExtraServiceFlightDist = 5000.0
-            HeliCruiseSpeed = 20.0
 
             # Helicopter Calculated Values
             HookArea = math.pi*(HookAreaDiam/2.0)**2/43506.0
             WtInHook_Area = HookArea*VolPerAcre*WoodDensity
-            WtSTInHook_Area = HookArea*VolPerAcreST*WoodDensityST
-            VolInHookArea = WtInHook_Area/WoodDensity
+
 
             LogWt = WoodDensity*LogVol
-            LogWtST = WoodDensityST*LogVolST
 
             # Flight Time and Related Assumptions			
             FlightTimeBell = 6.0
@@ -1072,8 +1064,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             # Helicopter Cost Calculations
             def HeliCostCalFunc (VariableCPH, FlightTime, FixedCPD, WoodsLandingLaborers, SupportCPD):
                 VariableCPD = VariableCPH*FlightTime
-                FixedCPH = FixedCPD/FlightTime
-                FixedVarCPH = FixedCPH+VariableCPH
                 LaborCPD = LaborCPPD*WoodsLandingLaborers
                 HeliYardCostPD = round ((1+ProfitRiskFraction)*(FixedCPD+VariableCPD+SupportCPD+LaborCPD))
                 return HeliYardCostPD
@@ -1305,7 +1295,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
 
                 # Loading Calculated Values
                 LoadVolALT = LoadWeight*2000/(WoodDensityALT*100)
-                LoadVolSLT = LoadWeight*2000/(WoodDensitySLT*100)
 
                 ## I. Loading Full-Length Logs
 
@@ -1345,7 +1334,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 LoadCCFPminBrown96 = 0.1+0.019*LogVolALT
                 LoadTimeBrown96 = LoadVolALT/LoadCCFPminBrown96+ExchangeTrucks
                 TimeCCFPminHartsough98 = 0.66+46.2/DBHALT
-                LoadTimeHartsough98 = TimeCCFPminHartsough98*LoadVolALT
 
                 # Loading Volume/ PMH (ccf)
                 LoadFLLVolPMHVaughan89 = 100*volumePMH (LoadVolALT, LoadTimeVaughan89)
@@ -1400,17 +1388,10 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
 
             ButtDiam=DBH+3.0
             ButtDiamSLT=DBHSLT+3.0
-            ButtDiamST=DBHST+3.0
 
             LoadWeight = 25.0
             LoadWeightChip = 25.0
             MoistureContent = 0.5
-
-            large_hardwood_fract = 0.0
-            Large_log_tre_res_fract = 0.38 
-            large_wood_density = 62.1225
-            largetreeavgdbh = 0
-            largetreebolewt = 0
 
             if VolPerAcreALT>0:
                 HdwdFractionALT = (HdwdFractionSLT*VolPerAcreSLT+HdwdFractionLLT*VolPerAcreLLT)/VolPerAcreALT
@@ -1432,10 +1413,6 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             WoodDensityCT = 60.0
             WoodDensityLLT = 62.1225
             WoodDensitySLT = 58.6235
-            if VolPerAcreST>0:
-                WoodDensityST = (WoodDensityCT*VolPerAcreCT+WoodDensitySLT*VolPerAcreSLT)/VolPerAcreST
-            else:
-                WoodDensityST = 0
             if VolPerAcreALT>0:
                 WoodDensityALT = (WoodDensitySLT*VolPerAcreSLT+WoodDensityLLT*VolPerAcreLLT)/VolPerAcreALT
             else:
@@ -1456,11 +1433,9 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             else:
                 LogsPerTreeALT = TreeVolALT = LogVolALT = 0
             if RemovalsST>0:
-                LogsPerTreeST = (LogsPerTreeCT*RemovalsCT+LogsPerTreeSLT*RemovalsSLT)/RemovalsST
                 TreeVolST = VolPerAcreST/RemovalsST
-                LogVolST = TreeVolST/LogsPerTreeST
             else:
-                LogsPerTreeST = TreeVolST = LogVolST = 0
+                TreeVolST = 0
             LogsPerTree =(LogsPerTreeCT*RemovalsCT+LogsPerTreeALT*RemovalsALT)/Removals
             TreeVol = VolPerAcre/Removals
             LogVol = TreeVol/LogsPerTree
