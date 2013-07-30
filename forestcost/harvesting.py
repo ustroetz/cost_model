@@ -290,113 +290,123 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         # Felling                                      #
         ################################################
         def fellfunc(removals, treevol, dbh, hardwood):
+            if removals>0 and treevol>0:
 
-            walkdistance = (max((43560/removals),1))**0.5
-            
-            # relevance Inputs
+                walkdistance = (max((43560/removals),1))**0.5
+                
+                # relevance Inputs
 
-            # McNeel, 94
-            relevanceMFeNeel94 = 1
+                # McNeel, 94
+                relevanceMFeNeel94 = 1
 
-            # Peterson, 87
-            relevanceMFePeterson87 = 1
+                # Peterson, 87
+                relevanceMFePeterson87 = 1
 
-            # Keatley, 2000
-            relevanceMFeKeatley00 = 1
+                # Keatley, 2000
+                relevanceMFeKeatley00 = 1
 
-            # Andersson, B. and G. Young, 98
-            if treevol < 5:
-                    relevanceMFeAndersson98 = 0
-            elif treevol < 15:
-                    relevanceMFeAndersson98 = -0.5 + treevol/10.0
-            elif treevol < 90:
-                    relevanceMFeAndersson98 = 1
-            elif treevol < 180:
-                    relevanceMFeAndersson98 = 2 - treevol/90.0
+                # Andersson, B. and G. Young, 98
+                if treevol < 5:
+                        relevanceMFeAndersson98 = 0
+                elif treevol < 15:
+                        relevanceMFeAndersson98 = -0.5 + treevol/10.0
+                elif treevol < 90:
+                        relevanceMFeAndersson98 = 1
+                elif treevol < 180:
+                        relevanceMFeAndersson98 = 2 - treevol/90.0
+                else:
+                        relevanceMFeAndersson98 = 0
+
+                relevanceMF = []
+                relevanceMF.extend(value for name, value in sorted(locals().items(), key=lambda item: item[0]) if name.startswith('relevanceMFe'))
+
+                # Time per Tree
+                if PartialCut==1:
+                    TPTmcneel94 = 0.163+0.0444*0.305*walkdistance+0.0323*2.54*dbh
+                else:
+                    TPTmcneel94 = min((0.163+0.0444*0.305*walkdistance+0.0323*2.54*dbh),(0.163+0.0444*0.305*walkdistance+0.0323*2.54*dbh))
+
+                if dbh<10:
+                    TPTpeterson87 = 0.33+0.012*dbh
+                else:
+                    TPTpeterson87 = 0.1+0.0111*dbh**1.496
+                TPTkeatley00 = (4.58+0.07*walkdistance+0.16*dbh)**0.5
+                TPTandersoon98 = 1.082+0.01505*treevol-0.634/treevol
+
+                # Calculate Volume per PMH
+                MFeVolumePMHmcneel94 = volumePMH (treevol, TPTmcneel94)
+                MFeVolumePMHpeterson87 = volumePMH (treevol, TPTpeterson87)
+                MFeVolumePMHkeatley00 = volumePMH (treevol, TPTkeatley00)
+                MFeVolumePMHandersoon98 = volumePMH (treevol, TPTandersoon98)
+
+                volumeMF = []
+                volumeMF.extend(value for name, value in sorted(locals().items(), key=lambda item: item[0]) if name.startswith('MFeVolumePMH'))
+
+                # Felling Cost ($/ ccf)
+                costMF = hardwood*relevancefunction(costPMHCSa, relevanceMF, volumeMF)
+
             else:
-                    relevanceMFeAndersson98 = 0
+                costMF = 0.0
 
-            relevanceMF = []
-            relevanceMF.extend(value for name, value in sorted(locals().items(), key=lambda item: item[0]) if name.startswith('relevanceMFe'))
-
-            # Time per Tree
-            if PartialCut==1:
-                TPTmcneel94 = 0.163+0.0444*0.305*walkdistance+0.0323*2.54*dbh
-            else:
-                TPTmcneel94 = min((0.163+0.0444*0.305*walkdistance+0.0323*2.54*dbh),(0.163+0.0444*0.305*walkdistance+0.0323*2.54*dbh))
-
-            if dbh<10:
-                TPTpeterson87 = 0.33+0.012*dbh
-            else:
-                TPTpeterson87 = 0.1+0.0111*dbh**1.496
-            TPTkeatley00 = (4.58+0.07*walkdistance+0.16*dbh)**0.5
-            TPTandersoon98 = 1.082+0.01505*treevol-0.634/treevol
-
-            # Calculate Volume per PMH
-            MFeVolumePMHmcneel94 = volumePMH (treevol, TPTmcneel94)
-            MFeVolumePMHpeterson87 = volumePMH (treevol, TPTpeterson87)
-            MFeVolumePMHkeatley00 = volumePMH (treevol, TPTkeatley00)
-            MFeVolumePMHandersoon98 = volumePMH (treevol, TPTandersoon98)
-
-            volumeMF = []
-            volumeMF.extend(value for name, value in sorted(locals().items(), key=lambda item: item[0]) if name.startswith('MFeVolumePMH'))
-
-            # Felling Cost ($/ ccf)
-            costMF = hardwood*relevancefunction(costPMHCSa, relevanceMF, volumeMF)
             return costMF
 
         def felllimbbuckfunc(removals, treevol, dbh, logspertree, hardwood):
+            if removals>0 and treevol>0:
 
-            walkdistance = (max((43560/removals),1))**0.5
-            
-            # relevance Inputs
+                walkdistance = (max((43560/removals),1))**0.5
+                
+                # relevance Inputs
 
-            # Kellogg&Olsen, 86
-            relevanceMFLBKellogg1986 = 1
+                # Kellogg&Olsen, 86
+                relevanceMFLBKellogg1986 = 1
 
-            # Kellogg, L., M. Miller and E. Olsen, 1999
-            if treevol < 1:
-                    relevanceMFLBKellogg1999 = 0
-            elif treevol < 2:
-                    relevanceMFLBKellogg1999 = -1 + treevol/1.0
-            elif treevol < 70:
-                    relevanceMFLBKellogg1999 = 1
+                # Kellogg, L., M. Miller and E. Olsen, 1999
+                if treevol < 1:
+                        relevanceMFLBKellogg1999 = 0
+                elif treevol < 2:
+                        relevanceMFLBKellogg1999 = -1 + treevol/1.0
+                elif treevol < 70:
+                        relevanceMFLBKellogg1999 = 1
+                else:
+                        relevanceMFLBKellogg1999 = 1.2-treevol/350.0
+
+                # Andersson, B. and G. Young, 98
+                if treevol < 5:
+                        relevanceMFLBAndersson1998 = 0
+                elif treevol < 15:
+                        relevanceMFLBAndersson1998 = -0.5+treevol/10.0
+                else:
+                        relevanceMFLBAndersson1998 = 1
+
+                relevanceMaFLB = []
+                relevanceMaFLB.extend(value for name, value in sorted(locals().items(), key=lambda item: item[0]) if name.startswith('relevanceMFLB'))
+
+                # Time per Tree
+                if PartialCut == 0:
+                    HeavyThin = 1
+                else:
+                    HeavyThin = 0
+                TPTkellogg1999 =(-0.465+0.102*dbh+0.016*31.5+0.562*logspertree+0.009*Slope+0.734*0.02+0.137*0.21+0.449+0.426*HeavyThin)*(1+0.25)
+                if PartialCut == 1:
+                    TPTkellogg1986 = 1.2*(1.33+0.0187*walkdistance+0.014*Slope+0.0987*treevol+0.14)
+                else:
+                    TPTkellogg1986 = 1.2*0.9*(1.33+0.0187*walkdistance+0.014*Slope+0.0987*treevol+0.14)
+                TPTandersson1998 =(1.772+0.02877*treevol-2.6486/treevol)*(1+0.197)
+
+                # Calculate Volume per PMH
+                MFLBVolumePMHkellogg1999 = volumePMH (treevol, TPTkellogg1999)
+                MFLBVolumePMHkellogg1986 = volumePMH (treevol, TPTkellogg1986)
+                MFLBVolumePMHandersson1998 = volumePMH (treevol, TPTandersson1998)
+
+                volumeMaFLB = []
+                volumeMaFLB.extend(value for name, value in sorted(locals().items(), key=lambda item: item[0]) if name.startswith('MFLBVolumePMH'))
+
+                # Felling Cost ($/ ccf)
+                costMFLB = hardwood*relevancefunction(costPMHCSa, relevanceMaFLB, volumeMaFLB)
+
             else:
-                    relevanceMFLBKellogg1999 = 1.2-treevol/350.0
-
-            # Andersson, B. and G. Young, 98
-            if treevol < 5:
-                    relevanceMFLBAndersson1998 = 0
-            elif treevol < 15:
-                    relevanceMFLBAndersson1998 = -0.5+treevol/10.0
-            else:
-                    relevanceMFLBAndersson1998 = 1
-
-            relevanceMaFLB = []
-            relevanceMaFLB.extend(value for name, value in sorted(locals().items(), key=lambda item: item[0]) if name.startswith('relevanceMFLB'))
-
-            # Time per Tree
-            if PartialCut == 0:
-                HeavyThin = 1
-            else:
-                HeavyThin = 0
-            TPTkellogg1999 =(-0.465+0.102*dbh+0.016*31.5+0.562*logspertree+0.009*Slope+0.734*0.02+0.137*0.21+0.449+0.426*HeavyThin)*(1+0.25)
-            if PartialCut == 1:
-                TPTkellogg1986 = 1.2*(1.33+0.0187*walkdistance+0.014*Slope+0.0987*treevol+0.14)
-            else:
-                TPTkellogg1986 = 1.2*0.9*(1.33+0.0187*walkdistance+0.014*Slope+0.0987*treevol+0.14)
-            TPTandersson1998 =(1.772+0.02877*treevol-2.6486/treevol)*(1+0.197)
-
-            # Calculate Volume per PMH
-            MFLBVolumePMHkellogg1999 = volumePMH (treevol, TPTkellogg1999)
-            MFLBVolumePMHkellogg1986 = volumePMH (treevol, TPTkellogg1986)
-            MFLBVolumePMHandersson1998 = volumePMH (treevol, TPTandersson1998)
-
-            volumeMaFLB = []
-            volumeMaFLB.extend(value for name, value in sorted(locals().items(), key=lambda item: item[0]) if name.startswith('MFLBVolumePMH'))
-
-            # Felling Cost ($/ ccf)
-            costMFLB = hardwood*relevancefunction(costPMHCSa, relevanceMaFLB, volumeMaFLB)
+                costMFLB = 0.0
+                
             return costMFLB
 
         def CostManFLBfunc():
@@ -454,7 +464,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         # Fell and Bunc                                #
         ################################################
         def CostFellBunchfunc():
-            if TreeVolST>0:
+            if TreeVolST>0 and RemovalsST>0:
 
                 DistBetweenTrees =(43560.0/(max(RemovalsST,1)))**0.5
 
@@ -1160,7 +1170,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         # Process                                      #
         ################################################
         def CostProcessfunc():
-            if TreeVolST>0:
+            if TreeVolST>0 and RemovalsST>0:
                 # Relevance
                 # Hahn Stroke Processor (Gonsier&Mandzak, 87)
                 if DBHSLT<15:
@@ -1239,7 +1249,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         # Chipping Whole Trees                         #
         ################################################
         def CostChipWTfunc():
-            if TreeVolCT>0:
+            if TreeVolCT>0 and RemovalsCT:
                 #General Input
                 TreeWeightDry = TreeVolCT*WoodDensityCT*(1-MoistureContent)
                 ExchangeVans = 5.3
@@ -1288,7 +1298,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
         # Loading                                      #
         ################################################
         def CostLoadfunc():
-            if RemovalsALT > 0: 
+            if TreeVolALT>0 and RemovalsALT>0: 
                 # General Inputs
 
                 ExchangeTrucks = 5.0
