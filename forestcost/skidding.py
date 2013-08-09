@@ -31,7 +31,7 @@ def skidding(stand_wkt, landing_coords, Slope):
 
     skidLineStand = geom.Intersection(skidLine)
 
-    try:
+    if skidLineStand.GetGeometryType() == 2:  # linestring
         lon, lat, y = skidLineStand.GetPoint(0)
         point_geom = ogr.Geometry(ogr.wkbPoint)
         point_geom.AddPoint(lon, lat)
@@ -45,7 +45,7 @@ def skidding(stand_wkt, landing_coords, Slope):
 
         dist_landing_stand = centroid_geom.Distance(landing_stand_geom)
 
-    except:
+    elif skidLineStand.GetGeometryType() == 5:  # multilinestring
         distList = []
         for line in skidLineStand:
             lon, lat, y = line.GetPoint(0)
@@ -65,7 +65,10 @@ def skidding(stand_wkt, landing_coords, Slope):
             distList.append(dist_landing)
 
         dist_landing_stand, landing_stand_geom = max(distList)
-            
+
+    else:
+        raise Exception("skidLineStand has unknown geometry type %s" % skidLineStand.GetGeometryType())
+
     YardDist = round((dist_landing_stand)*3.28084, 2)  # convert to feet
 
     # get distance from centroid to landing
