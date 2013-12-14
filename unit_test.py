@@ -1,5 +1,5 @@
 # unit test suite for forestcost
-# run 'py.test test_main_model.py'
+# run 'py.test unit_test.py'
 
 from forestcost import landing
 from forestcost import routing
