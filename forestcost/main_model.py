@@ -29,6 +29,12 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
     #############################################
     # Hauling Cost                              #
     #############################################
+    haulTimeRT = 0.0
+    haulCost = 0.0
+    truckVol = 0.0
+    trips = 0.0
+    totalHaulCost = 0.0
+
     if haulDist > 0:
         haulDist = haulDist + HaulDistExtension  # in miles
         haulDist = round(haulDist, 2)
@@ -39,19 +45,13 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
         haulCost = hauling.haulcost(haulDist, haulTimeRT)  # returns haul cost per minute
 
         # stinger-steer log truck avg volume per load (7 CCF small timber to 10 CCF large timber)
-        percentageCT = (TreeVolCT*RemovalsCT)/totalVolumePerAcre 
-        percentageSLT = (TreeVolSLT*RemovalsSLT)/totalVolumePerAcre
-        percentageLLT = (TreeVolLLT*RemovalsLLT)/totalVolumePerAcre 
-        truckVol = percentageCT*700+percentageSLT*850+percentageLLT*1000
-        trips = math.ceil(totalVolume/truckVol)  # necessary total trips to mill
-        totalHaulCost = round(haulTimeRT*haulCost*trips)  # total costs for all trips
-
-    else:
-        haulTimeRT = 0.0
-        haulCost = 0.0
-        truckVol = 0.0
-        trips = 0.0
-        totalHaulCost = 0.0
+        if totalVolumePerAcre > 0.0:
+            percentageCT = (TreeVolCT*RemovalsCT)/totalVolumePerAcre 
+            percentageSLT = (TreeVolSLT*RemovalsSLT)/totalVolumePerAcre
+            percentageLLT = (TreeVolLLT*RemovalsLLT)/totalVolumePerAcre 
+            truckVol = percentageCT*700+percentageSLT*850+percentageLLT*1000
+            trips = math.ceil(totalVolume/truckVol)  # necessary total trips to mill
+            totalHaulCost = round(haulTimeRT*haulCost*trips)  # total costs for all trips
 
     #############################################
     # Total Costs                               #
