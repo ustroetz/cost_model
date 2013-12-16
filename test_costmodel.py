@@ -5,7 +5,7 @@ from forestcost import gis
 from pprint import pprint
 import ogr
 
-def main():
+if __name__ == '__main__':
     ### GIS Data
     slope_raster = 'testdata//slope.tif'
     elevation_raster = 'testdata//dem.tif'
@@ -80,6 +80,6 @@ def main():
 
     pprint(cost)
 
-main()
+
 
 
