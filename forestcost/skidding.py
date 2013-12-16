@@ -9,7 +9,7 @@ def skidding(stand_wkt, landing_coords, Slope):
     geom = ogr.CreateGeometryFromWkt(stand_wkt)
 
     landing_geom = ogr.Geometry(ogr.wkbPoint)
-    landing_geom.AddPoint(*landing_coords)
+    landing_geom.AddPoint_2D(*landing_coords)
 
     # Transform landing coordinates from WGS84 to Web Mercator
     inSR = landing_geom.GetSpatialReference()
@@ -22,25 +22,34 @@ def skidding(stand_wkt, landing_coords, Slope):
         landing_geom.Transform(coordTrans)
 
     # Create centroid of harvest area
+    # TODO get point on surface instead of centroid, no direct API for this
+    # see http://darrencope.com/2013/11/09/creating-points-on-a-surface-using-ogr/
     centroid_geom = geom.Centroid()
 
     # Create skidding line
     skidLine = ogr.Geometry(type=ogr.wkbLineString)
-    skidLine.AddPoint(centroid_geom.GetX(), centroid_geom.GetY())
-    skidLine.AddPoint(landing_geom.GetX(), landing_geom.GetY())
+    skidLine.AddPoint_2D(centroid_geom.GetX(), centroid_geom.GetY())
+    skidLine.AddPoint_2D(landing_geom.GetX(), landing_geom.GetY())
 
     skidLineStand = geom.Intersection(skidLine)
+    if skidLineStand.IsEmpty():
+        # line from centroid to landing didn't intersect stand;
+        # likely a poorly design stand geom where centroid doesn't fall on polygon
+        # Default to using the entire line.
+        skidLineStand = ogr.CreateGeometryFromWkt(skidLine.ExportToWkt())  
+
+    skidLineStand.FlattenTo2D()  # Ensure 2D lines, just in case
 
     if skidLineStand.GetGeometryType() == 2:  # linestring
         lon, lat, y = skidLineStand.GetPoint(0)
         point_geom = ogr.Geometry(ogr.wkbPoint)
-        point_geom.AddPoint(lon, lat)
+        point_geom.AddPoint_2D(lon, lat)
         if point_geom.Within(geom) is False:
             landing_stand_geom = point_geom
         else:
             lon, lat, y = skidLineStand.GetPoint(1)
             point_geom = ogr.Geometry(ogr.wkbPoint)
-            point_geom.AddPoint(lon, lat)
+            point_geom.AddPoint_2D(lon, lat)
             landing_stand_geom = point_geom
 
         dist_landing_stand = centroid_geom.Distance(landing_stand_geom)
@@ -50,13 +59,13 @@ def skidding(stand_wkt, landing_coords, Slope):
         for line in skidLineStand:
             lon, lat, y = line.GetPoint(0)
             point_geom = ogr.Geometry(ogr.wkbPoint)
-            point_geom.AddPoint(lon, lat)
+            point_geom.AddPoint_2D(lon, lat)
             if point_geom.Within(geom) is False:
                 landing_stand_geom = point_geom
             else:
                 lon, lat, y = line.GetPoint(1)
                 point_geom = ogr.Geometry(ogr.wkbPoint)
-                point_geom.AddPoint(lon, lat)
+                point_geom.AddPoint_2D(lon, lat)
                 landing_stand_geom = point_geom
                 
             # get distance from centroid to landing at stand
@@ -68,6 +77,13 @@ def skidding(stand_wkt, landing_coords, Slope):
 
     else:
         raise Exception("skidLineStand has unknown geometry type %s" % skidLineStand.GetGeometryType())
+
+    if dist_landing_stand == 0.0:
+        # Likely that both the landing and the centroid are outside the stand boundaries
+        # Instead of centroid, use distance to stand polygon itself
+        # This could be a wildly inaccurate assumption but any stand which produces it 
+        # would be horribly designed as a homogeneous harvest anyways. 
+        dist_landing_stand = geom.Distance(landing_stand_geom)
 
     YardDist = round((dist_landing_stand)*3.28084, 2)  # convert to feet
 
