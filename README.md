@@ -21,6 +21,10 @@ Requires `xlrd`, `python-gdal`, `json`, `requests`, and `numpy`
 
 To install, simply `python setup.py install` or work directly from the root directory
 
+### Using the model
+
+See `test_costmodel.py` for an example of usage with the data in `testdata`.
+
 ## Modules
 
 #### [Main Model] (forestcost/main_model.py)
