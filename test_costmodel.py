@@ -10,8 +10,7 @@ if __name__ == '__main__':
     slope_raster = 'testdata//slope.tif'
     elevation_raster = 'testdata//dem.tif'
 
-    driver = ogr.GetDriverByName('ESRI Shapefile')
-    property_shp = driver.Open('testdata//test_stand.shp', 0)
+    property_shp = ogr.Open('testdata//test_stand.shp')
     property_lyr = property_shp.GetLayer()
     stand_lyr = property_shp.GetLayer()
     feat = stand_lyr.GetFeature(0)
@@ -41,7 +40,7 @@ if __name__ == '__main__':
 
     # Large Log Trees
     RemovalsLLT = 20.00
-    TreeVolLLT = 200.00
+    TreeVolLLT = 100.00
 
     ### Mill information
     mill_shp = 'testdata//mills.shp'
