@@ -4,3 +4,4 @@ Data/
 *.cache
 *.egg-info
 *.DS_store
+*.xml
