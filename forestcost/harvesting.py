@@ -8,7 +8,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
                 RemovalsCT, TreeVolCT,
                 RemovalsSLT, TreeVolSLT,
                 RemovalsLLT, TreeVolLLT,
-                HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT):
+                HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, NoHelicopter):
 
         ################################################
         # General functions                            #
@@ -1575,19 +1575,48 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             else:
                 CableManualWT = float('NaN')
 
+            # No Helicopter, No SkidDist Limit on Cabel Manual WT
+            if NoHelicopter is True:
+                if TreeVolCT<80 and TreeVolSLT<80 and TreeVolLLT<500 and TreeVolALT<500 and TreeVol<500:
+                    CostManFLBLLT2 = CostManFLBLLT2func()
+                    CostManFellST2 = CostManFellST2func()
+                    CostProcess = CostProcessfunc()
+                    CostChipWT = CostChipWTfunc()
+                    CostLoad = CostLoadfunc()
+                    if PartialCut == 1:
+                        CostYardPCUB = CostYardPCUBfunc()
+                        CostYardUBAc = round (CostYardPCUB*VolPerAcre/100)
+                    else:
+                        CostYardCCUB = CostYardCCUBfunc()
+                        CostYardUBAc = round (CostYardCCUB*VolPerAcre/100)
+                    CostManFLBLLT2Ac = round(CostManFLBLLT2*VolPerAcreLLT/100)
+                    CostManFellST2Ac = round(CostManFellST2*VolPerAcreST/100)
+                    CostProcessAc = round(CostProcess*VolPerAcreSLT/100)
+                    CostChipWTAc = round (CostChipWT*VolPerAcreCT/100)
+                    CostLoadAc = round(CostLoad*VolPerAcreALT/100)
+                    CableManualWTAc = CostManFLBLLT2Ac + CostManFellST2Ac + CostProcessAc + CostChipWTAc + CostYardUBAc + CostLoadAc
+                    CableManualWT = round(CableManualWTAc/VolPerAcre, 4)
+                else:
+                    CableManualWT = float('NaN')
+           
             # Helicopter Manual WT
-            if TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150:
-                CostHeliYardML, CostHeliLoadML = CostHelifunc()
-                CostManFLB = CostManFLBfunc()
-                CostChipWT = CostChipWTfunc()
-                CostHeliYardMLAc = round(CostHeliYardML*VolPerAcre/100)
-                CostHeliLoadMLAc = round(CostHeliLoadML*VolPerAcreALT/100)
-                CostManFLBAc = round (CostManFLB*VolPerAcre/100)
-                CostChipWTAc = round (CostChipWT*VolPerAcreCT/100)
-                HelicopterManualWTAc = CostHeliLoadMLAc + CostHeliYardMLAc + CostManFLBAc + CostChipWTAc
-                HelicopterManualWT = round (HelicopterManualWTAc/VolPerAcre, 4)
+            if NoHelicopter is False:
+                if TreeVolCT<80 and TreeVolALT<250 and SkidDist<10000 and TreeVol<250 and TreeVolLLT<150:
+                    CostHeliYardML, CostHeliLoadML = CostHelifunc()
+                    CostManFLB = CostManFLBfunc()
+                    CostChipWT = CostChipWTfunc()
+                    CostHeliYardMLAc = round(CostHeliYardML*VolPerAcre/100)
+                    CostHeliLoadMLAc = round(CostHeliLoadML*VolPerAcreALT/100)
+                    CostManFLBAc = round (CostManFLB*VolPerAcre/100)
+                    CostChipWTAc = round (CostChipWT*VolPerAcreCT/100)
+                    HelicopterManualWTAc = CostHeliLoadMLAc + CostHeliYardMLAc + CostManFLBAc + CostChipWTAc
+                    HelicopterManualWT = round (HelicopterManualWTAc/VolPerAcre, 4)
+                else:
+                    HelicopterManualWT = float('NaN')
             else:
                 HelicopterManualWT = float('NaN')
+                
+   
        
             
             HarvestingSystemName = ['GroundBasedMechWT', 'GroundBasedManualWT', 'CableManualWT','HelicopterManualWT']

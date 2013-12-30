@@ -8,18 +8,20 @@ import harvesting
 def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
               RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT,
               HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT,
-              PartialCut, landing_coords, haulDist, haulTime, coord_mill):
+              PartialCut, landing_coords, haulDist, haulTime, coord_mill, NoHelicopter = False):
 
     #############################################
     # Skid Distance, Haul Distance Extension    #
     #############################################
     SkidDist, HaulDistExtension, coord_landing_stand = skidding.skidding(stand_wkt, landing_coords, Slope)
-    HaulDistExtension = round(HaulDistExtension*0.000189394, 3)  # convert to miles
+    HaulDistExtension = round(HaulDistExtension*0.000189394, 3)  # convert to miles 
+    SkidDist = 3000
+    Slope = 50
 
     #############################################
     # Harvest Cost                              #
     #############################################
-    harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT)
+    harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, NoHelicopter)
     harvestCost, HarvestSystem = harvest_result  # returns harvest cost per CCF and Harvesting System
 
     totalVolumePerAcre = TreeVolSLT*RemovalsSLT+RemovalsLLT*TreeVolLLT+RemovalsCT*TreeVolCT
@@ -35,7 +37,7 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
     trips = 0.0
     totalHaulCost = 0.0
 
-    if haulDist > 0:
+    if haulDist > 0.00001:
         haulDist = haulDist + HaulDistExtension  # in miles
         haulDist = round(haulDist, 2)
         if HaulDistExtension > 0:
