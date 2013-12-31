@@ -74,7 +74,10 @@ if __name__ == '__main__':
         landing_coords,
         haulDist,
         haulTime,
-        coord_mill
+        coord_mill,
+        # options
+        True,
+        0.5
     )
 
     pprint(cost)

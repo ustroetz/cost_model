@@ -8,20 +8,18 @@ import harvesting
 def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
               RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT,
               HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT,
-              PartialCut, landing_coords, haulDist, haulTime, coord_mill, NoHelicopter = False):
+              PartialCut, landing_coords, haulDist, haulTime, coord_mill, NoHelicopter = False, NoHaulProportion = 1):
 
     #############################################
     # Skid Distance, Haul Distance Extension    #
     #############################################
     SkidDist, HaulDistExtension, coord_landing_stand = skidding.skidding(stand_wkt, landing_coords, Slope)
     HaulDistExtension = round(HaulDistExtension*0.000189394, 3)  # convert to miles 
-    SkidDist = 3000
-    Slope = 50
 
     #############################################
     # Harvest Cost                              #
     #############################################
-    harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, NoHelicopter)
+    harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, NoHelicopter,NoHaulProportion)
     harvestCost, HarvestSystem = harvest_result  # returns harvest cost per CCF and Harvesting System
 
     totalVolumePerAcre = TreeVolSLT*RemovalsSLT+RemovalsLLT*TreeVolLLT+RemovalsCT*TreeVolCT
@@ -52,8 +50,8 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
             percentageSLT = (TreeVolSLT*RemovalsSLT)/totalVolumePerAcre
             percentageLLT = (TreeVolLLT*RemovalsLLT)/totalVolumePerAcre 
             truckVol = percentageCT*700+percentageSLT*850+percentageLLT*1000
-            trips = math.ceil(totalVolume/truckVol)  # necessary total trips to mill
-            totalHaulCost = round(haulTimeRT*haulCost*trips)  # total costs for all trips
+            trips = math.ceil(total50Volume/truckVol)  # necessary total trips to mill
+            totalHaulCost = round(haulTimeRT*haulCost*trips*NoHaulProportion)  # total costs for all trips
 
     #############################################
     # Total Costs                               #
