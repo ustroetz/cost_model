@@ -50,7 +50,7 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
             percentageSLT = (TreeVolSLT*RemovalsSLT)/totalVolumePerAcre
             percentageLLT = (TreeVolLLT*RemovalsLLT)/totalVolumePerAcre 
             truckVol = percentageCT*700+percentageSLT*850+percentageLLT*1000
-            trips = math.ceil(total50Volume/truckVol)  # necessary total trips to mill
+            trips = math.ceil(totalVolume/truckVol)  # necessary total trips to mill
             totalHaulCost = round(haulTimeRT*haulCost*trips*NoHaulProportion)  # total costs for all trips
 
     #############################################
