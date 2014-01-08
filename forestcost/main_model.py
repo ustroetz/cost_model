@@ -8,7 +8,7 @@ import harvesting
 def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
               RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT,
               HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT,
-              PartialCut, landing_coords, haulDist, haulTime, coord_mill, NoHelicopter = False, NoHaulProportion = 1):
+              PartialCut, landing_coords, haulDist, haulTime, coord_mill, NoHelicopter = False, HaulProportion = 1):
 
     #############################################
     # Skid Distance, Haul Distance Extension    #
@@ -19,7 +19,7 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
     #############################################
     # Harvest Cost                              #
     #############################################
-    harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, NoHelicopter,NoHaulProportion)
+    harvest_result = harvesting.harvestcost(PartialCut, Slope, SkidDist, Elevation, RemovalsCT, TreeVolCT, RemovalsSLT, TreeVolSLT, RemovalsLLT, TreeVolLLT, HdwdFractionCT, HdwdFractionSLT, HdwdFractionLLT, NoHelicopter, HaulProportion)
     harvestCost, HarvestSystem = harvest_result  # returns harvest cost per CCF and Harvesting System
 
     totalVolumePerAcre = TreeVolSLT*RemovalsSLT+RemovalsLLT*TreeVolLLT+RemovalsCT*TreeVolCT
@@ -51,7 +51,7 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
             percentageLLT = (TreeVolLLT*RemovalsLLT)/totalVolumePerAcre 
             truckVol = percentageCT*700+percentageSLT*850+percentageLLT*1000
             trips = math.ceil(totalVolume/truckVol)  # necessary total trips to mill
-            totalHaulCost = round(haulTimeRT*haulCost*trips*NoHaulProportion)  # total costs for all trips
+            totalHaulCost = round(haulTimeRT*haulCost*trips*HaulProportion)  # total costs for all trips
 
     #############################################
     # Total Costs                               #
