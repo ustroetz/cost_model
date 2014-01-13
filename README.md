@@ -201,6 +201,15 @@ Skidding returns the skidding distance from the centroid of the stand to the sta
   <img src="http://s10.postimg.org/6dwy8f0h5/Capture.png" />
 </p>
 
+Overall there are four possiblities how the skidding distance can be determined:
+
+ | Option 1 | Option 2 | Option 3 | Option 4 
+--- | --- | --- | --- | --- | ---
+Input Slope | 20 % | 20 % | 50 % | 50 % 
+Input Skid Dist  |  1000ft | 2000ft | 2000ft | 20000ft 
+Adjusted Skid Dist  |  - | 1300ft | - | 10000ft 
+Haul Dist Extension  |  - | 700ft | - | 10000ft 
+
 ###### Inputs
 ```
 from forestcost import skidding
