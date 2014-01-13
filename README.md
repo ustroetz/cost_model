@@ -201,7 +201,7 @@ Skidding returns the skidding distance from the centroid of the stand to the sta
   <img src="http://s10.postimg.org/6dwy8f0h5/Capture.png" />
 </p>
 
-Overall there are four possiblities how the skidding distance can be determined:
+Overall there are four possibilities how the skidding distance can be determined:
 
  | Option 1 | Option 2 | Option 3 | Option 4 
 --- | --- | --- | --- | --- | ---
