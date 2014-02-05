@@ -46,10 +46,7 @@ def cost_func(Area, Elevation, Slope, stand_wkt, RemovalsCT, TreeVolCT,
 
         # stinger-steer log truck avg volume per load (7 CCF small timber to 10 CCF large timber)
         if totalVolumePerAcre > 0.0:
-            percentageCT = (TreeVolCT*RemovalsCT)/totalVolumePerAcre 
-            percentageSLT = (TreeVolSLT*RemovalsSLT)/totalVolumePerAcre
-            percentageLLT = (TreeVolLLT*RemovalsLLT)/totalVolumePerAcre 
-            truckVol = percentageCT*700+percentageSLT*850+percentageLLT*1000
+            truckVol = 28.0*2000.0*1.0/38.0 # 28t truckload (converted to pounds) * 38lb/ft3 for Douglas Fir http://www.engineeringtoolbox.com/weigt-wood-d_821.html
             trips = math.ceil(totalVolume/truckVol)  # necessary total trips to mill
             totalHaulCost = round(haulTimeRT*haulCost*trips*HaulProportion)  # total costs for all trips
 
