@@ -1508,7 +1508,7 @@ def harvestcost(PartialCut, Slope, SkidDist, Elevation,
             ChipperHourlyCost = round(costPMHCS*(1-ChipperSize)+costPMHCB*ChipperSize)
             ManualMachineSizeALT = min(1.0,TreeVolALT/150.0)
             LoaderHourlyCost = round(costPMHLS*(1-ManualMachineSizeALT)+costPMHLB*ManualMachineSizeALT)
-
+    
 
             ################################################
             # Calculate Results                            #
